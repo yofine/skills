@@ -20,6 +20,10 @@ skills/
 |-------|-------------|
 | [blueprinter](./blueprinter/) | Generate technical diagrams in Flat Engineering Blueprint style using HTML/CSS |
 
+### Example: Blueprinter Output
+
+![Claude Code Architecture Blueprint](./images/claudecodesource.png)
+
 ## Skill Structure
 
 Each skill contains:
