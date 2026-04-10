@@ -47,3 +47,8 @@ description: When and how to use this skill
 ## License
 
 MIT
+## Star History
+
+[![Star History Chart](https://api.star-history.com/image?repos=yofine/skills&type=date&legend=top-left)](https://www.star-history.com/?repos=yofine%2Fskills&type=date&legend=top-left)
+
+<br/>
