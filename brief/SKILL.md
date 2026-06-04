@@ -21,6 +21,12 @@ Use the bundled template at `assets/brief-site-template`. This is the complete f
 
 The user is not expected to run setup scripts manually. Treat the script and shell commands in this section as the agent's implementation steps after the user asks to initialize or start a Brief site.
 
+Default location:
+- If the user does not specify a target path, create the site at `~/brief`.
+- The default site folder name is `brief`.
+- Only use a different location when the user explicitly provides one.
+- Do not default to `~/Workspace` or the current working directory.
+
 It contains:
 
 - React + Vite + TypeScript app.
@@ -33,8 +39,8 @@ It contains:
 When asked to create a site, the agent should:
 
 ```bash
-python3 <skill-dir>/scripts/init_brief_site.py /path/to/NewBriefSite
-cd /path/to/NewBriefSite
+python3 <skill-dir>/scripts/init_brief_site.py ~/brief
+cd ~/brief
 npm install
 npm run dev
 ```

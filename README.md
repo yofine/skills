@@ -36,7 +36,7 @@ Use the `brief` skill to create and operate a professional research brief site. 
 
 Example requests:
 
-- "Use the brief skill to initialize a new site in `~/Workspace/my-brief` and start it locally."
+- "Use the brief skill to initialize a new site and start it locally."
 - "Use brief to analyze this article, generate a report, and publish it to my Brief site."
 - "Use brief to add this codebase analysis as a new report and make it the featured report."
 - "Use brief to build the site and tell me where the production output is."
