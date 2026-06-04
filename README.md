@@ -41,26 +41,6 @@ Example requests:
 - "Use brief to add this codebase analysis as a new report and make it the featured report."
 - "Use brief to build the site and tell me where the production output is."
 
-## Skill Structure
-
-Each skill contains:
-
-```
-skill-name/
-└── SKILL.md    # Skill definition with instructions for the agent
-```
-
-### SKILL.md Format
-
-```yaml
----
-name: skill-name
-description: When and how to use this skill
----
-
-# Skill content and instructions...
-```
-
 ## License
 
 MIT
