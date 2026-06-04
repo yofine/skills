@@ -30,16 +30,14 @@ skills/
 
 The `brief` skill includes a complete Brief frontend template under `assets/brief-site-template`, with React, Vite, Tailwind-compatible styling, report archive pages, detail pages, iframe-based standalone HTML report rendering, and one sample report.
 
-Initialize a new Brief site:
+Users do not need to run the template script manually. The intended workflow is to invoke the skill in an agent session and describe the desired outcome in natural language, for example:
 
-```bash
-python3 ./brief/scripts/init_brief_site.py /path/to/NewBriefSite
-cd /path/to/NewBriefSite
-npm install
-npm run dev
-```
+- initialize a new Brief site in a target directory.
+- generate a Brief-style Chinese HTML analysis report from a source article, topic, or codebase.
+- publish the generated report into the Brief site.
+- install dependencies and start the local dev server.
 
-Use it when an agent needs to create a Brief site, generate a standalone Chinese HTML analysis report, or publish a report by adding `public/reports/<slug>.html` and updating `src/content/reports.ts`.
+When invoked, the agent uses the bundled template and helper script internally, then runs the necessary project commands such as dependency installation, build validation, or dev-server startup. Publishing a report means adding `public/reports/<slug>.html` and updating `src/content/reports.ts`.
 
 ## Skill Structure
 

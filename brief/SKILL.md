@@ -19,6 +19,8 @@ Do not use it to redesign the Brief visual system unless the user explicitly ask
 
 Use the bundled template at `assets/brief-site-template`. This is the complete frontend project, not a scaffold stub. After copying it to a target directory, dependency installation is the only required setup before startup.
 
+The user is not expected to run setup scripts manually. Treat the script and shell commands in this section as the agent's implementation steps after the user asks to initialize or start a Brief site.
+
 It contains:
 
 - React + Vite + TypeScript app.
@@ -28,7 +30,7 @@ It contains:
 - one sample report only: `harness-design-long-running-apps`.
 - no extra report data beyond the single sample report.
 
-To create a site:
+When asked to create a site, the agent should:
 
 ```bash
 python3 <skill-dir>/scripts/init_brief_site.py /path/to/NewBriefSite
