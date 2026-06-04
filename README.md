@@ -20,7 +20,7 @@ skills/
 | Skill | Description |
 |-------|-------------|
 | [blueprinter](./blueprinter/) | Generate technical diagrams in Flat Engineering Blueprint style using HTML/CSS |
-| [brief](./brief/) | Initialize a Brief React/Vite report site, generate Chinese analysis reports, and publish them into the site |
+| [brief](./brief/) | Initialize a Brief React/Vite report site, generate analysis reports, and publish them into the site |
 
 ### Example: Blueprinter Output
 
@@ -28,14 +28,14 @@ skills/
 
 ### Brief
 
-Use the `brief` skill to create and operate a professional research brief site. It can initialize a new Brief site, turn source material into standalone Chinese analysis reports, publish those reports into the site, and start the local preview server.
+Use the `brief` skill to create and operate a professional research brief site. It can initialize a new Brief site, turn source material into standalone Brief-style analysis reports, publish those reports into the site, and start the local preview server.
 
 ![Brief site preview](./images/brief.png)
 
 Example requests:
 
 - "Use the brief skill to initialize a new site in `~/Workspace/my-brief` and start it locally."
-- "Use brief to analyze this article, generate a Chinese report, and publish it to my Brief site."
+- "Use brief to analyze this article, generate a report, and publish it to my Brief site."
 - "Use brief to add this codebase analysis as a new report and make it the featured report."
 - "Use brief to build the site and tell me where the production output is."
 

@@ -1,6 +1,6 @@
 ---
 name: brief
-description: Initialize and operate a Brief React/Vite report site from a bundled template, then generate standalone Chinese HTML analysis reports and publish them into that Brief site. Use when an agent is asked to create a new Brief site, bootstrap the project template, generate a Brief-style report, add report HTML under public/reports, or update src/content/reports.ts metadata. The bundled template includes the site engineering scaffold and one sample report only.
+description: Initialize and operate a Brief React/Vite report site from a bundled template, then generate standalone Brief-style HTML analysis reports and publish them into that Brief site. Use when an agent is asked to create a new Brief site, bootstrap the project template, generate a Brief-style report, add report HTML under public/reports, or update src/content/reports.ts metadata. The bundled template includes the site engineering scaffold and one sample report only.
 ---
 
 # Brief Site
@@ -10,7 +10,7 @@ description: Initialize and operate a Brief React/Vite report site from a bundle
 Use this skill for the full Brief workflow:
 
 - initialize a new Brief site from the bundled React + Vite + Tailwind template.
-- generate one standalone Chinese HTML analysis report.
+- generate one standalone Brief-style HTML analysis report.
 - publish that report into the Brief site by adding HTML and metadata.
 
 Do not use it to redesign the Brief visual system unless the user explicitly asks. The template already encodes the site style, layout, theme transition, iframe report rendering, and report archive behavior.
@@ -46,7 +46,7 @@ Use `--force` only when the user explicitly wants to replace the target director
 Generate one report at a time as a standalone HTML file.
 
 Content rules:
-- Write Chinese as the primary language.
+- Use the language requested by the user or implied by the site. If no language is specified, follow the existing site's language.
 - Preserve source claims, caveats, dates, examples, and scope.
 - Do not invent facts or write the user's instructions into the report body.
 - Produce an independent professional brief, not a school-style article summary.
@@ -104,7 +104,7 @@ Required `Report` fields:
 Metadata rules:
 - `docSrc` must be `/reports/<slug>.html`.
 - `title` must match report HTML `<title>` and `<h1>`.
-- `deck` should be about 70-130 Chinese characters.
+- `deck` should be compact enough for the homepage lead display.
 - `summary` is for the detail page left rail; keep it content-focused.
 - `commentary` should be an editorial judgment, not a publishing note.
 - `watchlist` should contain 2-4 short variables.
@@ -113,7 +113,7 @@ Metadata rules:
 Tags:
 - Prefer existing tags in `reportTags`.
 - Add a tag only when the report truly needs a new filter category.
-- Tag values use lowercase kebab-case; labels use short Chinese.
+- Tag values use lowercase kebab-case; labels should be short and match the site's language.
 
 Featured:
 - Normally only one report has `featured: true`.
