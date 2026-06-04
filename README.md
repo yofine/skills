@@ -30,6 +30,8 @@ skills/
 
 Use the `brief` skill to create and operate a professional research brief site. It can initialize a new Brief site, turn source material into standalone Brief-style analysis reports, publish those reports into the site, and start the local preview server.
 
+[Live example](https://brief.blueprinter.ai/)
+
 ![Brief site preview](./images/brief.png)
 
 Example requests:
