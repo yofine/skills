@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      ;(() => {
+        try {
+          const storedTheme = window.localStorage.getItem('brief-theme')
+          const theme =
+            storedTheme === 'light' || storedTheme === 'dark'
+              ? storedTheme
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+
+          document.documentElement.dataset.theme = theme
+          document.documentElement.style.colorScheme = theme
+          document.documentElement.style.backgroundColor =
+            theme === 'dark' ? '#14110d' : '#f2eadc'
+        } catch {
+          document.documentElement.dataset.theme = 'light'
+          document.documentElement.style.colorScheme = 'light'
+          document.documentElement.style.backgroundColor = '#f2eadc'
+        }
+      })()
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      html[data-theme="light"],
+      html[data-theme="light"] body {
+        background: #f2eadc;
+      }
+
+      html[data-theme="dark"],
+      html[data-theme="dark"] body {
+        background: #14110d;
+      }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="一个用于发布 AI 生成 HTML 研究报告的克制型中文站点。"
+    />
+    <title>Brief</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

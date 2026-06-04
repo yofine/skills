@@ -11,6 +11,7 @@ This repository contains reusable skills that extend AI agent capabilities. Each
 ```
 skills/
 ├── blueprinter/      # Technical diagram generation skill
+├── brief/            # Brief site template and report publishing skill
 └── README.md
 ```
 
@@ -19,10 +20,26 @@ skills/
 | Skill | Description |
 |-------|-------------|
 | [blueprinter](./blueprinter/) | Generate technical diagrams in Flat Engineering Blueprint style using HTML/CSS |
+| [brief](./brief/) | Initialize a Brief React/Vite report site, generate Chinese analysis reports, and publish them into the site |
 
 ### Example: Blueprinter Output
 
 ![Claude Code Architecture Blueprint](./images/claudecodesource.png)
+
+### Brief
+
+The `brief` skill includes a complete Brief frontend template under `assets/brief-site-template`, with React, Vite, Tailwind-compatible styling, report archive pages, detail pages, iframe-based standalone HTML report rendering, and one sample report.
+
+Initialize a new Brief site:
+
+```bash
+python3 ./brief/scripts/init_brief_site.py /path/to/NewBriefSite
+cd /path/to/NewBriefSite
+npm install
+npm run dev
+```
+
+Use it when an agent needs to create a Brief site, generate a standalone Chinese HTML analysis report, or publish a report by adding `public/reports/<slug>.html` and updating `src/content/reports.ts`.
 
 ## Skill Structure
 
