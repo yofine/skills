@@ -1,0 +1,111 @@
+.qoder-window {
+  --qoder-canvas: oklch(100% 0 0);
+  --qoder-chrome: oklch(96.1% .003 264);
+  --qoder-panel: oklch(98.5% .002 264);
+  --qoder-line: oklch(90.7% .003 264);
+  --qoder-ink: oklch(23.5% .006 264);
+  --qoder-muted: oklch(55% .006 264);
+  --qoder-faint: oklch(70% .004 264);
+  --qoder-mint: var(--mock-accent);
+  border-radius: 14px;
+  background: var(--qoder-canvas);
+  box-shadow: 0 12px 34px oklch(25% .01 264 / .08);
+}
+
+.qoder-shell {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) 230px;
+  min-height: 520px;
+  color: var(--qoder-ink);
+  background: var(--qoder-canvas);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+}
+
+.qoder-sidebar,.qoder-monitor { min-width: 0; background: var(--qoder-chrome); }
+.qoder-sidebar { display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--qoder-line); }
+.qoder-sidebar-top { height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; }
+.qoder-traffic { display: flex; gap: 6px; }
+.qoder-traffic i { width: 9px; height: 9px; border-radius: 50%; background: #ff5f57; }
+.qoder-traffic i:nth-child(2) { background: #febc2e; }
+.qoder-traffic i:nth-child(3) { background: #28c840; }
+.qoder-window-tools { color: var(--qoder-ink); font-size: 10px; }
+
+.qoder-primary-nav { display: grid; gap: 1px; padding: 2px 10px 5px; }
+.qoder-primary-nav > span { min-height: 28px; display: flex; align-items: center; gap: 10px; padding: 0 7px; color: oklch(37% .006 264); border-radius: 6px; font-size: 10px; }
+.qoder-primary-nav b { width: 13px; color: var(--qoder-muted); text-align: center; font-size: 13px; font-weight: 400; }
+.qoder-primary-nav > span:hover { background: oklch(92.8% .003 264); }
+
+.qoder-segment { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin: 2px 10px 8px; padding: 2px; border-radius: 7px; background: oklch(90.9% .004 264); }
+.qoder-segment span { min-width: 0; display: flex; justify-content: center; align-items: center; gap: 5px; padding: 5px 3px; border-radius: 5px; color: var(--qoder-muted); font-size: 9px; }
+.qoder-segment span.active { color: var(--qoder-ink); background: #fff; box-shadow: 0 1px 4px #00000010; }
+.qoder-segment b { font-size: 10px; font-weight: 500; }
+
+.qoder-history { min-height: 0; overflow: hidden; }
+.qoder-history section { display: grid; gap: 1px; padding: 0 10px 7px; }
+.qoder-history section > strong { padding: 0 7px 3px; color: var(--qoder-muted); font-size: 9px; font-weight: 500; }
+.qoder-history section > span { overflow: hidden; padding: 6px 7px; border-radius: 6px; color: var(--qoder-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.qoder-history section > span.active { color: var(--qoder-ink); background: oklch(90.5% .003 264); }
+
+.qoder-profile { display: flex; align-items: center; gap: 7px; margin-top: auto; padding: 10px 12px; }
+.qoder-profile > b { width: 27px; height: 27px; display: grid; place-items: center; flex: none; border-radius: 50%; background: oklch(93% .004 264); font-size: 10px; }
+.qoder-profile > span { min-width: 0; display: grid; }
+.qoder-profile strong { font-size: 9px; }
+.qoder-profile small { color: var(--qoder-muted); font-size: 8px; }
+.qoder-profile > i { margin-left: auto; color: var(--qoder-muted); font-size: 10px; font-style: normal; }
+
+.qoder-task { min-width: 0; display: grid; grid-template-rows: 40px minmax(0, 1fr) auto; background: var(--qoder-canvas); }
+.qoder-task-header { display: flex; align-items: center; gap: 10px; padding: 0 13px; border-bottom: 1px solid var(--qoder-line); }
+.qoder-task-header > strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.qoder-task-header nav { display: flex; align-items: center; gap: 12px; margin-left: auto; color: var(--qoder-muted); font-size: 8px; }
+.qoder-thread { min-height: 0; overflow: hidden; padding: 14px 14px 0; }
+.qoder-response-copy { display: grid; gap: 4px; margin-bottom: 7px; color: var(--qoder-ink); font-size: 9px; }
+.qoder-response-copy small { color: var(--qoder-muted); font-size: 8px; }
+
+.qoder-artifact { overflow: hidden; border: 1px solid var(--qoder-line); border-radius: 9px; background: #fff; }
+.qoder-artifact > header { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 10px; }
+.qoder-artifact > header strong { min-width: 0; overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.qoder-artifact > header > b { margin-left: auto; color: var(--qoder-muted); font-size: 9px; }
+.qoder-file-icon { width: 17px; height: 18px; display: grid; place-items: center; border-radius: 3px; background: oklch(73% .18 62); color: #fff; font: 700 8px ui-monospace, monospace; }
+.qoder-preview { margin: 0 9px; min-height: 205px; padding: 18px 16px; background: oklch(98.2% .006 250); box-shadow: inset 0 0 0 1px oklch(95% .006 250); }
+.qoder-preview-title { display: flex; align-items: center; justify-content: space-between; padding-bottom: 7px; border-bottom: 1px solid oklch(78% .03 250); font: 700 8px ui-monospace, SFMono-Regular, monospace; }
+.qoder-preview-title i { width: 52px; height: 8px; background: oklch(22% .025 255); }
+.qoder-preview > small { display: block; margin: 13px 0 7px; color: var(--qoder-muted); font: 6px ui-monospace, monospace; }
+.qoder-preview-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.qoder-preview-stats > span { min-width: 0; display: grid; gap: 3px; padding: 9px 7px; border: 1px solid oklch(84% .025 250); }
+.qoder-preview-stats b { font: 700 12px ui-monospace, monospace; }
+.qoder-preview-stats small { overflow: hidden; color: var(--qoder-muted); font: 5px ui-monospace, monospace; text-overflow: ellipsis; white-space: nowrap; }
+.qoder-preview-lines { display: grid; grid-template-columns: 1.1fr .8fr .8fr; gap: 5px; margin-top: 17px; }
+.qoder-preview-lines i { height: 28px; border: 1px solid oklch(86% .022 250); background: linear-gradient(oklch(96% .012 250) 0 40%, transparent 40%); }
+.qoder-artifact > footer { padding: 10px; color: var(--qoder-muted); font-size: 7px; text-align: center; }
+
+.qoder-composer { min-height: 88px; display: flex; flex-direction: column; justify-content: space-between; margin: 9px 12px 11px; padding: 12px; border: 1px solid color-mix(in oklch, var(--qoder-mint) 50%, white); border-radius: 10px; background: #fff; box-shadow: 0 4px 18px oklch(25% .01 264 / .035); color: var(--qoder-faint); font-size: 8px; }
+.qoder-composer > div { display: flex; align-items: center; justify-content: space-between; }
+.qoder-composer nav { display: flex; align-items: center; gap: 6px; }
+.qoder-composer button { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid var(--qoder-line); border-radius: 50%; background: #fff; color: var(--qoder-ink); font-size: 10px; }
+.qoder-composer small { color: var(--qoder-muted); font-size: 8px; }
+.qoder-live-dot { width: 5px; height: 5px; border-radius: 50%; background: oklch(63% .22 28); }
+.qoder-composer .qoder-mic { border-color: transparent; }
+.qoder-composer .qoder-send { border-color: var(--qoder-ink); background: var(--qoder-ink); color: #fff; font-size: 15px; }
+
+.qoder-monitor { display: flex; flex-direction: column; overflow: hidden; border-left: 1px solid var(--qoder-line); }
+.qoder-monitor > header { height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid var(--qoder-line); }
+.qoder-monitor > header strong { font-size: 11px; }
+.qoder-monitor > header span { font-size: 9px; }
+.qoder-monitor > section { padding: 12px; border-bottom: 1px solid var(--qoder-line); }
+.qoder-monitor-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.qoder-monitor-title strong { font-size: 9px; }
+.qoder-monitor-title span { color: var(--qoder-muted); font-size: 8px; }
+.qoder-monitor ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.qoder-monitor li { display: flex; gap: 7px; color: var(--qoder-muted); font-size: 8px; line-height: 1.35; }
+.qoder-monitor li b { width: 13px; height: 13px; display: grid; place-items: center; flex: none; border-radius: 50%; background: var(--qoder-mint); color: #fff; font-size: 7px; }
+.qoder-monitor section > small { display: block; margin-bottom: 8px; color: var(--qoder-muted); font-size: 8px; }
+.qoder-monitor-item { display: flex; align-items: center; gap: 7px; overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.qoder-monitor-item b { width: 20px; height: 20px; display: grid; place-items: center; flex: none; border-radius: 4px; background: #fff; color: oklch(65% .16 60); font: 700 8px ui-monospace, monospace; box-shadow: 0 1px 5px #0000000d; }
+
+@media (max-width: 760px) {
+  .qoder-shell { grid-template-columns: minmax(0, 1fr); min-height: 480px; }
+  .qoder-sidebar,.qoder-monitor { display: none; }
+  .qoder-task { min-height: 480px; }
+  .qoder-preview-stats { grid-template-columns: repeat(2, 1fr); }
+  .qoder-preview { min-height: 235px; }
+}

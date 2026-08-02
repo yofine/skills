@@ -12,6 +12,7 @@ This repository contains reusable skills that extend AI agent capabilities. Each
 skills/
 ├── blueprinter/      # Technical diagram generation skill
 ├── brief/            # Brief site template and report publishing skill
+├── design-hub/       # Local design-system library and extraction skill
 └── README.md
 ```
 
@@ -21,6 +22,7 @@ skills/
 |-------|-------------|
 | [blueprinter](./blueprinter/) | Generate technical diagrams in Flat Engineering Blueprint style using HTML/CSS |
 | [brief](./brief/) | Initialize a Brief React/Vite report site, generate analysis reports, and publish them into the site |
+| [design-hub](./design-hub/) | Initialize and manage a local Design System Hub, extract systems from screenshots, and expose Agent-readable exports |
 
 ### Example: Blueprinter Output
 
@@ -40,6 +42,19 @@ Example requests:
 - "Use brief to analyze this article, generate a report, and publish it to my Brief site."
 - "Use brief to add this codebase analysis as a new report and make it the featured report."
 - "Use brief to build the site and tell me where the production output is."
+
+### Design System Hub
+
+Use the `design-hub` skill to initialize and operate a local React/Vite design-system library. It can extract a coherent system from screenshots or written direction, generate a source-specific and privacy-safe Live Mock, and expose Copy Tokens, `DESIGN.md`, standalone HTML, and an Agent-oriented API document.
+
+New sites default to `~/design-hub` and include the current MuleRun, Raft, QoderWork, and Superset design systems. New systems are appended as isolated entries without rewriting existing content.
+
+Example requests:
+
+- "Use design-hub to initialize the local site and start the service."
+- "Extract a design system from these screenshots and add it to my Hub."
+- "Regenerate this system's Live Mock while preserving the existing entries."
+- "Export the design system as DESIGN.md and show me the Agent API endpoint."
 
 ## License
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design System Hub"
+  short_description: "从截图或文字创建本地设计系统站点，并导出多种文档格式"
+  default_prompt: "Use $design-hub to initialize a local design-system service or add a complete system from screenshots or a written brief."

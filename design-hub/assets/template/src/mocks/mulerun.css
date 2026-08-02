@@ -1,0 +1,153 @@
+.mule-window {
+  --mule-canvas: oklch(99.2% .002 90);
+  --mule-chrome: oklch(96.7% .006 90);
+  --mule-surface: oklch(100% 0 0);
+  --mule-selected: oklch(93.4% .007 88);
+  --mule-muted-surface: oklch(97.8% .003 90);
+  --mule-line: oklch(90.8% .006 88);
+  --mule-ink: oklch(23% .007 75);
+  --mule-text: oklch(47% .008 75);
+  --mule-faint: oklch(64% .007 75);
+  --mule-disabled: oklch(76% .005 75);
+  --mule-green: oklch(68% .19 148);
+  --mule-blue: oklch(72% .14 236);
+  --mule-violet: oklch(66% .18 292);
+  border-radius: 16px;
+  background: var(--mule-canvas);
+  box-shadow: 0 12px 32px rgb(30 28 24 / .08);
+}
+
+.mule-window button { font: inherit; }
+.mule-window svg { width: 14px; height: 14px; stroke-width: 1.7; }
+.mule-shell {
+  display: grid;
+  grid-template-columns: 198px minmax(0, 1fr);
+  min-height: 540px;
+  color: var(--mule-ink);
+  background: var(--mule-canvas);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", Inter, sans-serif;
+}
+
+.mule-sidebar {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 10px 10px;
+  border-right: 1px solid var(--mule-line);
+  background: var(--mule-chrome);
+}
+.mule-brand-row { height: 32px; display: flex; align-items: center; justify-content: space-between; }
+.mule-brand-row button { width: 28px; height: 28px; display: grid; place-items: center; border: 0; background: transparent; color: var(--mule-faint); }
+.mule-mark { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; background: var(--mule-surface); box-shadow: 0 2px 8px rgb(30 28 24 / .06); }
+.mule-mark svg { width: 16px; height: 16px; color: var(--mule-ink); }
+
+.mule-new-task {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 5px;
+  padding: 0 9px;
+  border: 1px solid var(--mule-line);
+  border-radius: 9px;
+  background: var(--mule-surface);
+  color: var(--mule-ink);
+  box-shadow: 0 2px 8px rgb(30 28 24 / .025);
+  font-size: 10px;
+}
+.mule-new-task strong { font-weight: 560; }
+.mule-new-task kbd { margin-left: auto; padding: 0; background: none; color: var(--mule-faint); font-size: 8px; }
+.mule-nav { display: grid; gap: 2px; }
+.mule-nav > span {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 9px;
+  border-radius: 8px;
+  color: var(--mule-text);
+  font-size: 10px;
+}
+.mule-nav > span:hover { background: var(--mule-selected); color: var(--mule-ink); }
+.mule-nav b { font-weight: 470; }
+.mule-nav small { margin-left: auto; padding: 2px 5px; border: 1px solid var(--mule-line); border-radius: 999px; color: var(--mule-faint); font-size: 7px; }
+.mule-nav i { margin-left: auto; color: var(--mule-faint); font-size: 14px; font-style: normal; }
+.mule-nav-primary { margin-top: 1px; }
+.mule-divider { height: 1px; margin: 5px 2px; background: var(--mule-line); }
+
+.mule-tasks { min-height: 0; margin-top: 10px; overflow: hidden; }
+.mule-tasks > header { display: flex; justify-content: space-between; padding: 0 8px 5px; color: var(--mule-faint); font-size: 8px; }
+.mule-tasks > header i { font-style: normal; }
+.mule-tasks > div { position: relative; min-height: 29px; display: flex; align-items: center; gap: 8px; padding: 0 9px; border-radius: 8px; color: var(--mule-faint); font-size: 9px; }
+.mule-tasks > div svg { width: 12px; height: 12px; }
+.mule-tasks > div.active { background: var(--mule-selected); color: var(--mule-ink); }
+.mule-tasks em { position: absolute; left: -6px; width: 4px; height: 4px; border-radius: 50%; background: var(--mule-green); }
+.mule-sidebar-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding: 8px 8px 2px; color: var(--mule-faint); font-size: 9px; }
+.mule-sidebar-footer span { display: flex; align-items: center; gap: 7px; }
+.mule-sidebar-footer svg { width: 12px; height: 12px; }
+
+.mule-workspace { min-width: 0; position: relative; background: var(--mule-canvas); }
+.mule-account-row { height: 48px; display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding: 0 14px; }
+.mule-account-row button { min-height: 27px; display: flex; align-items: center; gap: 5px; padding: 0 9px; border: 1px solid var(--mule-line); border-radius: 9px; background: var(--mule-muted-surface); color: var(--mule-text); font-size: 9px; }
+.mule-account-row button svg { width: 11px; height: 11px; }
+.mule-account-row .mule-credit svg { color: var(--mule-primary); fill: color-mix(in oklch, var(--mule-primary) 26%, transparent); }
+.mule-avatar { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9px; background: var(--mule-ink); color: var(--mule-on-primary); font-size: 9px; font-weight: 700; }
+
+.mule-center { width: min(680px, calc(100% - 44px)); margin: 56px auto 0; }
+.mule-computer-badge { width: fit-content; display: flex; align-items: center; gap: 6px; min-height: 27px; margin-bottom: 17px; padding: 0 8px; border: 1px solid var(--mule-line); border-radius: 9px; background: var(--mule-surface); color: var(--mule-text); font-size: 9px; box-shadow: 0 2px 8px rgb(30 28 24 / .025); }
+.mule-computer-badge small { padding: 2px 5px; border-radius: 5px; background: var(--mule-selected); color: var(--mule-faint); font-size: 7px; }
+.mule-computer-badge svg { width: 11px; height: 11px; }
+.mule-center h3 { margin: 0; font-size: 29px; line-height: 1.05; letter-spacing: -.045em; font-weight: 620; }
+.mule-center h3 strong { font-weight: 690; }
+.mule-center h4 { margin: 5px 0 22px; color: var(--mule-disabled); font-size: 25px; line-height: 1.08; letter-spacing: -.035em; font-weight: 620; }
+
+.mule-composer { min-height: 105px; display: flex; flex-direction: column; justify-content: space-between; padding: 15px 15px 12px; border: 1px solid var(--mule-line); border-radius: 18px; background: var(--mule-surface); box-shadow: 0 4px 18px rgb(30 28 24 / .035); transition: border-color 120ms ease-out, box-shadow 120ms ease-out; }
+.mule-composer:focus-within { border-color: color-mix(in oklch, var(--mule-primary) 46%, var(--mule-line)); box-shadow: 0 5px 18px rgb(30 28 24 / .055); }
+.mule-composer-prompt { display: flex; align-items: center; gap: 7px; color: var(--mule-disabled); font-size: 10px; }
+.mule-composer-prompt kbd { padding: 2px 5px; border-radius: 5px; background: var(--mule-muted-surface); color: var(--mule-disabled); font-size: 7px; }
+.mule-composer-tools,.mule-composer-tools nav { display: flex; align-items: center; }
+.mule-composer-tools { justify-content: space-between; }
+.mule-composer-tools nav { gap: 5px; }
+.mule-composer-tools button { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid var(--mule-line); border-radius: 9px; background: var(--mule-muted-surface); color: var(--mule-text); }
+.mule-composer-tools .mule-mode { width: auto; display: flex; gap: 5px; padding: 0 8px; border-color: transparent; background: transparent; font-size: 9px; }
+.mule-mode svg { color: var(--mule-violet); }
+.mule-composer-tools .mule-send { border-color: var(--mule-ink); background: var(--mule-ink); color: white; }
+
+.mule-shortcuts { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 13px; }
+.mule-shortcuts button { position: relative; min-height: 32px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border: 1px solid var(--mule-line); border-radius: 10px; background: var(--mule-surface); color: var(--mule-text); font-size: 8px; white-space: nowrap; }
+.mule-shortcuts button:hover { background: var(--mule-muted-surface); color: var(--mule-ink); }
+.mule-shortcuts svg { width: 11px; height: 11px; }
+.mule-shortcuts .mule-shortcut-featured svg { color: var(--mule-blue); }
+.mule-shortcut-featured small { position: absolute; top: -9px; right: 7px; padding: 2px 5px; transform: rotate(6deg); border: 1px dashed var(--mule-violet); border-radius: 5px; background: color-mix(in oklch, var(--mule-violet) 8%, white); color: var(--mule-violet); font: 6px ui-monospace, SFMono-Regular, monospace; }
+
+.mule-run-card { margin-top: 24px; padding: 13px 14px 14px; border: 1px solid var(--mule-line); border-radius: 12px; background: color-mix(in oklch, var(--mule-surface) 88%, transparent); }
+.mule-run-card > header { display: flex; align-items: center; justify-content: space-between; }
+.mule-run-card > header > div { display: flex; align-items: center; gap: 8px; }
+.mule-run-card > header > div > svg { width: 24px; height: 24px; padding: 5px; border-radius: 7px; background: color-mix(in oklch, var(--mule-primary) 11%, white); color: var(--mule-primary); }
+.mule-run-card > header span { display: grid; gap: 1px; }
+.mule-run-card > header strong { font-size: 9px; }
+.mule-run-card > header small { color: var(--mule-faint); font-size: 7px; }
+.mule-run-card > header > b { padding: 4px 7px; border-radius: 999px; background: color-mix(in oklch, var(--mule-green) 11%, white); color: color-mix(in oklch, var(--mule-green) 72%, black); font-size: 7px; }
+.mule-run-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.mule-run-steps > span { min-width: 0; display: grid; grid-template-columns: 20px 1fr; column-gap: 7px; align-items: center; padding: 9px; border: 1px solid var(--mule-line); border-radius: 9px; background: var(--mule-surface); }
+.mule-run-steps i { grid-row: 1 / 3; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 7px; background: var(--mule-muted-surface); color: var(--mule-faint); font-size: 7px; font-style: normal; }
+.mule-run-steps b { overflow: hidden; font-size: 8px; font-weight: 560; text-overflow: ellipsis; white-space: nowrap; }
+.mule-run-steps small { color: var(--mule-faint); font-size: 7px; }
+.mule-run-steps .done i { background: color-mix(in oklch, var(--mule-green) 13%, white); color: var(--mule-green); }
+.mule-run-steps .active { border-color: color-mix(in oklch, var(--mule-primary) 36%, var(--mule-line)); }
+.mule-run-steps .active i { background: color-mix(in oklch, var(--mule-primary) 12%, white); color: var(--mule-primary); }
+
+@media (max-width: 880px) {
+  .mule-center { margin-top: 38px; }
+  .mule-shortcuts button:nth-last-child(-n + 2) { display: none; }
+}
+
+@media (max-width: 760px) {
+  .mule-shell { grid-template-columns: minmax(0, 1fr); min-height: 520px; }
+  .mule-sidebar { display: none; }
+  .mule-center { width: min(620px, calc(100% - 32px)); margin-top: 40px; }
+  .mule-center h4 { font-size: 21px; }
+  .mule-shortcuts { justify-content: flex-start; overflow: hidden; }
+  .mule-run-steps { grid-template-columns: 1fr; }
+  .mule-run-steps > span:nth-child(3) { display: none; }
+}
