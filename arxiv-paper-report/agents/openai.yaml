@@ -1,0 +1,4 @@
+interface:
+  display_name: "arXiv Decision Intelligence"
+  short_description: "Update field beliefs for one evidence-bounded decision"
+  default_prompt: "Use $arxiv-paper-report to produce a validated bilingual field-intelligence report that answers one primary decision—whether to invest now, validate or productize, in what order, and what not to do—using an arXiv-centered corpus, explicit epistemic ceilings, capability frontiers, labeled mechanism models, technical options, maturity, and leading indicators."

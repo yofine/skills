@@ -1,0 +1,1145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.codex/skills/arxiv-paper-report/report.schema.json",
+  "title": "arXiv Field Intelligence Report v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "report"],
+  "properties": {
+    "schema_version": { "const": "3.0" },
+    "report": { "$ref": "#/$defs/report" }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "nullable_date": {
+      "oneOf": [
+        { "$ref": "#/$defs/date" },
+        { "type": "null" }
+      ]
+    },
+    "nullable_string": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "nonempty_string": { "type": "string", "minLength": 1 },
+    "string_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/nonempty_string" }
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "slug_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/slug" },
+      "uniqueItems": true
+    },
+    "paper_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}\\.[0-9]{4,5}$"
+    },
+    "paper_id_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/paper_id" },
+      "uniqueItems": true
+    },
+    "evidence_id_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/slug" },
+      "uniqueItems": true
+    },
+    "confidence": { "enum": ["high", "medium", "low"] },
+    "url": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "url_list": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/url" },
+      "uniqueItems": true
+    },
+    "terminology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["term", "definition", "included_variants"],
+      "properties": {
+        "term": { "$ref": "#/$defs/nonempty_string" },
+        "definition": { "$ref": "#/$defs/nonempty_string" },
+        "included_variants": { "$ref": "#/$defs/string_list" }
+      }
+    },
+    "corpus_layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "status",
+        "date_from",
+        "date_to",
+        "purpose",
+        "coverage_note"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "role": {
+          "enum": ["anchor", "frontier", "signal", "counterevidence"]
+        },
+        "status": { "enum": ["searched", "partial", "not_searched"] },
+        "date_from": { "$ref": "#/$defs/nullable_date" },
+        "date_to": { "$ref": "#/$defs/nullable_date" },
+        "purpose": { "$ref": "#/$defs/nonempty_string" },
+        "coverage_note": { "$ref": "#/$defs/nonempty_string" }
+      }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "query", "layer_id", "sort", "max_results"],
+      "properties": {
+        "label": { "$ref": "#/$defs/nonempty_string" },
+        "query": { "$ref": "#/$defs/nonempty_string" },
+        "layer_id": { "$ref": "#/$defs/slug" },
+        "sort": {
+          "enum": ["relevance", "lastUpdatedDate", "submittedDate"]
+        },
+        "max_results": { "type": "integer", "minimum": 1, "maximum": 100 }
+      }
+    },
+    "screening": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retrieved", "deduplicated", "screened", "included"],
+      "properties": {
+        "retrieved": { "type": "integer", "minimum": 0 },
+        "deduplicated": { "type": "integer", "minimum": 0 },
+        "screened": { "type": "integer", "minimum": 0 },
+        "included": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "decision_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary",
+        "decision_maker",
+        "choice_at_stake",
+        "time_horizon",
+        "secondary"
+      ],
+      "properties": {
+        "primary": {
+          "enum": [
+            "research_agenda",
+            "technology_strategy",
+            "architecture",
+            "product",
+            "due_diligence"
+          ]
+        },
+        "decision_maker": { "$ref": "#/$defs/nonempty_string" },
+        "choice_at_stake": { "$ref": "#/$defs/nonempty_string" },
+        "time_horizon": { "$ref": "#/$defs/nonempty_string" },
+        "secondary": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "research_agenda",
+              "technology_strategy",
+              "architecture",
+              "product",
+              "due_diligence"
+            ]
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "research_question",
+        "decision_context",
+        "operational_definition",
+        "terminology",
+        "date_from",
+        "date_to",
+        "categories",
+        "corpus_layers",
+        "queries",
+        "inclusion_criteria",
+        "exclusion_criteria",
+        "coverage_gaps",
+        "screening"
+      ],
+      "properties": {
+        "research_question": { "$ref": "#/$defs/nonempty_string" },
+        "decision_context": { "$ref": "#/$defs/decision_context" },
+        "operational_definition": { "$ref": "#/$defs/nonempty_string" },
+        "terminology": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/terminology" }
+        },
+        "date_from": { "$ref": "#/$defs/date" },
+        "date_to": { "$ref": "#/$defs/date" },
+        "categories": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonempty_string" },
+          "uniqueItems": true
+        },
+        "corpus_layers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/corpus_layer" }
+        },
+        "queries": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/query" }
+        },
+        "inclusion_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "exclusion_criteria": { "$ref": "#/$defs/string_list" },
+        "coverage_gaps": { "$ref": "#/$defs/string_list" },
+        "screening": { "$ref": "#/$defs/screening" }
+      }
+    },
+    "evidence_record_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metadata", "abstract", "full_text", "external"],
+      "properties": {
+        "metadata": { "type": "integer", "minimum": 0 },
+        "abstract": { "type": "integer", "minimum": 0 },
+        "full_text": { "type": "integer", "minimum": 0 },
+        "external": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "evidence_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "papers_total",
+        "metadata_only",
+        "abstract_screened",
+        "full_text_reviewed",
+        "externally_verified",
+        "evidence_records"
+      ],
+      "properties": {
+        "papers_total": { "type": "integer", "minimum": 1 },
+        "metadata_only": { "type": "integer", "minimum": 0 },
+        "abstract_screened": { "type": "integer", "minimum": 0 },
+        "full_text_reviewed": { "type": "integer", "minimum": 0 },
+        "externally_verified": { "type": "integer", "minimum": 0 },
+        "evidence_records": { "$ref": "#/$defs/evidence_record_counts" }
+      }
+    },
+    "belief_update": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prior_belief", "updated_belief", "proposition_ids"],
+      "properties": {
+        "prior_belief": { "$ref": "#/$defs/nonempty_string" },
+        "updated_belief": { "$ref": "#/$defs/nonempty_string" },
+        "proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        }
+      }
+    },
+    "epistemic_ceiling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "trend", "capability", "rationale"],
+      "properties": {
+        "authority": {
+          "enum": ["none", "provisional", "supported", "established"]
+        },
+        "trend": {
+          "enum": ["none", "signals_only", "emerging", "structural"]
+        },
+        "capability": {
+          "enum": [
+            "conceptual",
+            "prototype",
+            "benchmark",
+            "controlled_user_study",
+            "longitudinal_deployment"
+          ]
+        },
+        "rationale": { "$ref": "#/$defs/nonempty_string" }
+      }
+    },
+    "field_thesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direct_answer",
+        "field_stage",
+        "stage_rationale",
+        "bottom_line_proposition_ids",
+        "belief_updates",
+        "decision_relevance",
+        "epistemic_ceiling"
+      ],
+      "properties": {
+        "direct_answer": { "$ref": "#/$defs/nonempty_string" },
+        "field_stage": {
+          "enum": [
+            "pre_paradigm",
+            "emerging",
+            "consolidating",
+            "maturing",
+            "deployed"
+          ]
+        },
+        "stage_rationale": { "$ref": "#/$defs/nonempty_string" },
+        "bottom_line_proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "belief_updates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/belief_update" }
+        },
+        "decision_relevance": { "$ref": "#/$defs/nonempty_string" },
+        "epistemic_ceiling": { "$ref": "#/$defs/epistemic_ceiling" }
+      }
+    },
+    "evidence_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directness",
+        "consistency",
+        "external_validity",
+        "reproducibility",
+        "rationale"
+      ],
+      "properties": {
+        "directness": {
+          "enum": ["indirect", "author_claim", "measured", "replicated"]
+        },
+        "consistency": {
+          "enum": [
+            "single_source",
+            "multi_source_aligned",
+            "mixed",
+            "conflicting"
+          ]
+        },
+        "external_validity": {
+          "enum": [
+            "unknown",
+            "benchmark_only",
+            "controlled",
+            "real_world",
+            "longitudinal"
+          ]
+        },
+        "reproducibility": {
+          "enum": [
+            "unknown",
+            "materials_available",
+            "independently_reproduced"
+          ]
+        },
+        "rationale": { "$ref": "#/$defs/nonempty_string" }
+      }
+    },
+    "proposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "proposition_type",
+        "status",
+        "scope_conditions",
+        "supporting_evidence_ids",
+        "counter_evidence_ids",
+        "alternative_explanations",
+        "evidence_ceiling",
+        "confidence",
+        "uncertainty",
+        "what_would_change",
+        "decision_relevance",
+        "evidence_profile"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "proposition_type": {
+          "enum": [
+            "mechanism",
+            "capability",
+            "evaluation",
+            "deployment",
+            "governance"
+          ]
+        },
+        "status": {
+          "enum": [
+            "established",
+            "credible_emerging",
+            "contested",
+            "unknown",
+            "weakened",
+            "insufficient_evidence"
+          ]
+        },
+        "scope_conditions": { "$ref": "#/$defs/string_list" },
+        "supporting_evidence_ids": { "$ref": "#/$defs/evidence_id_list" },
+        "counter_evidence_ids": { "$ref": "#/$defs/evidence_id_list" },
+        "alternative_explanations": { "$ref": "#/$defs/string_list" },
+        "evidence_ceiling": {
+          "enum": ["metadata", "abstract", "full_text", "external", "mixed"]
+        },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "uncertainty": { "$ref": "#/$defs/nonempty_string" },
+        "what_would_change": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "decision_relevance": { "$ref": "#/$defs/nonempty_string" },
+        "evidence_profile": { "$ref": "#/$defs/evidence_profile" }
+      }
+    },
+    "mechanism_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label_zh",
+        "label_en",
+        "purpose",
+        "inputs",
+        "outputs",
+        "current_methods",
+        "failure_modes",
+        "proposition_ids"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label_zh": { "$ref": "#/$defs/nonempty_string" },
+        "label_en": { "$ref": "#/$defs/nonempty_string" },
+        "purpose": { "$ref": "#/$defs/nonempty_string" },
+        "inputs": { "$ref": "#/$defs/string_list" },
+        "outputs": { "$ref": "#/$defs/string_list" },
+        "current_methods": { "$ref": "#/$defs/string_list" },
+        "failure_modes": { "$ref": "#/$defs/string_list" },
+        "proposition_ids": { "$ref": "#/$defs/slug_list" }
+      }
+    },
+    "mechanism_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_stage_id",
+        "to_stage_id",
+        "relation",
+        "support_type",
+        "proposition_ids"
+      ],
+      "properties": {
+        "from_stage_id": { "$ref": "#/$defs/slug" },
+        "to_stage_id": { "$ref": "#/$defs/slug" },
+        "relation": { "$ref": "#/$defs/nonempty_string" },
+        "support_type": {
+          "enum": [
+            "source_supported",
+            "cross_paper_inference",
+            "analyst_design_completion"
+          ]
+        },
+        "proposition_ids": { "$ref": "#/$defs/slug_list" }
+      }
+    },
+    "mechanism_bottleneck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "statement", "proposition_ids", "confidence"],
+      "properties": {
+        "stage_id": { "$ref": "#/$defs/slug" },
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "mechanism_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_type",
+        "epistemic_status",
+        "system_statement",
+        "stages",
+        "edges",
+        "critical_path_stage_ids",
+        "critical_path_note",
+        "bottlenecks",
+        "model_limitations"
+      ],
+      "properties": {
+        "model_type": {
+          "enum": ["source_synthesized", "analyst_reference"]
+        },
+        "epistemic_status": {
+          "enum": [
+            "established",
+            "credible_emerging",
+            "hypothesis",
+            "design_completion"
+          ]
+        },
+        "system_statement": { "$ref": "#/$defs/nonempty_string" },
+        "stages": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/mechanism_stage" }
+        },
+        "edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mechanism_edge" }
+        },
+        "critical_path_stage_ids": { "$ref": "#/$defs/slug_list" },
+        "critical_path_note": { "$ref": "#/$defs/nonempty_string" },
+        "bottlenecks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mechanism_bottleneck" }
+        },
+        "model_limitations": { "$ref": "#/$defs/string_list" }
+      }
+    },
+    "technical_option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label_zh",
+        "label_en",
+        "technical_bet",
+        "relationship",
+        "comparison_status",
+        "comparison_note",
+        "mechanism_stage_ids",
+        "core_hypothesis",
+        "representative_paper_ids",
+        "advantages",
+        "costs",
+        "failure_modes",
+        "valid_when",
+        "invalid_when",
+        "supporting_proposition_ids",
+        "falsifiers"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label_zh": { "$ref": "#/$defs/nonempty_string" },
+        "label_en": { "$ref": "#/$defs/nonempty_string" },
+        "technical_bet": { "$ref": "#/$defs/nonempty_string" },
+        "relationship": {
+          "enum": ["alternative", "complementary", "baseline", "hybrid"]
+        },
+        "comparison_status": {
+          "enum": ["comparable", "partially_comparable", "not_comparable"]
+        },
+        "comparison_note": { "$ref": "#/$defs/nonempty_string" },
+        "mechanism_stage_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "core_hypothesis": { "$ref": "#/$defs/nonempty_string" },
+        "representative_paper_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/paper_id_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "advantages": { "$ref": "#/$defs/string_list" },
+        "costs": { "$ref": "#/$defs/string_list" },
+        "failure_modes": { "$ref": "#/$defs/string_list" },
+        "valid_when": { "$ref": "#/$defs/string_list" },
+        "invalid_when": { "$ref": "#/$defs/string_list" },
+        "supporting_proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "falsifiers": { "$ref": "#/$defs/string_list" }
+      }
+    },
+    "observed_failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "evidence_ids"],
+      "properties": {
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "evidence_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/evidence_id_list" },
+            { "minItems": 1 }
+          ]
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label_zh",
+        "label_en",
+        "current_boundary",
+        "demonstration_context",
+        "strongest_evidence_ids",
+        "frontier_level",
+        "observed_failures",
+        "anticipated_risks",
+        "generalization_ceiling",
+        "unresolved_requirements",
+        "next_boundary",
+        "proposition_ids"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label_zh": { "$ref": "#/$defs/nonempty_string" },
+        "label_en": { "$ref": "#/$defs/nonempty_string" },
+        "current_boundary": { "$ref": "#/$defs/nonempty_string" },
+        "demonstration_context": { "$ref": "#/$defs/nonempty_string" },
+        "strongest_evidence_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/evidence_id_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "frontier_level": {
+          "enum": [
+            "conceptual",
+            "prototype",
+            "benchmark",
+            "controlled_user_study",
+            "longitudinal_deployment"
+          ]
+        },
+        "observed_failures": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/observed_failure" }
+        },
+        "anticipated_risks": { "$ref": "#/$defs/string_list" },
+        "generalization_ceiling": { "$ref": "#/$defs/nonempty_string" },
+        "unresolved_requirements": { "$ref": "#/$defs/string_list" },
+        "next_boundary": { "$ref": "#/$defs/nonempty_string" },
+        "proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        }
+      }
+    },
+    "readiness_gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label_zh",
+        "label_en",
+        "current_state",
+        "blocking_evidence",
+        "what_would_close",
+        "proposition_ids"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label_zh": { "$ref": "#/$defs/nonempty_string" },
+        "label_en": { "$ref": "#/$defs/nonempty_string" },
+        "current_state": { "$ref": "#/$defs/nonempty_string" },
+        "blocking_evidence": { "$ref": "#/$defs/nonempty_string" },
+        "what_would_close": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        }
+      }
+    },
+    "capability_frontier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall_statement", "capabilities", "readiness_gaps"],
+      "properties": {
+        "overall_statement": { "$ref": "#/$defs/nonempty_string" },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/capability" }
+        },
+        "readiness_gaps": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/readiness_gap" }
+        }
+      }
+    },
+    "transition_thesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "from_state",
+        "to_state",
+        "old_constraint",
+        "drivers",
+        "time_from",
+        "time_to",
+        "status",
+        "supporting_proposition_ids",
+        "counter_proposition_ids",
+        "alternative_explanations",
+        "falsifiers",
+        "leading_indicator_ids",
+        "confidence"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "from_state": { "$ref": "#/$defs/nonempty_string" },
+        "to_state": { "$ref": "#/$defs/nonempty_string" },
+        "old_constraint": { "$ref": "#/$defs/nonempty_string" },
+        "drivers": { "$ref": "#/$defs/string_list" },
+        "time_from": { "$ref": "#/$defs/date" },
+        "time_to": { "$ref": "#/$defs/date" },
+        "status": {
+          "enum": [
+            "signal",
+            "emerging",
+            "structural",
+            "reversal",
+            "insufficient_evidence"
+          ]
+        },
+        "supporting_proposition_ids": { "$ref": "#/$defs/slug_list" },
+        "counter_proposition_ids": { "$ref": "#/$defs/slug_list" },
+        "alternative_explanations": { "$ref": "#/$defs/string_list" },
+        "falsifiers": { "$ref": "#/$defs/string_list" },
+        "leading_indicator_ids": { "$ref": "#/$defs/slug_list" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "maturity_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "level",
+        "statement",
+        "proposition_ids",
+        "blockers",
+        "upgrade_conditions"
+      ],
+      "properties": {
+        "dimension": {
+          "enum": [
+            "scientific_mechanism",
+            "benchmark",
+            "engineering",
+            "deployment",
+            "governance"
+          ]
+        },
+        "level": { "enum": ["absent", "early", "emerging", "validated", "mature"] },
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "proposition_ids": { "$ref": "#/$defs/slug_list" },
+        "blockers": { "$ref": "#/$defs/string_list" },
+        "upgrade_conditions": { "$ref": "#/$defs/string_list" }
+      }
+    },
+    "decision_consequence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "decision_type",
+        "audience",
+        "decision",
+        "action",
+        "because_proposition_ids",
+        "conditions",
+        "risks",
+        "reversibility",
+        "confidence"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "decision_type": {
+          "enum": ["research_agenda", "architecture", "product", "due_diligence"]
+        },
+        "audience": { "$ref": "#/$defs/nonempty_string" },
+        "decision": { "$ref": "#/$defs/nonempty_string" },
+        "action": { "$ref": "#/$defs/nonempty_string" },
+        "because_proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "conditions": { "$ref": "#/$defs/string_list" },
+        "risks": { "$ref": "#/$defs/string_list" },
+        "reversibility": {
+          "enum": ["reversible", "partially_reversible", "hard_to_reverse"]
+        },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "leading_indicator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "observation",
+        "current_baseline",
+        "threshold_or_trigger",
+        "threshold_basis",
+        "threshold_rationale",
+        "data_source",
+        "observation_window",
+        "affects_proposition_ids",
+        "interpretation_if_met",
+        "interpretation_if_missed",
+        "decision_trigger"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/nonempty_string" },
+        "observation": { "$ref": "#/$defs/nonempty_string" },
+        "current_baseline": { "$ref": "#/$defs/nonempty_string" },
+        "threshold_or_trigger": { "$ref": "#/$defs/nonempty_string" },
+        "threshold_basis": {
+          "enum": ["source_derived", "analyst_policy"]
+        },
+        "threshold_rationale": { "$ref": "#/$defs/nonempty_string" },
+        "data_source": { "$ref": "#/$defs/nonempty_string" },
+        "observation_window": { "$ref": "#/$defs/nonempty_string" },
+        "affects_proposition_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/slug_list" },
+            { "minItems": 1 }
+          ]
+        },
+        "interpretation_if_met": { "$ref": "#/$defs/nonempty_string" },
+        "interpretation_if_missed": { "$ref": "#/$defs/nonempty_string" },
+        "decision_trigger": { "$ref": "#/$defs/nonempty_string" }
+      }
+    },
+    "external_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publication_status", "venue", "verified_on", "source_urls"],
+      "properties": {
+        "publication_status": {
+          "enum": ["arxiv_preprint", "peer_reviewed", "unknown"]
+        },
+        "venue": { "$ref": "#/$defs/nullable_string" },
+        "verified_on": { "$ref": "#/$defs/nullable_date" },
+        "source_urls": { "$ref": "#/$defs/url_list" }
+      }
+    },
+    "paper_finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "evidence_ids"],
+      "properties": {
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "evidence_ids": {
+          "allOf": [
+            { "$ref": "#/$defs/evidence_id_list" },
+            { "minItems": 1 }
+          ]
+        }
+      }
+    },
+    "paper_analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "research_object",
+        "mechanism",
+        "evaluation",
+        "key_findings",
+        "author_stated_limitations",
+        "analyst_inferred_limitations"
+      ],
+      "properties": {
+        "research_object": { "$ref": "#/$defs/nonempty_string" },
+        "mechanism": { "$ref": "#/$defs/nonempty_string" },
+        "evaluation": { "$ref": "#/$defs/nonempty_string" },
+        "key_findings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/paper_finding" }
+        },
+        "author_stated_limitations": { "$ref": "#/$defs/string_list" },
+        "analyst_inferred_limitations": { "$ref": "#/$defs/string_list" }
+      }
+    },
+    "model_links": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_ids", "option_ids", "capability_ids", "proposition_ids"],
+      "properties": {
+        "stage_ids": { "$ref": "#/$defs/slug_list" },
+        "option_ids": { "$ref": "#/$defs/slug_list" },
+        "capability_ids": { "$ref": "#/$defs/slug_list" },
+        "proposition_ids": { "$ref": "#/$defs/slug_list" }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "context", "basis", "evidence_id"],
+      "properties": {
+        "name": { "$ref": "#/$defs/nonempty_string" },
+        "value": { "$ref": "#/$defs/nonempty_string" },
+        "context": { "$ref": "#/$defs/nonempty_string" },
+        "basis": { "enum": ["metadata", "abstract", "full_text", "external"] },
+        "evidence_id": { "$ref": "#/$defs/slug" }
+      }
+    },
+    "paper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arxiv_id",
+        "version",
+        "title",
+        "title_zh",
+        "authors",
+        "published",
+        "updated",
+        "primary_category",
+        "categories",
+        "source_url",
+        "pdf_url",
+        "evidence_basis",
+        "corpus_role",
+        "independence_cluster_id",
+        "abstract_original",
+        "synopsis_zh",
+        "external_verification",
+        "analysis",
+        "model_links",
+        "metrics"
+      ],
+      "properties": {
+        "arxiv_id": { "$ref": "#/$defs/paper_id" },
+        "version": { "type": "string", "pattern": "^v[0-9]+$" },
+        "title": { "$ref": "#/$defs/nonempty_string" },
+        "title_zh": { "$ref": "#/$defs/nonempty_string" },
+        "authors": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "published": { "$ref": "#/$defs/date" },
+        "updated": { "$ref": "#/$defs/nullable_date" },
+        "primary_category": { "$ref": "#/$defs/nonempty_string" },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        },
+        "source_url": {
+          "type": "string",
+          "pattern": "^https://arxiv\\.org/abs/[0-9]{4}\\.[0-9]{4,5}$"
+        },
+        "pdf_url": {
+          "type": "string",
+          "pattern": "^https://arxiv\\.org/pdf/[0-9]{4}\\.[0-9]{4,5}(?:\\.pdf)?$"
+        },
+        "evidence_basis": { "enum": ["metadata", "abstract", "full_text"] },
+        "corpus_role": {
+          "enum": ["anchor", "frontier", "signal", "counterevidence"]
+        },
+        "independence_cluster_id": { "$ref": "#/$defs/slug" },
+        "abstract_original": { "$ref": "#/$defs/nonempty_string" },
+        "synopsis_zh": { "$ref": "#/$defs/nonempty_string" },
+        "external_verification": { "$ref": "#/$defs/external_verification" },
+        "analysis": { "$ref": "#/$defs/paper_analysis" },
+        "model_links": { "$ref": "#/$defs/model_links" },
+        "metrics": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/metric" }
+        }
+      }
+    },
+    "evidence_locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "label"],
+      "properties": {
+        "type": {
+          "enum": ["abstract", "section", "page", "table", "figure", "external"]
+        },
+        "label": { "$ref": "#/$defs/nonempty_string" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "paper_id",
+        "source_depth",
+        "locator",
+        "evidence_type",
+        "statement",
+        "excerpt",
+        "confidence"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "paper_id": { "$ref": "#/$defs/paper_id" },
+        "source_depth": { "enum": ["metadata", "abstract", "full_text", "external"] },
+        "locator": { "$ref": "#/$defs/evidence_locator" },
+        "evidence_type": {
+          "enum": [
+            "author_claim",
+            "measured_result",
+            "negative_result",
+            "replication",
+            "external_validation",
+            "analyst_inference",
+            "derived_comparison"
+          ]
+        },
+        "statement": { "$ref": "#/$defs/nonempty_string" },
+        "excerpt": { "$ref": "#/$defs/nullable_string" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "source_url": { "$ref": "#/$defs/url" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "source_depth": { "const": "external" } },
+            "required": ["source_depth"]
+          },
+          "then": { "required": ["source_url"] },
+          "else": { "not": { "required": ["source_url"] } }
+        }
+      ]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title_zh",
+        "title_en",
+        "topic",
+        "as_of",
+        "language",
+        "scope",
+        "evidence_coverage",
+        "field_thesis",
+        "propositions",
+        "mechanism_model",
+        "technical_options",
+        "capability_frontier",
+        "transition_theses",
+        "maturity_assessment",
+        "decision_consequences",
+        "leading_indicators",
+        "papers",
+        "evidence",
+        "report_limitations"
+      ],
+      "properties": {
+        "title_zh": { "$ref": "#/$defs/nonempty_string" },
+        "title_en": { "$ref": "#/$defs/nonempty_string" },
+        "topic": { "$ref": "#/$defs/nonempty_string" },
+        "as_of": { "$ref": "#/$defs/date" },
+        "language": { "const": "zh-CN" },
+        "scope": { "$ref": "#/$defs/scope" },
+        "evidence_coverage": { "$ref": "#/$defs/evidence_coverage" },
+        "field_thesis": { "$ref": "#/$defs/field_thesis" },
+        "propositions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/proposition" }
+        },
+        "mechanism_model": { "$ref": "#/$defs/mechanism_model" },
+        "technical_options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/technical_option" }
+        },
+        "capability_frontier": { "$ref": "#/$defs/capability_frontier" },
+        "transition_theses": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/transition_thesis" }
+        },
+        "maturity_assessment": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/maturity_assessment" }
+        },
+        "decision_consequences": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/decision_consequence" }
+        },
+        "leading_indicators": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/leading_indicator" }
+        },
+        "papers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/paper" }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        },
+        "report_limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonempty_string" }
+        }
+      }
+    }
+  }
+}

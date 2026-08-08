@@ -1,0 +1,2510 @@
+{
+  "schema_version": "3.0",
+  "report": {
+    "title_zh": "主动式 AI Agent：从论文信号到能力边界与技术决策",
+    "title_en": "Proactive AI Agents: From Paper Signals to Capability Boundaries and Technical Decisions",
+    "topic": "2026 年主动式 AI Agent 的已展示能力、证据上限、机制假设与技术投入判断",
+    "as_of": "2026-08-08",
+    "language": "zh-CN",
+    "scope": {
+      "research_question": "未来 12–18 个月，研究与架构负责人应如何判断主动式 AI Agent 已证明到哪里、哪些机制值得继续验证，以及哪些部署假设目前不应成立？",
+      "decision_context": {
+        "primary": "technology_strategy",
+        "decision_maker": "主动式 Agent 的研究负责人和架构负责人",
+        "choice_at_stake": "未来 12–18 个月是否只投入主动服务的验证基础设施，以及介入控制、持续状态和请求前准备的验证优先级",
+        "time_horizon": "未来 12–18 个月",
+        "secondary": [
+          "research_agenda",
+          "architecture",
+          "product",
+          "due_diligence"
+        ]
+      },
+      "operational_definition": "本报告把主动式 AI Agent 定义为：在没有当前显式指令时，基于持续上下文、用户状态或未来事件，自主决定沉默、准备、询问或行动的智能系统。分析对象不是“是否能生成帮助内容”，而是部分可观测与帮助—打扰成本不对称条件下的介入策略。",
+      "terminology": [
+        {
+          "term": "Proactive agent / 主动式 Agent",
+          "definition": "能够在无当前显式请求时识别潜在需求，并选择沉默、准备、询问或行动的 Agent。",
+          "included_variants": [
+            "proactive assistant",
+            "anticipatory agent",
+            "mixed-initiative agent",
+            "initiative-taking agent"
+          ]
+        },
+        {
+          "term": "Intervention policy / 介入策略",
+          "definition": "在不确定状态下决定何时介入、以何种自治级别介入，以及何时保持沉默的控制策略。",
+          "included_variants": [
+            "interaction initiation",
+            "selective intervention",
+            "speak-or-silence gating"
+          ]
+        },
+        {
+          "term": "Capability frontier / 能力边界",
+          "definition": "在明确任务与证据条件下已经展示的最高能力层级，不等同于通用能力或生产可用性。",
+          "included_variants": [
+            "benchmark frontier",
+            "deployment frontier"
+          ]
+        },
+        {
+          "term": "Transition thesis / 转变论点",
+          "definition": "描述领域从一种技术状态转向另一种状态的可证伪判断；需区分近期信号、正在形成的变化与结构性趋势。",
+          "included_variants": [
+            "research signal",
+            "emerging shift",
+            "structural trend"
+          ]
+        }
+      ],
+      "date_from": "2026-01-01",
+      "date_to": "2026-08-08",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.HC"
+      ],
+      "corpus_layers": [
+        {
+          "id": "historical-anchor",
+          "role": "anchor",
+          "status": "not_searched",
+          "date_from": null,
+          "date_to": null,
+          "purpose": "建立可独立核验的历史范式与长期变化基线。",
+          "coverage_note": "本次回归样例没有检索历史基础文献，因此不产生结构性长期趋势判断。"
+        },
+        {
+          "id": "current-frontier",
+          "role": "frontier",
+          "status": "searched",
+          "date_from": "2026-01-01",
+          "date_to": "2026-08-08",
+          "purpose": "发现本年度与主动发起、预判服务和介入策略直接相关的方法、系统与评测。",
+          "coverage_note": "四组布尔查询共检索 31 条去重记录，全部完成标题与摘要筛选。"
+        },
+        {
+          "id": "recent-signal",
+          "role": "signal",
+          "status": "searched",
+          "date_from": "2026-01-01",
+          "date_to": "2026-08-08",
+          "purpose": "标记只有单个团队或短时间聚类支持、尚不足以称为趋势的研究信号。",
+          "coverage_note": "个性化在线介入目前仅由本样例中的单篇论文直接支持。"
+        },
+        {
+          "id": "negative-evidence",
+          "role": "counterevidence",
+          "status": "partial",
+          "date_from": "2026-01-01",
+          "date_to": "2026-08-08",
+          "purpose": "识别过度行动、漏失帮助、状态失效、取消与长期净效用方面的反向证据。",
+          "coverage_note": "筛选中纳入了失败导向基准，但未运行专门面向负结果或复现失败的查询。"
+        }
+      ],
+      "queries": [
+        {
+          "label": "Literal proactive agent",
+          "query": "all:\"proactive agent\" AND submittedDate:[202601010000 TO 202608082359]",
+          "layer_id": "current-frontier",
+          "sort": "submittedDate",
+          "max_results": 10
+        },
+        {
+          "label": "Proactive AI or assistant",
+          "query": "(all:\"proactive AI\" OR all:\"proactive assistant\") AND submittedDate:[202601010000 TO 202608082359]",
+          "layer_id": "recent-signal",
+          "sort": "submittedDate",
+          "max_results": 10
+        },
+        {
+          "label": "Anticipatory or initiative-taking",
+          "query": "(all:\"anticipatory agent\" OR all:\"anticipatory assistant\" OR all:\"initiative-taking agent\") AND submittedDate:[202601010000 TO 202608082359]",
+          "layer_id": "current-frontier",
+          "sort": "submittedDate",
+          "max_results": 10
+        },
+        {
+          "label": "Mixed initiative or agent initiative",
+          "query": "(all:\"mixed-initiative agent\" OR all:\"proactive interaction\" OR all:\"agent initiative\") AND submittedDate:[202601010000 TO 202608082359]",
+          "layer_id": "current-frontier",
+          "sort": "submittedDate",
+          "max_results": 10
+        }
+      ],
+      "inclusion_criteria": [
+        "研究对象直接涉及无当前显式指令条件下的主动发起、提前准备、持续上下文理解或主动性评测。",
+        "摘要能够定位研究对象、技术机制或可核验的评测主张。",
+        "论文能作为机制证据、能力边界、失败证据或尚待验证的研究信号。"
+      ],
+      "exclusion_criteria": [
+        "仅在背景中出现 proactive，但核心研究对象不是主动服务。",
+        "只讨论通用规划、工具调用或机器人动作，未涉及介入时机或无显式指令条件。",
+        "缺少稳定 arXiv 身份或无法核验摘要。"
+      ],
+      "coverage_gaps": [
+        "未检索 2025 年及更早的历史基础文献，无法建立独立的长期演化基线。",
+        "未阅读全文、附录、代码或数据卡，方法细节与实验设计只能按摘要证据上限判断。",
+        "未对正式发表状态、引用、独立复现或外部部署进行核验。",
+        "查询以英文术语为主，可能漏掉使用 ambient、context-aware 或其他邻近术语的工作。",
+        "反向证据层仅部分覆盖，不能把未发现反证理解为不存在反证。"
+      ],
+      "screening": {
+        "retrieved": 31,
+        "deduplicated": 31,
+        "screened": 31,
+        "included": 6
+      }
+    },
+    "evidence_coverage": {
+      "papers_total": 6,
+      "metadata_only": 0,
+      "abstract_screened": 6,
+      "full_text_reviewed": 0,
+      "externally_verified": 0,
+      "evidence_records": {
+        "metadata": 0,
+        "abstract": 27,
+        "full_text": 0,
+        "external": 0
+      }
+    },
+    "field_thesis": {
+      "direct_answer": "本次摘要级语料不足以建立权威领域观点，也不足以形成趋势判断。能够确认的只有：多篇论文已把介入时机、沉默、用户工作量与事件状态变成可测量的 benchmark 问题；作者各自在不同基准上报告改进，同时 ProEvent 仍显示过度行动、取消失败与 26.7% 正确反应率。因而当前前沿是 benchmark frontier，不是 deployment frontier；显式介入控制是值得比较的设计假设，但尚未被证明为必要条件或跨任务最优架构。",
+      "field_stage": "emerging",
+      "stage_rationale": "六个作者组在不同任务上提出门控、持续记忆、预判计算、故障触发、事件评测和在线适配。作者名单不重叠只说明来源分散，不代表独立复现；本次没有全文、历史锚点、可比实验、外部核验或纵向部署证据。",
+      "bottom_line_proposition_ids": [
+        "prop-intervention-policy",
+        "prop-state-failure",
+        "prop-constrained-anticipation"
+      ],
+      "belief_updates": [
+        {
+          "prior_belief": "主动式 Agent 的主要难题是提前猜出用户要什么。",
+          "updated_belief": "本次论文把更具体的难题暴露为：如何测量时机、沉默、误报、取消与用户工作量；候选需求生成只是其中一个环节。",
+          "proposition_ids": [
+            "prop-state-failure",
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "prior_belief": "基准上的任务效率提升意味着主动服务接近产品可用。",
+          "updated_belief": "本次所有可见实证仍停留在不同 benchmark 或构造场景，不能外推为长期用户净收益。",
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-state-failure",
+            "prop-personalization-unknown"
+          ]
+        },
+        {
+          "prior_belief": "论文正在证明 gate-first 优于端到端 LLM。",
+          "updated_belief": "多篇方法分别显式化时机门控或偏好更新，但没有共享任务上的架构对照；gate-first 目前只是应被可逆比较的设计假设。",
+          "proposition_ids": [
+            "prop-intervention-policy"
+          ]
+        }
+      ],
+      "decision_relevance": "结论是现在只投入可逆的验证基础设施，不把任何架构产品化为高影响自治。第一优先建立共享净效用与错误成本评测；第二优先验证事件取消和状态生命周期；第三优先在低风险准备任务做原型，并用统一接口比较规则、端到端 LLM 与显式 gate。",
+      "epistemic_ceiling": {
+        "authority": "none",
+        "trend": "signals_only",
+        "capability": "benchmark",
+        "rationale": "全部 6 篇论文仅做摘要级分析，历史锚点未检索，全文、外部核验和纵向部署均为 0；因此只能报告 benchmark-level demonstrations 与 submission signals。"
+      }
+    },
+    "propositions": [
+      {
+        "id": "prop-intervention-policy",
+        "statement": "本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。",
+        "proposition_type": "mechanism",
+        "status": "credible_emerging",
+        "scope_conditions": [
+          "结论仅描述本次 PRISM、ProACT 与 EOPA 摘要中的架构选择。",
+          "不同论文的任务、基线和指标不可直接横向比较。"
+        ],
+        "supporting_evidence_ids": [
+          "ev-prism-gate",
+          "ev-collab-gate",
+          "ev-eopa-carriers",
+          "ev-eopa-no-llm-update"
+        ],
+        "counter_evidence_ids": [],
+        "alternative_explanations": [
+          "多个作者组可能共享同一设计叙事，而非独立验证同一因果机制。",
+          "静态规则、用户设置或端到端 LLM 可能在窄域任务中同样有效。"
+        ],
+        "evidence_ceiling": "abstract",
+        "confidence": "medium",
+        "uncertainty": "尚无共享任务比较独立 gate、规则策略与端到端 LLM，也没有长期用户净效用证据。",
+        "what_would_change": [
+          "至少两个独立作者组在共享任务上复现显式 gate 相对规则和端到端策略的净收益。",
+          "真实用户研究同时显示打扰下降且漏失帮助不恶化。"
+        ],
+        "decision_relevance": "把显式 gate 作为可替换实验分支，不把它预先固化为唯一架构。",
+        "evidence_profile": {
+          "directness": "author_claim",
+          "consistency": "multi_source_aligned",
+          "external_validity": "benchmark_only",
+          "reproducibility": "unknown",
+          "rationale": "三个作者组的摘要呈现相似控制分离，但各自结果来自不可比任务，不能视为同一机制的复现。"
+        }
+      },
+      {
+        "id": "prop-anticipatory-preparation",
+        "statement": "在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。",
+        "proposition_type": "capability",
+        "status": "credible_emerging",
+        "scope_conditions": [
+          "未来需求链在对话或记忆中具有可预测信号。",
+          "空闲计算和外部信息获取的成本、权限与过期风险受到控制。"
+        ],
+        "supporting_evidence_ids": [
+          "ev-pask-loop",
+          "ev-pask-memory",
+          "ev-pask-latency-match",
+          "ev-proact-preparation",
+          "ev-proact-user-effort"
+        ],
+        "counter_evidence_ids": [],
+        "alternative_explanations": [
+          "ProActEval 的需求链可能比开放环境更可预测。",
+          "观察到的收益可能依赖额外计算预算或场景设计。"
+        ],
+        "evidence_ceiling": "abstract",
+        "confidence": "medium",
+        "uncertainty": "本次没有测量无用准备、权限越界、信息过期或长期关闭率。",
+        "what_would_change": [
+          "开放环境评测计入错误预判、额外计算、信息过期与权限成本。",
+          "独立作者组在不同用户分布上复现净用户工作量下降。"
+        ],
+        "decision_relevance": "优先在低风险、可撤回的准备任务中试验预判计算，并将准备结果与实际行动分级。",
+        "evidence_profile": {
+          "directness": "measured",
+          "consistency": "multi_source_aligned",
+          "external_validity": "benchmark_only",
+          "reproducibility": "unknown",
+          "rationale": "两个作者组提出持续记忆与预判准备，其中只有 ProAct 摘要给出用户工作量数值。"
+        }
+      },
+      {
+        "id": "prop-state-failure",
+        "statement": "本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。",
+        "proposition_type": "evaluation",
+        "status": "credible_emerging",
+        "scope_conditions": [
+          "结论只说明错误类型正在被显式测量，不声称不同 benchmark 可直接比较。",
+          "取消与事件生命周期的直接负向结果来自单个合成对话基准。"
+        ],
+        "supporting_evidence_ids": [
+          "ev-prism-false-alarms",
+          "ev-collab-gate",
+          "ev-collab-noninterruptiveness",
+          "ev-proevent-overact",
+          "ev-proevent-cancellation",
+          "ev-proevent-correct-rate"
+        ],
+        "counter_evidence_ids": [],
+        "alternative_explanations": [
+          "ProEvent 的失败比例可能受合成任务构造影响。",
+          "外部状态机或工具集成可能缓解 LLM 本身的事件生命周期缺陷。"
+        ],
+        "evidence_ceiling": "abstract",
+        "confidence": "medium",
+        "uncertainty": "没有共享数据、成本函数或复现将误报、沉默、取消与漏失帮助放在同一评测中。",
+        "what_would_change": [
+          "共享 benchmark 在真实消息流上同时测量 silence、missed help、overaction 与 cancellation。",
+          "独立系统复现取消失败并报告按成本分层的错误率。"
+        ],
+        "decision_relevance": "内部评测至少同时记录不必要介入、漏失帮助、取消和多步状态，而不是只看任务成功。",
+        "evidence_profile": {
+          "directness": "measured",
+          "consistency": "mixed",
+          "external_validity": "benchmark_only",
+          "reproducibility": "unknown",
+          "rationale": "多个作者组测量相关但不相同的非行动与状态错误；只有 ProEvent 直接报告取消失败。"
+        }
+      },
+      {
+        "id": "prop-personalization-unknown",
+        "statement": "稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。",
+        "proposition_type": "capability",
+        "status": "unknown",
+        "scope_conditions": [
+          "用户偏好随时间和任务变化，反馈存在稀疏、噪声或策略性缺失。",
+          "系统需要处理冷启动与偏好撤回。"
+        ],
+        "supporting_evidence_ids": [
+          "ev-eopa-carriers",
+          "ev-eopa-no-llm-update",
+          "ev-eopa-timing-f1",
+          "ev-eopa-adaptation-time"
+        ],
+        "counter_evidence_ids": [],
+        "alternative_explanations": [
+          "轻量证据载体可能在稳定日常情境中已经足够，无需跨场景泛化。",
+          "用户先验与群体模型可能缓解冷启动，但也可能引入不适当迁移。"
+        ],
+        "evidence_ceiling": "abstract",
+        "confidence": "low",
+        "uncertainty": "没有第二个作者组、真实反馈轨迹、冷启动或偏好漂移结果。",
+        "what_would_change": [
+          "报告跨用户冷启动、反馈噪声、偏好漂移和退出机制的长期评测。",
+          "第二个作者组在不同场景复现个性化时机收益，并额外核验其数据与方法独立性。"
+        ],
+        "decision_relevance": "可将在线偏好适配视为实验性模块，但不应据此承诺稳定个性化。",
+        "evidence_profile": {
+          "directness": "measured",
+          "consistency": "single_source",
+          "external_validity": "benchmark_only",
+          "reproducibility": "unknown",
+          "rationale": "单篇摘要报告时机 F1 与适配时间，不能建立跨用户或长期结论。"
+        }
+      },
+      {
+        "id": "prop-constrained-anticipation",
+        "statement": "请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。",
+        "proposition_type": "evaluation",
+        "status": "credible_emerging",
+        "scope_conditions": [
+          "综合只比较证据方向，不进行跨 benchmark 定量合并。",
+          "负向结果来自不同任务，不能直接抵消 ProAct 的正向结果。"
+        ],
+        "supporting_evidence_ids": [
+          "ev-proact-preparation",
+          "ev-proact-user-effort",
+          "ev-prism-false-alarms",
+          "ev-collab-noninterruptiveness",
+          "ev-proevent-overact",
+          "ev-proevent-cancellation"
+        ],
+        "counter_evidence_ids": [],
+        "alternative_explanations": [
+          "不同任务的正负结果可能无法迁移到同一产品情境。",
+          "低风险且明确授权的窄任务可能允许更激进的提前准备。"
+        ],
+        "evidence_ceiling": "abstract",
+        "confidence": "medium",
+        "uncertainty": "缺少在同一任务中正交操纵预判强度与介入控制的因子实验。",
+        "what_would_change": [
+          "共享实验同时报告用户收益、误报、漏失帮助、取消与额外计算。",
+          "真实用户研究证明更早自主行动在计入负面事件后仍有稳定正净效用。"
+        ],
+        "decision_relevance": "研究和产品评测应把收益与介入成本放在同一净效用框架，而不是只优化提前完成率。",
+        "evidence_profile": {
+          "directness": "indirect",
+          "consistency": "mixed",
+          "external_validity": "benchmark_only",
+          "reproducibility": "unknown",
+          "rationale": "这是跨不可比 benchmark 的分析者综合，用于提出评测假设，不是已验证的控制机制。"
+        }
+      }
+    ],
+    "mechanism_model": {
+      "system_statement": "以下七阶段闭环是把六篇摘要投影到同一控制问题后的分析者参考模型，用于暴露接口、失败和待验证关系；它不是任一论文提出或本次语料共同验证的统一架构。",
+      "stages": [
+        {
+          "id": "context-stream",
+          "label_zh": "持续上下文",
+          "label_en": "Continuous context",
+          "purpose": "接收对话、活动、事件和环境变化，并保留来源与时间。",
+          "inputs": [
+            "用户消息",
+            "活动上下文",
+            "事件与工具状态"
+          ],
+          "outputs": [
+            "带来源和时间的观测流"
+          ],
+          "current_methods": [
+            "说话人归属的会话历史",
+            "活动原型",
+            "并发聊天线程"
+          ],
+          "failure_modes": [
+            "观测缺失",
+            "跨线程污染",
+            "隐私越界",
+            "过期上下文"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-state-failure"
+          ]
+        },
+        {
+          "id": "state-memory",
+          "label_zh": "状态与记忆",
+          "label_en": "State and memory",
+          "purpose": "把瞬时观测组织为可更新、可过期和可撤回的用户与任务状态。",
+          "inputs": [
+            "观测流",
+            "历史记忆",
+            "用户授权"
+          ],
+          "outputs": [
+            "当前状态",
+            "事件生命周期",
+            "记忆候选"
+          ],
+          "current_methods": [
+            "workspace/user/global 混合记忆",
+            "持久对话记忆",
+            "事件时间表"
+          ],
+          "failure_modes": [
+            "错误合并",
+            "取消未传播",
+            "来源不明",
+            "状态无法撤回"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-state-failure"
+          ]
+        },
+        {
+          "id": "candidate-inference",
+          "label_zh": "候选需求与事件",
+          "label_en": "Candidate needs and events",
+          "purpose": "从状态中提出可能值得帮助的潜在需求、事件或协作故障。",
+          "inputs": [
+            "当前状态",
+            "长期记忆",
+            "任务上下文"
+          ],
+          "outputs": [
+            "候选需求",
+            "预测事件",
+            "协作故障"
+          ],
+          "current_methods": [
+            "流式意图检测",
+            "需求链预测",
+            "故障分类"
+          ],
+          "failure_modes": [
+            "把弱信号当需求",
+            "漏掉隐式事件",
+            "从错误视角推断"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-state-failure"
+          ]
+        },
+        {
+          "id": "intervention-policy",
+          "label_zh": "介入策略",
+          "label_en": "Intervention policy",
+          "purpose": "估计帮助收益、打扰成本、风险、偏好和不确定性，决定是否以及何时介入。",
+          "inputs": [
+            "候选需求",
+            "接受概率",
+            "用户偏好",
+            "成本与风险"
+          ],
+          "outputs": [
+            "介入决策",
+            "自治级别",
+            "延迟或取消"
+          ],
+          "current_methods": [
+            "成本敏感阈值",
+            "说或不说门控",
+            "偏好证据融合"
+          ],
+          "failure_modes": [
+            "成本失配",
+            "概率未校准",
+            "冷启动",
+            "反馈偏置"
+          ],
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-personalization-unknown",
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "id": "action-mode",
+          "label_zh": "行动模式",
+          "label_en": "Action mode",
+          "purpose": "把策略输出映射为沉默、准备、询问或执行，控制可逆性。",
+          "inputs": [
+            "介入决策",
+            "权限",
+            "风险级别"
+          ],
+          "outputs": [
+            "silence",
+            "prepare",
+            "ask",
+            "act"
+          ],
+          "current_methods": [
+            "选择性慢推理",
+            "提前证据准备",
+            "技能路由"
+          ],
+          "failure_modes": [
+            "准备结果过期",
+            "询问过多",
+            "高风险动作不可撤回"
+          ],
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "id": "execution",
+          "label_zh": "执行与交付",
+          "label_en": "Execution and delivery",
+          "purpose": "生成响应、调用工具或交付准备结果，并保留审计信息。",
+          "inputs": [
+            "行动模式",
+            "上下文证据",
+            "目标技能"
+          ],
+          "outputs": [
+            "响应",
+            "工具结果",
+            "可审计执行记录"
+          ],
+          "current_methods": [
+            "LLM 响应生成",
+            "定向协作技能",
+            "信息获取"
+          ],
+          "failure_modes": [
+            "幻觉",
+            "工具副作用",
+            "证据与响应脱节"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation"
+          ]
+        },
+        {
+          "id": "feedback-update",
+          "label_zh": "反馈与状态修正",
+          "label_en": "Feedback and state correction",
+          "purpose": "从接受、拒绝、取消和结果质量更新偏好、事件状态与介入策略。",
+          "inputs": [
+            "用户反馈",
+            "执行结果",
+            "事件变化"
+          ],
+          "outputs": [
+            "策略更新",
+            "状态修正",
+            "撤回或回滚"
+          ],
+          "current_methods": [
+            "在线参数更新",
+            "证据载体更新",
+            "事件取消检测"
+          ],
+          "failure_modes": [
+            "反馈稀疏",
+            "把沉默误当接受",
+            "撤回不彻底",
+            "偏好漂移"
+          ],
+          "proposition_ids": [
+            "prop-state-failure",
+            "prop-personalization-unknown",
+            "prop-constrained-anticipation"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from_stage_id": "context-stream",
+          "to_stage_id": "state-memory",
+          "relation": "观测经来源、时间与授权约束写入状态。",
+          "support_type": "analyst_design_completion",
+          "proposition_ids": [
+            "prop-state-failure"
+          ]
+        },
+        {
+          "from_stage_id": "state-memory",
+          "to_stage_id": "candidate-inference",
+          "relation": "当前状态与长期记忆生成潜在需求或事件。",
+          "support_type": "cross_paper_inference",
+          "proposition_ids": [
+            "prop-anticipatory-preparation"
+          ]
+        },
+        {
+          "from_stage_id": "candidate-inference",
+          "to_stage_id": "intervention-policy",
+          "relation": "参考模型在候选与行动之间加入收益、成本、风险与偏好评估。",
+          "support_type": "cross_paper_inference",
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "from_stage_id": "intervention-policy",
+          "to_stage_id": "action-mode",
+          "relation": "策略选择沉默、准备、询问或行动的自治级别。",
+          "support_type": "analyst_design_completion",
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "from_stage_id": "action-mode",
+          "to_stage_id": "execution",
+          "relation": "所选模式限制生成与工具执行的权限和可逆性。",
+          "support_type": "analyst_design_completion",
+          "proposition_ids": [
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "from_stage_id": "execution",
+          "to_stage_id": "feedback-update",
+          "relation": "结果、接受、拒绝与取消形成学习和纠错信号。",
+          "support_type": "analyst_design_completion",
+          "proposition_ids": [
+            "prop-personalization-unknown",
+            "prop-state-failure"
+          ]
+        },
+        {
+          "from_stage_id": "feedback-update",
+          "to_stage_id": "state-memory",
+          "relation": "反馈修正偏好、事件与记忆，闭合持续服务循环。",
+          "support_type": "cross_paper_inference",
+          "proposition_ids": [
+            "prop-state-failure",
+            "prop-personalization-unknown"
+          ]
+        }
+      ],
+      "critical_path_stage_ids": [
+        "context-stream",
+        "state-memory",
+        "candidate-inference",
+        "intervention-policy",
+        "action-mode",
+        "execution",
+        "feedback-update"
+      ],
+      "model_limitations": [
+        "该模型是分析者参考架构；support_type 明确区分来源支持、跨论文推断与设计补全。",
+        "四种自治模式、来源、授权、撤回和回滚主要是决策设计补全，不是六篇摘要共同验证的机制。",
+        "关键路径表示逻辑闭环，不是实验证明的必要条件或性能排序。",
+        "本次没有全文证据确认组件接口、训练数据、消融和运行成本。"
+      ],
+      "model_type": "analyst_reference",
+      "epistemic_status": "hypothesis",
+      "critical_path_note": "这里的“关键路径”只表示参考模型要闭合一次主动服务循环所需的逻辑步骤，不代表这些阶段已被实验证明同等必要，也不表示性能优先级。",
+      "bottlenecks": [
+        {
+          "stage_id": "intervention-policy",
+          "statement": "介入时机是本次语料中重复出现最多的决策点，但不同任务没有直接比较，不能称为已证明的主瓶颈。",
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-constrained-anticipation"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "stage_id": "state-memory",
+          "statement": "事件取消和隐式状态在 ProEvent 中直接失败；跨场景普遍性尚未复现。",
+          "proposition_ids": [
+            "prop-state-failure"
+          ],
+          "confidence": "low"
+        },
+        {
+          "stage_id": "feedback-update",
+          "statement": "在线偏好更新只有单篇 EOPA 结果，长期纠错、冷启动和偏好漂移仍未知。",
+          "proposition_ids": [
+            "prop-personalization-unknown"
+          ],
+          "confidence": "low"
+        }
+      ]
+    },
+    "capability_frontier": {
+      "overall_statement": "本次最强可展示结果全部位于 benchmark 层：介入时机和请求前准备可在作者任务上改善，但持续事件状态仍暴露过度行动、取消失败和 26.7% 正确反应率。没有证据把这些结果升级为真实长期部署能力。",
+      "capabilities": [
+        {
+          "id": "timing-control",
+          "label_zh": "介入时机控制",
+          "label_en": "Intervention timing control",
+          "current_boundary": "PRISM 在 ProactiveBench 上报告误报下降 22.78%、F1 提升 20.14%；EOPA 在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点；ProACT 摘要只称非打扰性改善而未给出数值。三者任务与指标不可比较。",
+          "demonstration_context": "PRISM/ProactiveBench、ProACT 多用户协作样例与 EOPA 的 ProPerSim-based benchmark。",
+          "strongest_evidence_ids": [
+            "ev-prism-false-alarms",
+            "ev-prism-f1",
+            "ev-collab-noninterruptiveness",
+            "ev-eopa-timing-f1"
+          ],
+          "frontier_level": "benchmark",
+          "generalization_ceiling": "benchmark-only；没有共享对照、全文核验、独立复现或纵向用户结果。",
+          "unresolved_requirements": [
+            "共享净效用指标",
+            "规则与端到端基线",
+            "用户退出与撤回"
+          ],
+          "next_boundary": "在同一任务中比较不同控制架构，并在真实使用中同时减少打扰与漏失帮助。",
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-constrained-anticipation"
+          ],
+          "observed_failures": [
+            {
+              "statement": "ProEvent 摘要报告当前 Agent 经常过度行动。",
+              "evidence_ids": [
+                "ev-proevent-overact"
+              ]
+            }
+          ],
+          "anticipated_risks": [
+            "成本校准可能依赖任务，尚未跨场景验证。",
+            "冷启动与反馈噪声尚未量化。",
+            "跨用户与跨组织迁移仍未知。"
+          ]
+        },
+        {
+          "id": "anticipatory-preparation",
+          "label_zh": "请求前准备",
+          "label_en": "Pre-request preparation",
+          "current_boundary": "在可预测需求链的作者基准中，请求前准备可减少所需轮数 14.8%、用户工作量 11.7% 和幻觉率 28.1%；错误准备成本未报告。",
+          "demonstration_context": "ProActEval 的 200 个场景、40 个领域及 PASK 的 LatentNeeds-Bench 摘要主张。",
+          "strongest_evidence_ids": [
+            "ev-pask-latency-match",
+            "ev-proact-turns",
+            "ev-proact-user-effort",
+            "ev-proact-hallucination"
+          ],
+          "frontier_level": "benchmark",
+          "generalization_ceiling": "作者 benchmark 结果；不能外推到开放环境或高影响自主行动。",
+          "unresolved_requirements": [
+            "无用准备总成本",
+            "权限和信息来源",
+            "真实用户长期净工作量"
+          ],
+          "next_boundary": "计入错误准备、计算和过期后，在开放任务中仍证明正净效用。",
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-constrained-anticipation"
+          ],
+          "observed_failures": [],
+          "anticipated_risks": [
+            "错误预测产生的无用准备成本尚未量化。",
+            "额外计算与存储成本可能抵消用户收益。",
+            "准备证据可能在实际使用前过期。"
+          ]
+        },
+        {
+          "id": "state-lifecycle",
+          "label_zh": "持续状态与事件生命周期",
+          "label_en": "Persistent state and event lifecycle",
+          "current_boundary": "ProEvent 已把多线程事件时机、单步和多步正确性变成 benchmark 对象，但作者报告当前 Agent 频繁过度行动、难以处理取消，GPT-5.1 正确反应率为 26.7%。",
+          "demonstration_context": "带并发线程和噪声的合成即时通讯场景；PASK 与 ProACT 仅提供相关状态或故障机制主张。",
+          "strongest_evidence_ids": [
+            "ev-proevent-benchmark",
+            "ev-proevent-overact",
+            "ev-proevent-cancellation",
+            "ev-proevent-correct-rate"
+          ],
+          "frontier_level": "benchmark",
+          "generalization_ceiling": "取消失败的直接结果来自单个合成 benchmark；没有真实跨应用状态审计。",
+          "unresolved_requirements": [
+            "真实事件流复现",
+            "来源与过期",
+            "撤回和回滚",
+            "按成本分层的错误率"
+          ],
+          "next_boundary": "在真实应用状态中复现并降低取消、过期和错误视角问题。",
+          "proposition_ids": [
+            "prop-state-failure"
+          ],
+          "observed_failures": [
+            {
+              "statement": "ProEvent 摘要报告当前 Agent 经常过度行动。",
+              "evidence_ids": [
+                "ev-proevent-overact"
+              ]
+            },
+            {
+              "statement": "ProEvent 摘要报告当前 Agent 难以处理事件取消。",
+              "evidence_ids": [
+                "ev-proevent-cancellation"
+              ]
+            },
+            {
+              "statement": "ProEvent 摘要报告 GPT-5.1 仅在 26.7% 场景中正确反应。",
+              "evidence_ids": [
+                "ev-proevent-correct-rate"
+              ]
+            }
+          ],
+          "anticipated_risks": [
+            "跨线程状态污染尚未量化。",
+            "合成对话中的失败可能无法直接外推到真实应用。"
+          ]
+        }
+      ],
+      "readiness_gaps": [
+        {
+          "id": "longitudinal-net-benefit",
+          "label_zh": "长期用户净收益",
+          "label_en": "Longitudinal user net benefit",
+          "current_state": "本次摘要级语料没有达到内部建议的最小四周真实用户观察窗，也没有打扰、漏失帮助、退出与负面事件的联合报告。",
+          "blocking_evidence": "所有可见实证都来自 benchmark、合成场景或受控任务；该结论仅限本次语料覆盖。",
+          "what_would_close": [
+            "按内部政策建议，至少四周真实用户研究报告净效用、打扰、漏失帮助、退出和撤回。",
+            "独立作者组在不同任务中复现，并公开负面事件。"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-state-failure",
+            "prop-personalization-unknown",
+            "prop-constrained-anticipation"
+          ]
+        },
+        {
+          "id": "governed-persistent-state",
+          "label_zh": "可治理的持久状态",
+          "label_en": "Governed persistent state",
+          "current_state": "论文摘要呈现记忆、事件与在线更新，但未验证来源、过期、撤回和回滚接口。",
+          "blocking_evidence": "ProEvent 直接暴露取消失败；本次没有治理接口或真实跨应用状态审计。",
+          "what_would_close": [
+            "公开 provenance、expiry、withdrawal 与 rollback API。",
+            "将治理失败纳入 benchmark 与部署报告。"
+          ],
+          "proposition_ids": [
+            "prop-state-failure",
+            "prop-personalization-unknown"
+          ]
+        }
+      ]
+    },
+    "transition_theses": [
+      {
+        "id": "transition-generation-to-policy",
+        "statement": "本次 2026 年 submission cluster 中，多篇摘要使用显式交互或沉默策略来描述主动性；这只是 framing signal，不证明领域已从内容生成转向策略控制。",
+        "from_state": "论文背景中常见的反应式或内容生成 framing。",
+        "to_state": "本次样例中的显式介入决策 framing。",
+        "old_constraint": "端到端生成难解释为何行动或沉默。",
+        "drivers": [
+          "误报与漏失帮助成本不对称",
+          "在线偏好差异",
+          "多用户非打扰性",
+          "事件取消失败"
+        ],
+        "time_from": "2026-02-02",
+        "time_to": "2026-08-05",
+        "status": "signal",
+        "supporting_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-constrained-anticipation"
+        ],
+        "counter_proposition_ids": [],
+        "alternative_explanations": [
+          "这是近期共同命名或选题聚类，而不是已验证的历史迁移。"
+        ],
+        "falsifiers": [
+          "历史锚点检索显示同样机制早已成熟",
+          "共享实验中端到端策略稳定优于独立门控且同样可审计"
+        ],
+        "leading_indicator_ids": [
+          "indicator-shared-net-benefit",
+          "indicator-silence-cancellation"
+        ],
+        "confidence": "low"
+      },
+      {
+        "id": "transition-task-to-lifecycle",
+        "statement": "本次 2026 年 submission cluster 出现了把误报、非打扰性、事件取消和多步状态纳入评测的信号；没有历史锚点证明评测范式已经迁移。",
+        "from_state": "单轮或单任务响应质量。",
+        "to_state": "时机、沉默、取消和多步状态等附加评测轴。",
+        "old_constraint": "单次正确答案不能揭示不必要介入或持续状态错误。",
+        "drivers": [
+          "ProactiveBench 的误报指标",
+          "协作非打扰性",
+          "ProEvent 的取消与多步状态"
+        ],
+        "time_from": "2026-02-02",
+        "time_to": "2026-07-20",
+        "status": "signal",
+        "supporting_proposition_ids": [
+          "prop-state-failure"
+        ],
+        "counter_proposition_ids": [],
+        "alternative_explanations": [
+          "多个新 benchmark 可能只是并列扩张，尚未形成共享协议。"
+        ],
+        "falsifiers": [
+          "后续工作重新只报告任务成功而不测沉默与状态",
+          "多步指标与真实用户净效用无相关性"
+        ],
+        "leading_indicator_ids": [
+          "indicator-silence-cancellation",
+          "indicator-longitudinal-study"
+        ],
+        "confidence": "low"
+      },
+      {
+        "id": "transition-static-to-adaptive",
+        "statement": "EOPA 单篇摘要提出用轻量在线偏好证据更新交互时机；目前只能视为方法候选，不能解释为领域从静态策略转向在线适配。",
+        "from_state": "该论文设置中的静态或高成本介入判断。",
+        "to_state": "EOPA 提出的在线偏好证据更新。",
+        "old_constraint": "介入时机因人而异，反馈稀疏且 LLM 在线推理成本较高。",
+        "drivers": [
+          "稀疏在线反馈",
+          "活动上下文",
+          "低延迟要求"
+        ],
+        "time_from": "2026-08-05",
+        "time_to": "2026-08-05",
+        "status": "signal",
+        "supporting_proposition_ids": [
+          "prop-personalization-unknown"
+        ],
+        "counter_proposition_ids": [],
+        "alternative_explanations": [
+          "该结果可能是单一模拟 benchmark 的任务特定优化。"
+        ],
+        "falsifiers": [
+          "第二个团队无法复现",
+          "长期反馈噪声导致介入质量退化"
+        ],
+        "leading_indicator_ids": [
+          "indicator-personalization-replication"
+        ],
+        "confidence": "low"
+      }
+    ],
+    "maturity_assessment": [
+      {
+        "dimension": "scientific_mechanism",
+        "level": "early",
+        "statement": "摘要提出了门控、记忆、预判和在线适配机制，但没有全文级因果消融、共享任务对照或独立复现。",
+        "proposition_ids": [
+          "prop-intervention-policy",
+          "prop-anticipatory-preparation",
+          "prop-constrained-anticipation"
+        ],
+        "blockers": [
+          "全部为摘要级证据",
+          "任务与机制不可比",
+          "无因果消融和复现"
+        ],
+        "upgrade_conditions": [
+          "共享任务比较规则、端到端与显式控制",
+          "全文级实验区分门控、记忆和计算预算贡献"
+        ]
+      },
+      {
+        "dimension": "benchmark",
+        "level": "emerging",
+        "statement": "多个新 benchmark 已测量时机、误报、用户工作量、非打扰性和事件取消，但指标与数据仍不可比较。",
+        "proposition_ids": [
+          "prop-state-failure",
+          "prop-constrained-anticipation"
+        ],
+        "blockers": [
+          "指标定义不统一",
+          "合成或构造场景占比高",
+          "缺少共同净效用函数"
+        ],
+        "upgrade_conditions": [
+          "共享 benchmark 同时覆盖 silence、missed help、cancellation 与 user effort",
+          "不同团队报告可比基线和错误成本"
+        ]
+      },
+      {
+        "dimension": "engineering",
+        "level": "early",
+        "statement": "摘要描述流式检测、混合记忆、选择性慢推理和轻量在线更新原型；跨应用状态、成本和可靠性未核验。",
+        "proposition_ids": [
+          "prop-intervention-policy",
+          "prop-anticipatory-preparation",
+          "prop-personalization-unknown"
+        ],
+        "blockers": [
+          "长期状态一致性",
+          "权限与隐私",
+          "错误准备成本",
+          "冷启动和漂移"
+        ],
+        "upgrade_conditions": [
+          "公开端到端延迟与成本预算",
+          "支持来源、过期、撤回和回滚",
+          "在多个开放任务中稳定运行"
+        ]
+      },
+      {
+        "dimension": "deployment",
+        "level": "absent",
+        "statement": "在本次审阅到的摘要证据中，没有可核验的纵向真实用户部署结果。",
+        "proposition_ids": [],
+        "blockers": [
+          "未达到内部建议的最小四周纵向观察窗",
+          "缺少退出率与负面事件",
+          "无外部核验"
+        ],
+        "upgrade_conditions": [
+          "真实用户长期维持正净效用",
+          "公开打扰、漏失帮助、撤回与退出",
+          "独立部署复现"
+        ]
+      },
+      {
+        "dimension": "governance",
+        "level": "absent",
+        "statement": "在本次审阅到的摘要证据中，没有验证完整的授权、来源、过期、撤回、回滚和审计系统。",
+        "proposition_ids": [],
+        "blockers": [
+          "授权边界未验证",
+          "状态生命周期不可审计",
+          "高影响动作缺少可核验回滚"
+        ],
+        "upgrade_conditions": [
+          "公开 provenance、expiry、withdrawal 与 rollback 接口",
+          "治理失败纳入评测",
+          "高风险动作保留人类确认"
+        ]
+      }
+    ],
+    "decision_consequences": [
+      {
+        "id": "decision-validation-only",
+        "decision_type": "architecture",
+        "audience": "主动式 Agent 的研究负责人和架构负责人",
+        "decision": "未来 12–18 个月只投入可逆验证基础设施，暂不把任何主动架构产品化为高影响自治。",
+        "action": "第一优先建立共享净效用与错误成本评测；第二优先验证事件取消和状态生命周期；第三优先在低风险准备任务做原型。用统一接口比较静态规则、端到端 LLM 与显式 gate，比较完成前不锁定生产架构。",
+        "because_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-state-failure",
+          "prop-constrained-anticipation"
+        ],
+        "conditions": [
+          "组织能够记录误报、漏失帮助、取消、用户工作量和额外计算。",
+          "所有原型可停用、可回滚且不执行高影响不可逆动作。"
+        ],
+        "risks": [
+          "验证基础设施投入可能延后短期功能发布。",
+          "共享接口可能掩盖任务差异，仍需按场景分层。"
+        ],
+        "reversibility": "reversible",
+        "confidence": "medium"
+      },
+      {
+        "id": "decision-prepare-before-act",
+        "decision_type": "product",
+        "audience": "主动助手产品团队",
+        "decision": "先进入低风险、可逆的准备型任务，再逐步开放询问与行动。",
+        "action": "把产品自治划分为 prepare、ask、act 三个明确授权级别；优先试验资料整理、候选方案和提醒草稿，不自动执行高影响动作。",
+        "because_proposition_ids": [
+          "prop-anticipatory-preparation",
+          "prop-constrained-anticipation"
+        ],
+        "conditions": [
+          "准备结果有来源、过期时间和用户确认",
+          "用户可关闭、删除或撤回"
+        ],
+        "risks": [
+          "准备内容仍可能泄露敏感状态",
+          "过多草稿会转化为新的认知负担"
+        ],
+        "reversibility": "reversible",
+        "confidence": "medium"
+      },
+      {
+        "id": "decision-benchmark-discount",
+        "decision_type": "due_diligence",
+        "audience": "技术战略、采购与投资尽调团队",
+        "decision": "将摘要中的 benchmark improvement 视为机制线索，而不是部署成熟度证明。",
+        "action": "要求全文级实验、代码与数据核验、独立复现、真实用户时长、负面事件、退出和治理接口，再升级技术判断。",
+        "because_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-anticipatory-preparation",
+          "prop-state-failure",
+          "prop-personalization-unknown"
+        ],
+        "conditions": [
+          "结论将影响采购、资源配置或对外承诺"
+        ],
+        "risks": [
+          "过度折扣可能错过早期技术窗口",
+          "不同团队披露标准不一致"
+        ],
+        "reversibility": "reversible",
+        "confidence": "high"
+      },
+      {
+        "id": "decision-longitudinal-first",
+        "decision_type": "research_agenda",
+        "audience": "研究负责人和评测团队",
+        "decision": "把下一项关键研究从新增局部分数改为共享对照与纵向净效用。",
+        "action": "先在同一任务比较控制架构，再按内部政策建议设计至少四周真实用户观察；联合记录沉默、误报、漏失帮助、取消、撤回、工作量、退出和额外计算。",
+        "because_proposition_ids": [
+          "prop-state-failure",
+          "prop-constrained-anticipation"
+        ],
+        "conditions": [
+          "已有可控原型和用户授权",
+          "能够在失败时停用或回滚"
+        ],
+        "risks": [
+          "纵向研究成本高",
+          "观察行为会改变用户反馈"
+        ],
+        "reversibility": "reversible",
+        "confidence": "high"
+      }
+    ],
+    "leading_indicators": [
+      {
+        "id": "indicator-shared-net-benefit",
+        "label": "共享基准上的净效用收敛",
+        "observation": "经独立性核验的作者组能否在同一任务中同时降低用户工作量、误报与漏失帮助。",
+        "current_baseline": "本次论文使用不同 benchmark 和指标，不能形成同表比较。",
+        "threshold_or_trigger": "至少两个经数据、代码和作者关系核验的作者组在共享基准上复现正净效用，且误报改善不以漏失帮助恶化为代价。",
+        "data_source": "公开 benchmark 排行、复现论文、代码与评测日志。",
+        "observation_window": "未来 12 个月滚动观察。",
+        "affects_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-constrained-anticipation"
+        ],
+        "interpretation_if_met": "将介入策略从 credible_emerging 向更强机制判断升级。",
+        "interpretation_if_missed": "可能说明当前收益来自任务特定调参或指标选择。",
+        "decision_trigger": "满足后扩大在共享对照中取得正净效用的策略；只有显式 gate 在同一任务中取得可重复净收益时，才增加 gate-specific 投入。",
+        "threshold_basis": "analyst_policy",
+        "threshold_rationale": "两个作者组是内部升级门槛，用来降低单团队与任务特定结果被误当共识的风险；不是论文推导出的科学常数。"
+      },
+      {
+        "id": "indicator-silence-cancellation",
+        "label": "沉默与取消进入统一评测",
+        "observation": "新基准是否同时报告 silence、missed help、overaction、cancellation 与 multi-step state。",
+        "current_baseline": "这些指标分散在不同论文，尚无统一协议。",
+        "threshold_or_trigger": "出现公开、可复现且被至少三个经独立性核验的作者组采用的统一评测协议。",
+        "data_source": "arXiv 论文、公开 benchmark 文档、评测代码与数据卡。",
+        "observation_window": "未来 12–18 个月。",
+        "affects_proposition_ids": [
+          "prop-state-failure"
+        ],
+        "interpretation_if_met": "benchmark maturity 可由 emerging 向 validated 靠近。",
+        "interpretation_if_missed": "领域可能继续优化不可比较的局部指标。",
+        "decision_trigger": "满足后用该协议作为内部发布门槛；否则自建错误成本矩阵。",
+        "threshold_basis": "analyst_policy",
+        "threshold_rationale": "三个采用者是内部生态门槛，用来区分一次性 benchmark 与可比较协议；不是来源结论。"
+      },
+      {
+        "id": "indicator-longitudinal-study",
+        "label": "真实用户纵向净收益",
+        "observation": "主动服务在持续使用中是否仍有正净效用，并维持可接受的打扰、退出与撤回水平。",
+        "current_baseline": "本次摘要级证据没有达到内部建议的最小四周真实用户观察窗。",
+        "threshold_or_trigger": "内部政策阈值：至少四周、跨多个任务的真实用户研究报告正净效用、打扰、漏失帮助、负面事件、退出与撤回。",
+        "data_source": "同行评审论文、完整技术报告、部署后研究与公开研究协议。",
+        "observation_window": "未来 18–24 个月。",
+        "affects_proposition_ids": [
+          "prop-anticipatory-preparation",
+          "prop-state-failure",
+          "prop-personalization-unknown",
+          "prop-constrained-anticipation"
+        ],
+        "interpretation_if_met": "deployment maturity 可从 absent 重新评估至 early；只有结果可复现且治理有效时再考虑 emerging。",
+        "interpretation_if_missed": "继续把主动服务视为实验性 benchmark capability。",
+        "decision_trigger": "仅在满足且治理接口通过审查后扩大到更高影响任务。",
+        "threshold_basis": "analyst_policy",
+        "threshold_rationale": "四周是内部最小观察窗，用于覆盖重复使用、偏好漂移和退出行为；不是文献共识。"
+      },
+      {
+        "id": "indicator-state-governance",
+        "label": "状态治理接口公开化",
+        "observation": "系统是否公开记忆与事件的来源、过期、撤回和回滚机制。",
+        "current_baseline": "本次摘要只呈现记忆、事件与在线更新概念，没有验证完整治理接口。",
+        "threshold_or_trigger": "至少两个独立系统公开 provenance、expiry、withdrawal、rollback API，并报告治理失败测试。",
+        "data_source": "系统论文、API 文档、代码仓库与安全评测。",
+        "observation_window": "未来 12–18 个月。",
+        "affects_proposition_ids": [
+          "prop-state-failure",
+          "prop-personalization-unknown"
+        ],
+        "interpretation_if_met": "工程和治理成熟度可上调，状态型产品试验风险降低。",
+        "interpretation_if_missed": "长期记忆与持续事件能力仍应限制在低风险、可删除场景。",
+        "decision_trigger": "满足后才允许跨应用持久状态；否则保持单任务隔离与短期存储。",
+        "threshold_basis": "analyst_policy",
+        "threshold_rationale": "两个独立系统是内部尽调门槛，用来避免把单一实现误当可迁移治理能力。"
+      },
+      {
+        "id": "indicator-personalization-replication",
+        "label": "在线个性化的独立复现",
+        "observation": "EOPA 类轻量在线适配能否跨用户分布、反馈噪声与偏好漂移保持时机收益。",
+        "current_baseline": "单个作者组在 ProPerSim-based benchmark 上报告结果；本次未核验外部独立性。",
+        "threshold_or_trigger": "第二个作者组在不同数据与用户分布上复现，并核验数据、代码和作者关系独立性，同时报告冷启动、噪声与漂移。",
+        "data_source": "复现论文、开放代码、数据卡与长期模拟或用户研究。",
+        "observation_window": "未来 12 个月。",
+        "affects_proposition_ids": [
+          "prop-personalization-unknown",
+          "prop-intervention-policy"
+        ],
+        "interpretation_if_met": "个性化命题可由 unknown 升级为 credible_emerging。",
+        "interpretation_if_missed": "将其视为基准特定优化，不进入核心产品控制面。",
+        "decision_trigger": "满足后启动受控个性化试验；未满足则使用明确用户设置和保守默认值。",
+        "threshold_basis": "analyst_policy",
+        "threshold_rationale": "第二个作者组是把单源结果升级为多源信号的最低内部条件。"
+      }
+    ],
+    "papers": [
+      {
+        "arxiv_id": "2602.01532",
+        "version": "v1",
+        "title": "PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents",
+        "title_zh": "PRISM：面向主动式 Agent 的风险敏感与不确定性感知审议",
+        "authors": [
+          "Yuxuan Fu",
+          "Xiaoyu Tan",
+          "Teqi Hao",
+          "Chen Zhan",
+          "Xihe Qiu"
+        ],
+        "published": "2026-02-02",
+        "updated": null,
+        "primary_category": "cs.AI",
+        "categories": [
+          "cs.AI"
+        ],
+        "source_url": "https://arxiv.org/abs/2602.01532",
+        "pdf_url": "https://arxiv.org/pdf/2602.01532",
+        "evidence_basis": "abstract",
+        "corpus_role": "frontier",
+        "independence_cluster_id": "prism-fu-tan-2026",
+        "abstract_original": "Proactive agents must decide not only what to say but also whether and when to intervene. Many current systems rely on brittle heuristics or indiscriminate long reasoning, which offers little control over the benefit-burden tradeoff. We formulate the problem as cost-sensitive selective intervention and present PRISM, a novel framework that couples a decision-theoretic gate with a dual-process reasoning architecture. At inference time, the agent intervenes only when a calibrated probability of user acceptance exceeds a threshold derived from asymmetric costs of missed help and false alarms. Inspired by festina lente (Latin: \"make haste slowly\"), we gate by an acceptance-calibrated, cost-derived threshold and invoke a resource-intensive Slow mode with counterfactual checks only near the decision boundary, concentrating computation on ambiguous and high-stakes cases. Training uses gate-aligned, schema-locked distillation: a teacher running the full PRISM pipeline provides dense, executable supervision on unlabeled interaction traces, while the student learns a response policy that is explicitly decoupled from the intervention gate to enable tunable and auditable control. On ProactiveBench, PRISM reduces false alarms by 22.78% and improves F1 by 20.14% over strong baselines. These results show that principled decision-theoretic gating, paired with selective slow reasoning and aligned distillation, yields proactive agents that are precise, computationally efficient, and controllable. To facilitate reproducibility, we release our code, models, and resources at https://prism-festinalente.github.io/; all experiments use the open-source ProactiveBench benchmark.",
+        "synopsis_zh": "PRISM 把主动介入建模为成本敏感的选择性决策：只有校准后的用户接受概率超过由漏失帮助与误报成本推导的阈值时才行动，并只在边界案例调用慢推理。",
+        "external_verification": {
+          "publication_status": "arxiv_preprint",
+          "venue": null,
+          "verified_on": null,
+          "source_urls": []
+        },
+        "analysis": {
+          "research_object": "不对称帮助收益与打扰成本下，主动式 Agent 应如何决定是否以及何时介入。",
+          "mechanism": "以接受概率和不对称成本推导介入阈值，将介入门控与响应策略解耦，只在决策边界调用慢推理。",
+          "evaluation": "ProactiveBench；摘要报告相对作者所称强基线的误报与 F1 变化，未提供长期用户研究。",
+          "key_findings": [
+            {
+              "statement": "PRISM 用成本阈值控制介入或沉默。",
+              "evidence_ids": [
+                "ev-prism-gate"
+              ]
+            },
+            {
+              "statement": "慢推理仅用于决策边界附近。",
+              "evidence_ids": [
+                "ev-prism-slow"
+              ]
+            },
+            {
+              "statement": "摘要分别报告误报下降 22.78% 和 F1 提升 20.14%。",
+              "evidence_ids": [
+                "ev-prism-false-alarms",
+                "ev-prism-f1"
+              ]
+            }
+          ],
+          "author_stated_limitations": [],
+          "analyst_inferred_limitations": [
+            "摘要只提供单一公开基准结果，不能判断长期真实服务中的校准稳定性。",
+            "不同产品如何设定漏失帮助与误报成本仍需领域化验证。"
+          ]
+        },
+        "model_links": {
+          "stage_ids": [
+            "intervention-policy",
+            "action-mode"
+          ],
+          "option_ids": [
+            "cost-sensitive-gate"
+          ],
+          "capability_ids": [
+            "timing-control"
+          ],
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-state-failure",
+            "prop-constrained-anticipation"
+          ]
+        },
+        "metrics": [
+          {
+            "name": "False alarms",
+            "value": "-22.78%",
+            "context": "作者在 ProactiveBench 上相对强基线报告。",
+            "basis": "abstract",
+            "evidence_id": "ev-prism-false-alarms"
+          },
+          {
+            "name": "F1",
+            "value": "+20.14%",
+            "context": "作者在 ProactiveBench 上相对强基线报告。",
+            "basis": "abstract",
+            "evidence_id": "ev-prism-f1"
+          }
+        ]
+      },
+      {
+        "arxiv_id": "2604.08000",
+        "version": "v1",
+        "title": "PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory",
+        "title_zh": "PASK：面向具备长期记忆的意图感知主动式 Agent",
+        "authors": [
+          "Zhifei Xie",
+          "Zongzheng Hu",
+          "Fangda Ye",
+          "Xin Zhang",
+          "Haobo Chai",
+          "Zihang Liu",
+          "Pengcheng Wu",
+          "Guibin Zhang",
+          "Yue Liao",
+          "Xiaobin Hu",
+          "Deheng Ye",
+          "Chunyan Miao",
+          "Shuicheng Yan"
+        ],
+        "published": "2026-04-09",
+        "updated": null,
+        "primary_category": "cs.AI",
+        "categories": [
+          "cs.AI"
+        ],
+        "source_url": "https://arxiv.org/abs/2604.08000",
+        "pdf_url": "https://arxiv.org/pdf/2604.08000",
+        "evidence_basis": "abstract",
+        "corpus_role": "frontier",
+        "independence_cluster_id": "pask-xie-2026",
+        "abstract_original": "Proactivity is a core expectation for AGI. Prior work remains largely confined to laboratory settings, leaving a clear gap in real-world proactive agent: depth, complexity, ambiguity, precision and real-time constraints. We study this setting, where useful intervention requires inferring latent needs from ongoing context and grounding actions in evolving user memory under latency and long-horizon constraints. We first propose DD-MM-PAS (Demand Detection, Memory Modeling, Proactive Agent System) as a general paradigm for streaming proactive AI agent. We instantiate this paradigm in Pask, with streaming IntentFlow model for DD, a hybrid memory (workspace, user, global) for long-term MM, PAS infra framework and introduce how these components form a closed loop. We also introduce LatentNeeds-Bench, a real-world benchmark built from user-consented data and refined through thousands of rounds of human editing. Experiments show that IntentFlow matches leading Gemini3-Flash models under latency constraints, while identifying deeper user intent.",
+        "synopsis_zh": "PASK 把需求检测、分层长期记忆与主动服务基础设施组织为 DD-MM-PAS 闭环，并以流式 IntentFlow、混合记忆和 LatentNeeds-Bench 实例化。",
+        "external_verification": {
+          "publication_status": "arxiv_preprint",
+          "venue": null,
+          "verified_on": null,
+          "source_urls": []
+        },
+        "analysis": {
+          "research_object": "连续上下文中，系统如何从长期记忆推断未显式表达的需求并形成服务闭环。",
+          "mechanism": "把流式需求检测、workspace/user/global 混合记忆和主动服务基础设施连接为 DD-MM-PAS 闭环。",
+          "evaluation": "LatentNeeds-Bench；摘要称在延迟约束下匹配 Gemini3-Flash，但未给出具体数值、样本规模或真实纵向结果。",
+          "key_findings": [
+            {
+              "statement": "DD-MM-PAS 将需求检测、记忆和服务基础设施组织为闭环。",
+              "evidence_ids": [
+                "ev-pask-loop"
+              ]
+            },
+            {
+              "statement": "系统使用三层混合记忆。",
+              "evidence_ids": [
+                "ev-pask-memory"
+              ]
+            },
+            {
+              "statement": "摘要称延迟约束下匹配 Gemini3-Flash，但未给出数值。",
+              "evidence_ids": [
+                "ev-pask-latency-match"
+              ]
+            }
+          ],
+          "author_stated_limitations": [],
+          "analyst_inferred_limitations": [
+            "摘要未给出对比数值、样本规模和误报成本。",
+            "真实长期运行、记忆纠错与授权边界仍无法从摘要判断。"
+          ]
+        },
+        "model_links": {
+          "stage_ids": [
+            "context-stream",
+            "state-memory",
+            "candidate-inference",
+            "execution"
+          ],
+          "option_ids": [
+            "anticipatory-memory"
+          ],
+          "capability_ids": [
+            "anticipatory-preparation",
+            "state-lifecycle"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation"
+          ]
+        },
+        "metrics": []
+      },
+      {
+        "arxiv_id": "2605.25971",
+        "version": "v2",
+        "title": "Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents",
+        "title_zh": "预判与学习：释放主动式 Agent 的空闲期计算",
+        "authors": [
+          "Haoyi Hu",
+          "Qirong Lyu",
+          "Xianghan Kong",
+          "Weiwen Liu",
+          "Jianghao Lin",
+          "Zixuan Guo",
+          "Yan Xu",
+          "Yasheng Wang",
+          "Weinan Zhang",
+          "Yong Yu"
+        ],
+        "published": "2026-05-25",
+        "updated": null,
+        "primary_category": "cs.CL",
+        "categories": [
+          "cs.CL"
+        ],
+        "source_url": "https://arxiv.org/abs/2605.25971",
+        "pdf_url": "https://arxiv.org/pdf/2605.25971",
+        "evidence_basis": "abstract",
+        "corpus_role": "frontier",
+        "independence_cluster_id": "proact-hu-2026",
+        "abstract_original": "While AI agents demonstrate remarkable capabilities in reasoning and tool use, they remain fundamentally reactive: they compute responses only after explicit user prompts. This paradigm ignores a critical opportunity: the idle time between interactions is largely wasted, leaving agents unable to prepare for future user needs. To bridge this gap, we introduce ProAct, a proactive agent architecture that leverages idle-time compute to anticipate and fulfill likely upcoming user needs. By analyzing evolving dialogue history together with persistent memory, ProAct predicts upcoming needs and iteratively acquires information, allowing the agent to resolve knowledge gaps and prepare evidence before the user initiates a query. To rigorously evaluate proactive capabilities, we also introduce ProActEval, a comprehensive benchmark comprising 200 scenarios across 40 domains, featuring predictable need chains and diverse user cognitive profiles. Empirical results demonstrate significant advantages over reactive baselines. ProAct accelerates task completion by reducing required turns by 14.8%, decreases user effort by 11.7%, and cuts hallucination rates by 28.1% on ProActEval. Furthermore, MemBench evaluations confirm that ProAct achieves state-of-the-art reflective accuracy, underscoring its sustained and robust performance.",
+        "synopsis_zh": "ProAct 使用空闲期计算预测即将到来的需求、迭代获取信息并提前准备证据，同时用 ProActEval 评估任务轮数、用户工作量与幻觉变化。",
+        "external_verification": {
+          "publication_status": "arxiv_preprint",
+          "venue": null,
+          "verified_on": null,
+          "source_urls": []
+        },
+        "analysis": {
+          "research_object": "如何利用交互空闲期预测后续需求、补齐信息并提前准备证据。",
+          "mechanism": "结合演化对话与持久记忆预测后续需求，在空闲期迭代检索信息并准备证据。",
+          "evaluation": "ProActEval 的 200 个场景、40 个领域及 MemBench；摘要报告任务轮数、用户工作量和幻觉率变化。",
+          "key_findings": [
+            {
+              "statement": "系统在请求前预测需求并准备证据。",
+              "evidence_ids": [
+                "ev-proact-preparation"
+              ]
+            },
+            {
+              "statement": "摘要分别报告轮数、用户工作量和幻觉率下降。",
+              "evidence_ids": [
+                "ev-proact-turns",
+                "ev-proact-user-effort",
+                "ev-proact-hallucination"
+              ]
+            }
+          ],
+          "author_stated_limitations": [],
+          "analyst_inferred_limitations": [
+            "摘要未说明需求预测错误时产生的浪费或误导成本。",
+            "基准中的可预测需求链与真实开放环境之间存在外部效度问题。"
+          ]
+        },
+        "model_links": {
+          "stage_ids": [
+            "state-memory",
+            "candidate-inference",
+            "action-mode",
+            "execution"
+          ],
+          "option_ids": [
+            "anticipatory-memory"
+          ],
+          "capability_ids": [
+            "anticipatory-preparation"
+          ],
+          "proposition_ids": [
+            "prop-anticipatory-preparation",
+            "prop-constrained-anticipation"
+          ]
+        },
+        "metrics": [
+          {
+            "name": "Required turns",
+            "value": "-14.8%",
+            "context": "作者在 ProActEval 上相对反应式基线报告。",
+            "basis": "abstract",
+            "evidence_id": "ev-proact-turns"
+          },
+          {
+            "name": "User effort",
+            "value": "-11.7%",
+            "context": "作者在 ProActEval 上相对反应式基线报告。",
+            "basis": "abstract",
+            "evidence_id": "ev-proact-user-effort"
+          },
+          {
+            "name": "Hallucination rate",
+            "value": "-28.1%",
+            "context": "作者在 ProActEval 上相对反应式基线报告。",
+            "basis": "abstract",
+            "evidence_id": "ev-proact-hallucination"
+          }
+        ]
+      },
+      {
+        "arxiv_id": "2607.03730",
+        "version": "v1",
+        "title": "ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration",
+        "title_zh": "ProACT：面向多用户协作故障感知的主动式 Agent",
+        "authors": [
+          "Shu Yang",
+          "Difei Xu",
+          "Jiaxin Pei",
+          "Di Wang"
+        ],
+        "published": "2026-07-04",
+        "updated": null,
+        "primary_category": "cs.CL",
+        "categories": [
+          "cs.CL"
+        ],
+        "source_url": "https://arxiv.org/abs/2607.03730",
+        "pdf_url": "https://arxiv.org/pdf/2607.03730",
+        "evidence_basis": "abstract",
+        "corpus_role": "frontier",
+        "independence_cluster_id": "proact-yang-2026",
+        "abstract_original": "Conversational agents are increasingly embedded in human collaborative work, yet they remain fundamentally passive and reactive: they respond to explicit user requests rather than proactively recognizing moments when a team would benefit from timely intervention as human collaborators often do. This reactive design substantially limits the use of agents as active participants in multi-user collaboration, where disagreements, ambiguous goals, forgotten constraints, underspecified plans, discussion loops, and imbalanced participation can gradually undermine group progress. To move agents from passive assistants toward active participants in multi-user collaboration, we introduce ProACT, a breakdown-aware agent framework grounded in theories of common ground, collaborative planning, and coordination work. ProACT observes the speaker-attributed conversation history, determines whether the current turn contains a collaboration breakdown requiring intervention, decides whether the agent should stay silent or speak, and, when speaking is needed, routes the case to a targeted collaboration skill. We further introduce the first multi-user collaboration benchmark for evaluating proactive agents across project planning, product design, research collaboration, logistics, education, and resource-constrained decision making. Across 3,244 turn-level examples and five LLM backbones, ProACT consistently improves collaborative appropriateness, non-interruptiveness, conciseness, and judged intervention quality over direct chat.",
+        "synopsis_zh": "ProACT 将主动协作建模为故障识别、说或不说的门控以及针对性技能路由，并在多类协作任务上评估非打扰性与介入质量。",
+        "external_verification": {
+          "publication_status": "arxiv_preprint",
+          "venue": null,
+          "verified_on": null,
+          "source_urls": []
+        },
+        "analysis": {
+          "research_object": "多用户协作中，何时出现值得 Agent 主动介入的协作故障。",
+          "mechanism": "检测带说话人归属的协作故障，先决定沉默或发言，再把需要介入的案例路由到专用技能。",
+          "evaluation": "3,244 个回合级样例、五种 LLM 主干及多类协作任务；摘要未给出真实团队纵向结果。",
+          "key_findings": [
+            {
+              "statement": "系统先检测协作故障，再决定沉默或发言。",
+              "evidence_ids": [
+                "ev-collab-gate"
+              ]
+            },
+            {
+              "statement": "摘要报告样例规模和模型主干数量。",
+              "evidence_ids": [
+                "ev-collab-sample-count",
+                "ev-collab-backbone-count"
+              ]
+            },
+            {
+              "statement": "摘要分别报告四项协作介入质量改善。",
+              "evidence_ids": [
+                "ev-collab-appropriateness",
+                "ev-collab-noninterruptiveness",
+                "ev-collab-conciseness",
+                "ev-collab-intervention-quality"
+              ]
+            }
+          ],
+          "author_stated_limitations": [],
+          "analyst_inferred_limitations": [
+            "摘要未给出各指标的数值差异或真实团队纵向结果。",
+            "协作故障标签能否跨文化、组织和任务稳定迁移仍未知。"
+          ]
+        },
+        "model_links": {
+          "stage_ids": [
+            "context-stream",
+            "candidate-inference",
+            "intervention-policy",
+            "action-mode"
+          ],
+          "option_ids": [
+            "scoped-trigger"
+          ],
+          "capability_ids": [
+            "timing-control"
+          ],
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-state-failure",
+            "prop-constrained-anticipation"
+          ]
+        },
+        "metrics": [
+          {
+            "name": "Benchmark size",
+            "value": "3,244 turn-level examples",
+            "context": "摘要报告的多用户协作基准规模。",
+            "basis": "abstract",
+            "evidence_id": "ev-collab-sample-count"
+          },
+          {
+            "name": "LLM backbones",
+            "value": "5",
+            "context": "摘要报告的模型主干数量。",
+            "basis": "abstract",
+            "evidence_id": "ev-collab-backbone-count"
+          }
+        ]
+      },
+      {
+        "arxiv_id": "2607.17701",
+        "version": "v1",
+        "title": "ProEvent: An Event-centric Benchmark for Proactive Agents",
+        "title_zh": "ProEvent：面向主动式 Agent 的事件中心基准",
+        "authors": [
+          "Guanzhen Li",
+          "Liangming Pan",
+          "Leye Wang"
+        ],
+        "published": "2026-07-20",
+        "updated": null,
+        "primary_category": "cs.AI",
+        "categories": [
+          "cs.AI"
+        ],
+        "source_url": "https://arxiv.org/abs/2607.17701",
+        "pdf_url": "https://arxiv.org/pdf/2607.17701",
+        "evidence_basis": "abstract",
+        "corpus_role": "counterevidence",
+        "independence_cluster_id": "proevent-li-2026",
+        "abstract_original": "Proactive agents are expected to anticipate user needs and provide autonomous assistance by perceiving environmental context without explicit instructions. A fundamental capability of such agents is to identify and track users' upcoming events, enabling continuous and event-specific assistance. For example, by recording the time and location of a planned hike, an agent can deliver weather reminders in advance or provide navigation support before departure. However, existing works on proactive agents largely overlook event-centric assistance, and the open-ended nature of proactive assistance poses challenges for reliable evaluation. To bridge these gaps, we introduce ProEvent, the first event-centric benchmark designed to assess an agent's ability to proactively maintain a user's timetable based on ongoing instant messaging chats. ProEvent provides synthesized yet realistic chats that consider the dynamic interaction among users, concurrent chat threads, and noise in the real world, and evaluates proactive agents on response timing, single-step response correctness, and multi-step response correctness. Experiments on eight LLMs and pipelines reveal that current agents frequently overact and struggle with event cancellation. Notably, even GPT-5.1 only reacts correctly in 26.7% of scenarios. Further qualitative analysis reveals fundamental limitations of current LLMs as proactive agents, particularly in detecting implicit events and reasoning from the user's first-person perspective.",
+        "synopsis_zh": "ProEvent 用带并发线程和噪声的合成即时通讯场景评估事件识别、时间表维护、响应时机与多步正确性，并暴露过度行动和事件取消处理失败。",
+        "external_verification": {
+          "publication_status": "arxiv_preprint",
+          "venue": null,
+          "verified_on": null,
+          "source_urls": []
+        },
+        "analysis": {
+          "research_object": "主动 Agent 能否在带噪、多线程对话中持续维护事件状态并正确处理时机与取消。",
+          "mechanism": "通过事件中心基准考察从聊天中识别、跟踪、更新和取消事件，以及单步和多步响应正确性。",
+          "evaluation": "含并发线程和噪声的合成即时通讯场景，覆盖八种模型与 pipeline；重点暴露过度行动、取消和隐式事件失败。",
+          "key_findings": [
+            {
+              "statement": "ProEvent 显式评估时机、单步和多步正确性。",
+              "evidence_ids": [
+                "ev-proevent-benchmark"
+              ]
+            },
+            {
+              "statement": "摘要报告模型覆盖、过度行动、取消失败和正确反应率。",
+              "evidence_ids": [
+                "ev-proevent-model-count",
+                "ev-proevent-overact",
+                "ev-proevent-cancellation",
+                "ev-proevent-correct-rate"
+              ]
+            }
+          ],
+          "author_stated_limitations": [],
+          "analyst_inferred_limitations": [
+            "对话是合成但力求真实，结果不能直接代表真实用户部署。",
+            "摘要未说明不同错误类型的成本权重。"
+          ]
+        },
+        "model_links": {
+          "stage_ids": [
+            "context-stream",
+            "state-memory",
+            "candidate-inference",
+            "feedback-update"
+          ],
+          "option_ids": [
+            "scoped-trigger"
+          ],
+          "capability_ids": [
+            "state-lifecycle"
+          ],
+          "proposition_ids": [
+            "prop-state-failure",
+            "prop-constrained-anticipation"
+          ]
+        },
+        "metrics": [
+          {
+            "name": "Correct reactions",
+            "value": "26.7%",
+            "context": "作者摘要报告 GPT-5.1 在 ProEvent 场景中的正确反应比例。",
+            "basis": "abstract",
+            "evidence_id": "ev-proevent-correct-rate"
+          },
+          {
+            "name": "Evaluated models and pipelines",
+            "value": "8",
+            "context": "摘要报告的实验覆盖数量。",
+            "basis": "abstract",
+            "evidence_id": "ev-proevent-model-count"
+          }
+        ]
+      },
+      {
+        "arxiv_id": "2608.04416",
+        "version": "v1",
+        "title": "Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants",
+        "title_zh": "面向主动式 AI 助手个性化交互发起的偏好驱动在线适配",
+        "authors": [
+          "Yufeng Wang",
+          "Wei Zhang",
+          "Zhiquan Wen",
+          "Jinwu Hu",
+          "Linhui Xiao",
+          "Tianlu Pan",
+          "Qingfang Zheng",
+          "Mingkui Tan"
+        ],
+        "published": "2026-08-05",
+        "updated": null,
+        "primary_category": "cs.HC",
+        "categories": [
+          "cs.HC"
+        ],
+        "source_url": "https://arxiv.org/abs/2608.04416",
+        "pdf_url": "https://arxiv.org/pdf/2608.04416",
+        "evidence_basis": "abstract",
+        "corpus_role": "signal",
+        "independence_cluster_id": "eopa-wang-2026",
+        "abstract_original": "AI assistants are typically reactive, relying on users to initiate interactions. Proactive assistants go beyond this paradigm by autonomously initiating interactions based on users' activity contexts. However, appropriate interaction timing is user-specific and difficult to determine in advance, while online feedback offers valuable signals for personalization. Direct feedback-driven adaptation is therefore appealing, but remains challenging due to sparse interaction-worthy moments scattered across fine-grained user states. To address the issues, we propose Evidence-driven Online Preference Adaptation (EOPA), which grounds a user's interaction-timing preferences in measurable contextual evidence through two evidence carriers: temporal preference anchors and evidence-bearing activity prototypes. At each polling step, EOPA derives temporal and activity evidence from the carriers through user-prior-smoothed evidence estimation and uncertainty-guided evidence scaling, and adaptively fuses the evidence for interaction-or-silence decisions. When interaction is selected, an LLM uses high-quality historical responses as demonstrations to generate a context-aware response that better reflects user preferences. EOPA updates its evidence carriers and decision parameters from received online feedback without LLM-based reasoning or retraining. Extensive experiments on a ProPerSim-based benchmark show that EOPA improves the interaction-timing F1 score by 19.80 points over the strongest baseline in our experiments, substantially reduces inference latency for both silence and interaction steps, and lowers the average daily adaptation time from 11.41 to 0.39 seconds.",
+        "synopsis_zh": "EOPA 用时间偏好锚点和带证据的活动原型，从稀疏在线反馈中更新个性化介入时机；LLM 只在已选择交互后生成响应。",
+        "external_verification": {
+          "publication_status": "arxiv_preprint",
+          "venue": null,
+          "verified_on": null,
+          "source_urls": []
+        },
+        "analysis": {
+          "research_object": "如何从稀疏在线反馈中学习因人而异的交互发起时机。",
+          "mechanism": "用时间偏好锚点与活动原型承载上下文证据，经先验平滑和不确定性缩放形成交互或沉默策略，并用反馈在线更新。",
+          "evaluation": "ProPerSim-based benchmark；摘要报告交互时机 F1、推理延迟和每日适配时间，未提供长期真实部署结果。",
+          "key_findings": [
+            {
+              "statement": "EOPA 用时间和活动证据承载偏好。",
+              "evidence_ids": [
+                "ev-eopa-carriers"
+              ]
+            },
+            {
+              "statement": "策略更新不依赖 LLM 在线推理或重训练。",
+              "evidence_ids": [
+                "ev-eopa-no-llm-update"
+              ]
+            },
+            {
+              "statement": "摘要分别报告时机 F1 和每日适配时间。",
+              "evidence_ids": [
+                "ev-eopa-timing-f1",
+                "ev-eopa-adaptation-time"
+              ]
+            }
+          ],
+          "author_stated_limitations": [],
+          "analyst_inferred_limitations": [
+            "摘要证据来自 ProPerSim-based benchmark，未提供长期真实部署结果。",
+            "跨人群泛化、反馈噪声和冷启动表现未在摘要中说明。"
+          ]
+        },
+        "model_links": {
+          "stage_ids": [
+            "context-stream",
+            "intervention-policy",
+            "feedback-update"
+          ],
+          "option_ids": [
+            "online-preference-adaptation"
+          ],
+          "capability_ids": [
+            "timing-control"
+          ],
+          "proposition_ids": [
+            "prop-intervention-policy",
+            "prop-personalization-unknown",
+            "prop-constrained-anticipation"
+          ]
+        },
+        "metrics": [
+          {
+            "name": "Interaction-timing F1",
+            "value": "+19.80 points",
+            "context": "相对作者实验中的最强基线。",
+            "basis": "abstract",
+            "evidence_id": "ev-eopa-timing-f1"
+          },
+          {
+            "name": "Average daily adaptation time",
+            "value": "11.41 s → 0.39 s",
+            "context": "摘要报告的每日平均适配时间变化。",
+            "basis": "abstract",
+            "evidence_id": "ev-eopa-adaptation-time"
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "ev-prism-gate",
+        "paper_id": "2602.01532",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "PRISM 使用校准后的接受概率和成本推导阈值决定介入或沉默。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-prism-slow",
+        "paper_id": "2602.01532",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "PRISM 只在决策边界附近调用带反事实检查的慢推理。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-prism-false-alarms",
+        "paper_id": "2602.01532",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-prism-f1",
+        "paper_id": "2602.01532",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者在 ProactiveBench 上报告 F1 相对强基线提升 20.14%。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-pask-loop",
+        "paper_id": "2604.08000",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "PASK 把需求检测、记忆建模和主动服务基础设施连接为 DD-MM-PAS 闭环。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-pask-memory",
+        "paper_id": "2604.08000",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "PASK 使用 workspace、user 和 global 三层混合记忆。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-pask-latency-match",
+        "paper_id": "2604.08000",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "作者称 IntentFlow 在延迟约束下匹配 Gemini3-Flash，但摘要未给出数值。",
+        "excerpt": null,
+        "confidence": "medium"
+      },
+      {
+        "id": "ev-proact-preparation",
+        "paper_id": "2605.25971",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "ProAct 在用户提问前预测需求并准备证据。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proact-turns",
+        "paper_id": "2605.25971",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者在 ProActEval 上报告所需轮数下降 14.8%。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proact-user-effort",
+        "paper_id": "2605.25971",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者在 ProActEval 上报告用户工作量下降 11.7%。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proact-hallucination",
+        "paper_id": "2605.25971",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者在 ProActEval 上报告幻觉率下降 28.1%。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-collab-gate",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "ProACT 检测协作故障后决定保持沉默或发言。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-collab-sample-count",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告多用户协作基准包含 3,244 个回合级样例。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-collab-backbone-count",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告实验覆盖五种 LLM 主干。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-collab-appropriateness",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告 ProACT 相对直接聊天持续改善协作适切性。",
+        "excerpt": null,
+        "confidence": "medium"
+      },
+      {
+        "id": "ev-collab-noninterruptiveness",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告 ProACT 相对直接聊天持续改善非打扰性。",
+        "excerpt": null,
+        "confidence": "medium"
+      },
+      {
+        "id": "ev-collab-conciseness",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告 ProACT 相对直接聊天持续改善简洁性。",
+        "excerpt": null,
+        "confidence": "medium"
+      },
+      {
+        "id": "ev-collab-intervention-quality",
+        "paper_id": "2607.03730",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告 ProACT 相对直接聊天持续改善评审介入质量。",
+        "excerpt": null,
+        "confidence": "medium"
+      },
+      {
+        "id": "ev-proevent-benchmark",
+        "paper_id": "2607.17701",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "ProEvent 评估响应时机、单步正确性和多步正确性。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proevent-model-count",
+        "paper_id": "2607.17701",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告 ProEvent 实验覆盖八种 LLM 与 pipeline。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proevent-overact",
+        "paper_id": "2607.17701",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "negative_result",
+        "statement": "作者报告当前 Agent 经常过度行动。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proevent-cancellation",
+        "paper_id": "2607.17701",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "negative_result",
+        "statement": "作者报告当前 Agent 难以处理事件取消。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-proevent-correct-rate",
+        "paper_id": "2607.17701",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "negative_result",
+        "statement": "作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-eopa-carriers",
+        "paper_id": "2608.04416",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "EOPA 用时间偏好锚点和活动原型承载交互时机证据。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-eopa-no-llm-update",
+        "paper_id": "2608.04416",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "author_claim",
+        "statement": "EOPA 在不进行 LLM 在线推理或重训练的情况下更新介入策略。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-eopa-timing-f1",
+        "paper_id": "2608.04416",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点。",
+        "excerpt": null,
+        "confidence": "high"
+      },
+      {
+        "id": "ev-eopa-adaptation-time",
+        "paper_id": "2608.04416",
+        "source_depth": "abstract",
+        "locator": {
+          "type": "abstract",
+          "label": "Abstract"
+        },
+        "evidence_type": "measured_result",
+        "statement": "作者报告每日平均适配时间从 11.41 秒降至 0.39 秒。",
+        "excerpt": null,
+        "confidence": "high"
+      }
+    ],
+    "report_limitations": [
+      "这是 scoped literature scan，不是系统综述；查询与筛选协议不足以支持穷尽性声明。",
+      "六篇论文全部仅分析 arXiv 摘要；没有阅读全文、附录、代码、数据集或研究协议。",
+      "当前没有可成立的 authoritative field view；多作者组相似叙事不等于独立验证。",
+      "没有独立历史锚点，因此只能报告 submission signals，不能产生 emerging 或 structural trend。",
+      "没有外部核验正式发表状态、引用、独立复现或真实部署；arXiv 预印本不等同于同行评审证据。",
+      "技术选项位于不同机制阶段且没有共享任务，本报告不做路线排名。",
+      "机制闭环是分析者参考模型；design completion 不能伪装成来源支持的机制关系。",
+      "所有领先指标阈值均标为 analyst_policy，不是论文推导出的科学门槛。",
+      "independence_cluster_id 仅按作者组做保守区分，未核验机构、数据、代码或共同先验的依赖关系。",
+      "检索截止 2026-08-08；之后出现的论文、版本更新或撤回不在本报告范围内。"
+    ],
+    "technical_options": [
+      {
+        "id": "static-rule-policy",
+        "label_zh": "静态规则与用户设置",
+        "label_en": "Static rules and user settings",
+        "technical_bet": "用明确规则、用户设置和固定阈值决定何时提醒、询问或保持沉默。",
+        "relationship": "baseline",
+        "comparison_status": "not_comparable",
+        "comparison_note": "PRISM 摘要把脆弱启发式作为问题背景，但本次语料没有在共享任务上直接评估该 baseline；纳入它只因为主决策需要一个低复杂度比较对象。",
+        "mechanism_stage_ids": [
+          "intervention-policy",
+          "action-mode"
+        ],
+        "core_hypothesis": "在窄域、稳定且用户可配置的任务中，确定性规则可能以较低成本提供足够的介入控制。",
+        "representative_paper_ids": [
+          "2602.01532"
+        ],
+        "advantages": [
+          "行为确定",
+          "延迟低",
+          "用户设置可直接审计"
+        ],
+        "costs": [
+          "规则维护",
+          "长尾情境覆盖差",
+          "个性化依赖手工配置"
+        ],
+        "failure_modes": [
+          "环境变化后阈值失配",
+          "规则冲突",
+          "漏掉隐式需求"
+        ],
+        "valid_when": [
+          "任务边界窄且事件定义稳定",
+          "用户愿意显式配置"
+        ],
+        "invalid_when": [
+          "上下文高度开放",
+          "偏好快速变化且无法手工维护"
+        ],
+        "supporting_proposition_ids": [
+          "prop-intervention-policy"
+        ],
+        "falsifiers": [
+          "规则在跨用户和跨任务迁移时持续失准",
+          "维护成本超过可接受预算"
+        ]
+      },
+      {
+        "id": "end-to-end-llm-policy",
+        "label_zh": "端到端 LLM 介入判断",
+        "label_en": "End-to-end LLM intervention",
+        "technical_bet": "让同一 LLM 在上下文中联合完成需求推断、介入判断和响应生成。",
+        "relationship": "baseline",
+        "comparison_status": "not_comparable",
+        "comparison_note": "PRISM 与 ProACT 的摘要分别以长推理或 direct chat 作为问题背景/对照，但本次没有统一定义或共享任务上的端到端 baseline 结果。",
+        "mechanism_stage_ids": [
+          "candidate-inference",
+          "intervention-policy",
+          "execution"
+        ],
+        "core_hypothesis": "足够强的端到端模型可以减少组件接口，并在单次推理中联合优化判断与响应。",
+        "representative_paper_ids": [
+          "2602.01532",
+          "2607.03730",
+          "2607.17701"
+        ],
+        "advantages": [
+          "系统集成简单",
+          "上下文与生成共享表示",
+          "原型速度快"
+        ],
+        "costs": [
+          "介入理由难校准",
+          "推理成本高",
+          "策略与内容难独立审计"
+        ],
+        "failure_modes": [
+          "过度行动",
+          "沉默策略不稳定",
+          "高风险边界难设定"
+        ],
+        "valid_when": [
+          "任务低风险且人工确认充分",
+          "模型调用成本可接受"
+        ],
+        "invalid_when": [
+          "需要可审计成本阈值",
+          "错误行动高影响或不可逆"
+        ],
+        "supporting_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-state-failure"
+        ],
+        "falsifiers": [
+          "共享任务中无法维持可接受的误报与漏失帮助平衡",
+          "审计与校准成本持续高于组件化策略"
+        ]
+      },
+      {
+        "id": "cost-sensitive-gate",
+        "label_zh": "成本敏感门控",
+        "label_en": "Cost-sensitive gating",
+        "technical_bet": "把误报与漏失帮助的非对称成本显式写入介入阈值，并只在边界案例增加推理。",
+        "relationship": "complementary",
+        "comparison_status": "not_comparable",
+        "comparison_note": "PRISM 的成本门控与其他选项使用不同任务和指标；本次没有共享证据建立它与端到端或规则策略的相对排序。",
+        "mechanism_stage_ids": [
+          "intervention-policy",
+          "action-mode"
+        ],
+        "core_hypothesis": "可校准的独立 gate 比把是否介入隐含在生成模型中更可控、更高效。",
+        "representative_paper_ids": [
+          "2602.01532"
+        ],
+        "advantages": [
+          "决策阈值可调",
+          "可审计",
+          "计算集中于模糊案例"
+        ],
+        "costs": [
+          "需要成本标定",
+          "依赖接受概率校准",
+          "领域迁移需要重新设定阈值"
+        ],
+        "failure_modes": [
+          "错误成本模型",
+          "分布漂移后失准",
+          "高风险但低概率事件被忽略"
+        ],
+        "valid_when": [
+          "误报与漏失帮助可量化",
+          "用户接受信号可校准"
+        ],
+        "invalid_when": [
+          "成本随情境剧烈变化且不可观测",
+          "没有可靠反馈或校准数据"
+        ],
+        "supporting_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-constrained-anticipation"
+        ],
+        "falsifiers": [
+          "在相同预算下，显式门控不能产生可识别净效用且校准负担持续增加",
+          "门控跨场景校准持续失败"
+        ]
+      },
+      {
+        "id": "online-preference-adaptation",
+        "label_zh": "在线偏好适配",
+        "label_en": "Online preference adaptation",
+        "technical_bet": "用轻量时间与活动证据载体从反馈更新交互时机，把 LLM 留给已批准的响应生成。",
+        "relationship": "complementary",
+        "comparison_status": "not_comparable",
+        "comparison_note": "EOPA 只有单篇 ProPerSim-based benchmark 结果；与成本门控没有共享数据、成本函数或基线。",
+        "mechanism_stage_ids": [
+          "intervention-policy",
+          "feedback-update"
+        ],
+        "core_hypothesis": "个性化时机主要是可在线更新的偏好估计问题，不必每次调用 LLM 推理或重训练。",
+        "representative_paper_ids": [
+          "2608.04416"
+        ],
+        "advantages": [
+          "推理延迟较低",
+          "策略可随反馈更新",
+          "交互与生成职责分离"
+        ],
+        "costs": [
+          "冷启动",
+          "反馈稀疏与噪声",
+          "偏好漂移"
+        ],
+        "failure_modes": [
+          "将拒绝原因错误归因",
+          "群体先验压制个体差异",
+          "短期点击优化伤害长期信任"
+        ],
+        "valid_when": [
+          "存在重复情境与可解释反馈",
+          "用户偏好变化相对平稳"
+        ],
+        "invalid_when": [
+          "高影响的一次性决策",
+          "无法获得可靠反馈或撤回"
+        ],
+        "supporting_proposition_ids": [
+          "prop-intervention-policy",
+          "prop-personalization-unknown"
+        ],
+        "falsifiers": [
+          "跨用户与长期场景中的时机收益不再出现",
+          "反馈噪声导致打扰持续上升"
+        ]
+      },
+      {
+        "id": "anticipatory-memory",
+        "label_zh": "长期记忆与预判计算",
+        "label_en": "Long-memory anticipation",
+        "technical_bet": "持续维护用户与任务状态，并在空闲期预测需求、检索信息和准备证据。",
+        "relationship": "complementary",
+        "comparison_status": "not_comparable",
+        "comparison_note": "长期记忆与预判计算位于门控上游，可与其他选项组合，不是同层替代路线。",
+        "mechanism_stage_ids": [
+          "context-stream",
+          "state-memory",
+          "candidate-inference",
+          "execution"
+        ],
+        "core_hypothesis": "用户未来需求在历史与持续上下文中可预测，额外空闲计算能减少后续用户工作量。",
+        "representative_paper_ids": [
+          "2604.08000",
+          "2605.25971"
+        ],
+        "advantages": [
+          "可提前补齐信息",
+          "减少后续轮数",
+          "将计算从关键交互路径移出"
+        ],
+        "costs": [
+          "持续计算与存储",
+          "隐私与授权",
+          "状态过期和错误预判"
+        ],
+        "failure_modes": [
+          "准备无用内容",
+          "记忆污染",
+          "把相关性误当需求",
+          "证据到使用时已过期"
+        ],
+        "valid_when": [
+          "需求链相对可预测",
+          "准备任务低风险且可撤回"
+        ],
+        "invalid_when": [
+          "开放环境变化快",
+          "预测错误成本高于等待用户请求"
+        ],
+        "supporting_proposition_ids": [
+          "prop-anticipatory-preparation",
+          "prop-constrained-anticipation"
+        ],
+        "falsifiers": [
+          "计入额外计算和错误准备后净用户工作量不降",
+          "真实用户长期关闭或绕过该功能"
+        ]
+      },
+      {
+        "id": "scoped-trigger",
+        "label_zh": "事件或故障触发",
+        "label_en": "Event- or breakdown-scoped triggers",
+        "technical_bet": "把主动性限制在可定义的事件生命周期或协作故障上，以获得更清晰的触发与评测边界。",
+        "relationship": "complementary",
+        "comparison_status": "not_comparable",
+        "comparison_note": "事件或故障触发定义任务作用域，可与门控、记忆和在线适配组合，不构成同层竞争。",
+        "mechanism_stage_ids": [
+          "state-memory",
+          "candidate-inference",
+          "intervention-policy"
+        ],
+        "core_hypothesis": "比起开放式‘猜需求’，事件与故障状态提供更可评估的主动服务单元。",
+        "representative_paper_ids": [
+          "2607.03730",
+          "2607.17701"
+        ],
+        "advantages": [
+          "触发对象明确",
+          "可测沉默与取消",
+          "技能路由更可解释"
+        ],
+        "costs": [
+          "需要状态标签或规则",
+          "任务覆盖面有限",
+          "跨组织定义不一致"
+        ],
+        "failure_modes": [
+          "隐式事件漏检",
+          "取消未传播",
+          "协作故障跨文化失配"
+        ],
+        "valid_when": [
+          "事件或协作结构可观测",
+          "状态更新有明确来源"
+        ],
+        "invalid_when": [
+          "需求高度开放且无法形成稳定事件单元",
+          "没有可靠取消与过期信号"
+        ],
+        "supporting_proposition_ids": [
+          "prop-state-failure",
+          "prop-constrained-anticipation"
+        ],
+        "falsifiers": [
+          "在共享错误成本下，作用域触发没有可识别净收益",
+          "作用域定义导致大量真正需求被漏掉"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,3039 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>主动式 AI Agent：从论文信号到能力边界与技术决策</title>
+  <style>
+:root {
+  --paper: #f8f8f5;
+  --surface: #eef1ef;
+  --surface-strong: #e4e9e7;
+  --ink: #1b2023;
+  --ink-2: #4e585d;
+  --ink-3: #737d82;
+  --line: #d2d8d6;
+  --line-strong: #a9b3b1;
+  --accent: #3f6270;
+  --positive: #476758;
+  --caution: #80683e;
+  --negative: #805151;
+  --font-text: "Iowan Old Style", "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, Georgia, serif;
+  --font-ui: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "SFMono-Regular", "IBM Plex Mono", Consolas, monospace;
+  --max-width: 1180px;
+  --reading-width: 780px;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  line-break: strict;
+  overflow-x: hidden;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: clamp(15px, 0.18vw + 14.4px, 16.5px);
+  font-kerning: normal;
+  font-synthesis: none;
+  line-height: 1.74;
+  overflow-x: hidden;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+[lang="en"] {
+  hyphens: auto;
+  word-break: normal;
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote,
+figure {
+  margin-top: 0;
+}
+
+p {
+  max-width: 76ch;
+  orphans: 3;
+  widows: 3;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.83em;
+  overflow-wrap: anywhere;
+}
+
+.eyebrow,
+.title-en,
+.decision-context-header,
+.toc,
+.section-heading,
+.section-note,
+.status,
+.confidence,
+.ref-set,
+.semantic-empty,
+.thesis-stage,
+.epistemic-ceilings,
+.ceiling-rationale,
+.belief-update span,
+.proposition-matrix,
+.proposition-id,
+.profile-list,
+.qualification-list,
+.mechanism-figure,
+.mechanism-flag,
+.model-provenance,
+.edge-support,
+.mechanism-bottleneck,
+.stage-number,
+.stage-io,
+.entity-id,
+.technical-bet,
+.option-classification,
+.comparison-note,
+.hypothesis,
+.categorical-rail,
+.capability-context,
+.boundary-evidence-list,
+.readiness-gap,
+.transition-shift,
+.old-constraint,
+.decision-action,
+.decision-trigger,
+.indicator-meta,
+.threshold-rule,
+.paper-kicker,
+.authors,
+.paper-tags,
+.model-links,
+.paper-analysis,
+table,
+.paper-links,
+.evidence-record,
+.proposition-index-table,
+.method-counts,
+.screening-counts,
+.coverage-counts,
+.scope-summary dl,
+.source-list,
+.empty,
+.site-footer {
+  font-family: var(--font-ui);
+}
+
+.report-header,
+.toc,
+.report,
+.site-footer {
+  width: min(calc(100% - 48px), var(--max-width));
+  min-width: 0;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.report-header {
+  padding: clamp(54px, 8vw, 98px) 0 clamp(34px, 5vw, 60px);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.eyebrow {
+  margin-bottom: 1.35rem;
+  color: var(--accent);
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 20em;
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.026em;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.title-en {
+  max-width: 52rem;
+  margin: 1.05rem 0 0;
+  color: var(--ink-2);
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.48;
+  overflow-wrap: anywhere;
+}
+
+.research-question {
+  max-width: var(--reading-width);
+  margin: clamp(1.8rem, 4vw, 3.1rem) 0 0;
+  padding-left: 1.15rem;
+  border-left: 2px solid var(--accent);
+  font-size: clamp(1.02rem, 1.55vw, 1.24rem);
+  overflow-wrap: anywhere;
+}
+
+.decision-context-header {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 1.8rem;
+  border-block: 1px solid var(--line);
+}
+
+.decision-context-header > div {
+  min-width: 0;
+  padding: 0.72rem 1rem 0.78rem 0;
+  border-right: 1px solid var(--line);
+}
+
+.decision-context-header > div:not(:first-child) {
+  padding-left: 1rem;
+}
+
+.decision-context-header > div:last-child {
+  border-right: 0;
+}
+
+.decision-context-header dt {
+  color: var(--ink-3);
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.decision-context-header dd {
+  margin: 0.25rem 0 0;
+  color: var(--ink-2);
+  font-family: var(--font-text);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.toc {
+  padding-block: 0.8rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.toc ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc li {
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.toc li:nth-last-child(-n + 5) {
+  border-bottom: 0;
+}
+
+.toc a {
+  display: block;
+  padding: 0.45rem 0.65rem 0.5rem 0;
+  text-decoration: none;
+}
+
+.toc span,
+.toc small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.toc span {
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.toc small {
+  color: var(--ink-3);
+  font-size: 0.59rem;
+}
+
+.section {
+  padding-block: clamp(48px, 7vw, 84px);
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 1rem;
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: 2.1rem minmax(0, 1fr);
+  gap: 0.95rem;
+  margin-bottom: clamp(28px, 4vw, 46px);
+}
+
+.section-heading > span {
+  padding-top: 0.36rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.65vw, 2.08rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.24;
+}
+
+.section-heading p {
+  margin: 0.2rem 0 0;
+  color: var(--ink-3);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.section-note {
+  max-width: var(--reading-width);
+  margin: -1.4rem 0 2rem 3.05rem;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+}
+
+.subsection,
+.paper-dossiers,
+.evidence-ledger,
+.report-limitations,
+.sources {
+  margin-top: clamp(36px, 6vw, 66px);
+}
+
+.subsection-title {
+  margin: 0 0 1.15rem;
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+
+.subsection-title span,
+h3 span,
+h4 span,
+h5 span {
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 0.72em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.empty {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.65rem;
+  margin: 0;
+  padding: 0.9rem 0;
+  color: var(--ink-3);
+  border-top: 1px solid var(--line);
+  font-size: 0.74rem;
+  font-style: italic;
+}
+
+.plain-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.plain-list li {
+  margin-bottom: 0.4rem;
+}
+
+.status {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.07rem 0.32rem;
+  color: var(--accent);
+  border: 1px solid currentColor;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+  white-space: normal;
+}
+
+.status-established,
+.status-structural,
+.status-validated,
+.status-mature {
+  color: var(--positive);
+}
+
+.status-contested,
+.status-conflicting,
+.status-reversal,
+.status-weakened {
+  color: var(--negative);
+}
+
+.status-credible-emerging,
+.status-emerging,
+.status-signal,
+.status-early {
+  color: var(--caution);
+}
+
+.confidence {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--ink-3);
+  font-size: 0.64rem;
+}
+
+.ref-set {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.26rem;
+}
+
+.evidence-ref,
+.proposition-ref,
+.paper-ref,
+.entity-ref {
+  padding: 0.05rem 0.28rem;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 0.59rem;
+  line-height: 1.45;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.entity-ref {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.evidence-ref {
+  color: var(--accent);
+  border-color: var(--line-strong);
+}
+
+.proposition-ref {
+  color: var(--positive);
+}
+
+.semantic-empty {
+  color: var(--ink-3);
+  font-size: 0.64rem;
+  font-style: italic;
+}
+
+.thesis-block {
+  max-width: 940px;
+  padding: 1.35rem 0 1.5rem 1.35rem;
+  border-left: 2px solid var(--accent);
+}
+
+.thesis-stage {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.direct-answer {
+  max-width: 800px;
+  margin: 0.8rem 0 0;
+  font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+}
+
+.stage-rationale {
+  max-width: var(--reading-width);
+  margin: 1rem 0 0;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.epistemic-ceilings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 900px;
+  margin: 1.35rem 0 0;
+  border-block: 1px solid var(--line-strong);
+}
+
+.epistemic-ceiling-item {
+  min-width: 0;
+  padding: 0.82rem 1rem 0.88rem 0;
+  border-right: 1px solid var(--line);
+}
+
+.epistemic-ceiling-item:not(:first-child) {
+  padding-left: 1rem;
+}
+
+.epistemic-ceiling-item:last-child {
+  border-right: 0;
+}
+
+.epistemic-ceiling-item dt {
+  color: var(--ink-3);
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.epistemic-ceiling-item dd {
+  margin: 0.35rem 0 0;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.ceiling-rationale {
+  max-width: 900px;
+  margin: 0;
+  padding: 0.72rem 0;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.72rem;
+}
+
+.thesis-relevance {
+  max-width: var(--reading-width);
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.thesis-relevance h3 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+}
+
+.thesis-relevance p {
+  margin: 0;
+}
+
+.thesis-block footer,
+.belief-update footer,
+.mechanism-stage footer,
+.approach footer,
+.capability footer,
+.transition footer,
+.maturity-dimension footer,
+.decision footer,
+.indicator footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  align-items: center;
+  margin-top: 1rem;
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+}
+
+.belief-updates {
+  border-top: 1px solid var(--line-strong);
+}
+
+.belief-update {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  padding: 1rem 0 1.15rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.belief-update > div {
+  padding-right: 1.2rem;
+}
+
+.belief-update > div:nth-child(2) {
+  padding-left: 1.2rem;
+  border-left: 1px solid var(--line);
+}
+
+.belief-update span {
+  color: var(--accent);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.belief-update p {
+  margin: 0.35rem 0 0;
+}
+
+.belief-update footer {
+  grid-column: 1 / -1;
+}
+
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  contain: inline-size;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--ink-2);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+thead {
+  color: var(--ink-3);
+  font-size: 0.61rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+th,
+td {
+  padding: 0.78rem 0.82rem 0.82rem 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+th:not(:first-child),
+td:not(:first-child) {
+  padding-left: 0.82rem;
+}
+
+tbody th {
+  color: var(--ink);
+  font-weight: 600;
+  text-align: left;
+}
+
+.proposition-matrix {
+  min-width: 960px;
+  table-layout: fixed;
+}
+
+.proposition-matrix th:nth-child(1) { width: 28%; }
+.proposition-matrix th:nth-child(2) { width: 14%; }
+.proposition-matrix th:nth-child(3) { width: 29%; }
+.proposition-matrix th:nth-child(4) { width: 29%; }
+
+.proposition-row {
+  scroll-margin-top: 1rem;
+}
+
+.proposition-row th p {
+  margin: 0.35rem 0;
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.proposition-row th small,
+.proposition-row td > small,
+.proposition-id {
+  display: block;
+  color: var(--ink-3);
+  font-size: 0.59rem;
+  font-weight: 500;
+}
+
+.proposition-id {
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.profile-list,
+.qualification-list {
+  margin: 0;
+}
+
+.profile-list > div,
+.qualification-list > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.4rem;
+  padding-block: 0.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.profile-list dt,
+.qualification-list dt {
+  color: var(--ink-3);
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.profile-list dd,
+.qualification-list dd {
+  margin: 0;
+}
+
+.profile-rationale,
+.decision-relevance {
+  margin: 0.55rem 0 0;
+  color: var(--ink-3);
+  font-family: var(--font-text);
+  font-size: 0.72rem;
+}
+
+.evidence-pair {
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence-pair > div + div {
+  margin-top: 0.75rem;
+}
+
+.evidence-pair b {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--ink-3);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.model-provenance {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  gap: clamp(24px, 5vw, 64px);
+  margin: 0 0 1.35rem 3.05rem;
+  padding-block: 0.75rem;
+  border-block: 1px solid var(--line);
+}
+
+.model-provenance > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.model-provenance span {
+  padding: 0.08rem 0.32rem;
+  color: var(--accent);
+  border: 1px solid currentColor;
+  font-size: 0.61rem;
+  font-weight: 700;
+}
+
+.model-provenance p {
+  margin: 0;
+  color: var(--ink-2);
+  font-family: var(--font-text);
+  font-size: 0.78rem;
+}
+
+.mechanism-statement,
+.frontier-statement {
+  max-width: 900px;
+  margin: 0 0 1.8rem 3.05rem;
+  font-size: clamp(1.08rem, 1.7vw, 1.32rem);
+  line-height: 1.66;
+}
+
+.mechanism-figure {
+  margin: 0;
+}
+
+.mechanism-figure figcaption {
+  margin-bottom: 0.85rem;
+  color: var(--ink-3);
+  font-size: 0.64rem;
+}
+
+.mechanism-pipeline {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  grid-auto-columns: minmax(230px, 1fr);
+  grid-auto-flow: column;
+  contain: inline-size;
+  overflow-x: auto;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  overscroll-behavior-inline: contain;
+}
+
+.mechanism-pipeline.stage-count-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: initial; }
+.mechanism-pipeline.stage-count-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: initial; }
+.mechanism-pipeline.stage-count-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: initial; }
+.mechanism-pipeline.stage-count-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-flow: initial; }
+.mechanism-pipeline.stage-count-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-flow: initial; }
+.mechanism-pipeline.stage-count-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-flow: initial; }
+.mechanism-pipeline.stage-count-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); grid-auto-flow: initial; }
+
+.mechanism-stage {
+  position: relative;
+  min-width: 0;
+  padding: 1.1rem 1.15rem 1.25rem;
+  border-right: 1px solid var(--line);
+  scroll-margin-top: 1rem;
+}
+
+.mechanism-stage:first-child {
+  padding-left: 0;
+}
+
+.mechanism-stage:last-child {
+  border-right: 0;
+}
+
+.mechanism-stage:not(:last-child)::after {
+  position: absolute;
+  top: 1.35rem;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  background: var(--paper);
+  border-top: 1px solid var(--accent);
+  border-right: 1px solid var(--accent);
+  content: "";
+  rotate: 45deg;
+  z-index: 1;
+}
+
+.mechanism-stage.is-critical {
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+
+.mechanism-stage.is-bottleneck {
+  box-shadow: inset 0 3px 0 var(--negative);
+}
+
+.mechanism-stage > header {
+  display: grid;
+  grid-template-columns: 1.7rem minmax(0, 1fr);
+  gap: 0.55rem;
+}
+
+.stage-number {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+}
+
+.mechanism-stage h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.mechanism-stage header p {
+  margin: 0.05rem 0 0;
+  color: var(--ink-3);
+  font-size: 0.62rem;
+}
+
+.mechanism-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.7rem;
+}
+
+.mechanism-flag {
+  color: var(--accent);
+  font-size: 0.57rem;
+  font-weight: 700;
+}
+
+.mechanism-flag.bottleneck {
+  color: var(--negative);
+}
+
+.stage-purpose {
+  margin: 0.75rem 0 0;
+  font-size: 0.86rem;
+}
+
+.stage-io {
+  margin: 0.8rem 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.stage-io > div {
+  padding-block: 0.45rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.stage-io dt,
+.capability-context dt,
+.indicator-meta dt,
+.paper-analysis dt,
+.scope-summary dt,
+.screening-counts dt,
+.coverage-counts dt {
+  color: var(--ink-3);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.stage-io dd,
+.capability-context dd,
+.indicator-meta dd,
+.paper-analysis dd,
+.scope-summary dd,
+.screening-counts dd,
+.coverage-counts dd {
+  margin: 0.18rem 0 0;
+}
+
+.stage-io dd {
+  font-family: var(--font-text);
+  font-size: 0.78rem;
+}
+
+.stage-detail {
+  margin-top: 0.8rem;
+}
+
+h4,
+h5 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-ui);
+  font-size: 0.71rem;
+  font-weight: 700;
+}
+
+.stage-detail > div + div {
+  margin-top: 0.75rem;
+}
+
+.stage-detail .plain-list {
+  color: var(--ink-2);
+  font-family: var(--font-text);
+  font-size: 0.77rem;
+}
+
+.edge-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line-strong);
+  list-style: none;
+}
+
+.mechanism-edge {
+  display: grid;
+  grid-template-columns: auto 1rem auto minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: baseline;
+  padding: 0.8rem 1rem 0.9rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+}
+
+.mechanism-edge:nth-child(even) {
+  padding-left: 1rem;
+  border-right: 0;
+}
+
+.mechanism-edge p {
+  margin: 0;
+  color: var(--ink-2);
+  font-family: var(--font-text);
+}
+
+.edge-support {
+  grid-column: 4;
+  color: var(--accent);
+  font-size: 0.57rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.mechanism-edge .ref-set {
+  grid-column: 1 / -1;
+}
+
+.model-limitations {
+  max-width: var(--reading-width);
+  margin-top: 2rem;
+  padding: 0.9rem 0 0.9rem 1.1rem;
+  border-left: 2px solid var(--line-strong);
+}
+
+.model-limitations h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+}
+
+.mechanism-bottlenecks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line-strong);
+}
+
+.mechanism-bottleneck {
+  min-width: 0;
+  padding: 0.9rem 1rem 1rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.mechanism-bottleneck:nth-child(even) {
+  padding-left: 1rem;
+  border-right: 0;
+}
+
+.mechanism-bottleneck header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 0.66rem;
+}
+
+.mechanism-bottleneck header a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.mechanism-bottleneck header span {
+  color: var(--ink-3);
+}
+
+.mechanism-bottleneck p {
+  margin: 0.55rem 0 0.7rem;
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+}
+
+.approach-list,
+.technical-option-list,
+.capability-list,
+.transition-list,
+.maturity-list,
+.decision-list,
+.indicator-list {
+  border-top: 1px solid var(--line-strong);
+}
+
+.approach,
+.technical-option,
+.capability,
+.transition,
+.maturity-dimension,
+.decision,
+.indicator {
+  padding: clamp(26px, 4vw, 46px) 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 1rem;
+}
+
+.approach > header,
+.technical-option > header,
+.capability > header,
+.transition > header,
+.maturity-dimension > header,
+.decision > header,
+.indicator > header {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.entity-id {
+  display: block;
+  max-width: 100%;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  overflow-wrap: anywhere;
+}
+
+.approach h3,
+.technical-option h3,
+.capability h3,
+.transition h3,
+.maturity-dimension h3,
+.decision h3,
+.indicator h3 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.08rem, 1.8vw, 1.35rem);
+}
+
+.technical-bet {
+  max-width: var(--reading-width);
+  margin: 0.9rem 0 0;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+
+.option-classification {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.option-classification span {
+  padding: 0.06rem 0.3rem;
+  color: var(--ink-2);
+  border: 1px solid var(--line-strong);
+  font-size: 0.59rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.option-classification .comparison-status {
+  color: var(--accent);
+}
+
+.option-classification .status-not-comparable {
+  color: var(--ink-3);
+}
+
+.comparison-note {
+  max-width: 900px;
+  margin-top: 1rem;
+  padding: 0.7rem 0 0.75rem 1rem;
+  border-left: 2px solid var(--line-strong);
+}
+
+.comparison-note > span {
+  color: var(--accent);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.comparison-note p {
+  margin: 0.25rem 0 0;
+  color: var(--ink-2);
+}
+
+.hypothesis,
+.old-constraint,
+.decision-trigger {
+  max-width: 900px;
+  margin-top: 1.1rem;
+  padding: 0.8rem 0 0.85rem 1rem;
+  border-left: 2px solid var(--accent);
+}
+
+.hypothesis span,
+.old-constraint span,
+.decision-trigger span {
+  color: var(--accent);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hypothesis p,
+.old-constraint p,
+.decision-trigger p {
+  margin: 0.25rem 0 0;
+}
+
+.approach-grid,
+.option-grid,
+.capability-grid,
+.maturity-detail,
+.decision-grid,
+.indicator-grid,
+.paper-limitations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+
+.approach-grid > div,
+.option-grid > div,
+.capability-grid > div,
+.maturity-detail > div,
+.decision-grid > div,
+.indicator-grid > div,
+.paper-limitations > div {
+  padding: 0.85rem 1.15rem 0.95rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.approach-grid > div:nth-child(even),
+.option-grid > div:nth-child(even),
+.capability-grid > div:nth-child(even),
+.maturity-detail > div:nth-child(even),
+.decision-grid > div:nth-child(even),
+.indicator-grid > div:nth-child(even),
+.paper-limitations > div:nth-child(even) {
+  padding-left: 1.15rem;
+  border-right: 0;
+}
+
+.validity-grid,
+.support-counter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 5vw, 64px);
+  margin-top: 1.3rem;
+}
+
+.categorical-rail {
+  display: grid;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.frontier-rail,
+.maturity-rail {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.categorical-rail li {
+  position: relative;
+  min-width: 0;
+  padding: 0.9rem 0.7rem 0 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.categorical-rail li::before {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  content: "";
+}
+
+.categorical-rail li.is-current::before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.categorical-rail b,
+.categorical-rail small {
+  display: block;
+}
+
+.categorical-rail b {
+  color: var(--ink-2);
+  font-size: 0.65rem;
+  font-weight: 650;
+}
+
+.categorical-rail .is-current b {
+  color: var(--accent);
+}
+
+.categorical-rail small {
+  color: var(--ink-3);
+  font-size: 0.55rem;
+  overflow-wrap: anywhere;
+}
+
+.boundary-shift,
+.transition-shift {
+  display: grid;
+  margin-top: 1.35rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.boundary-shift {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.boundary-shift > div,
+.transition-shift > div {
+  padding: 0.9rem 1.2rem 1rem 0;
+}
+
+.boundary-shift > div:last-child {
+  padding-left: 1.2rem;
+  border-left: 1px solid var(--line);
+}
+
+.boundary-shift span,
+.transition-shift span {
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.boundary-shift p,
+.transition-shift p {
+  margin: 0.35rem 0 0;
+  font-size: 0.91rem;
+}
+
+.capability-context {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 1rem 0 0;
+}
+
+.capability-context > div {
+  padding: 0.6rem 1.1rem 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.capability-context > div:last-child {
+  padding-left: 1.1rem;
+  border-left: 1px solid var(--line);
+}
+
+.capability-context dd {
+  font-family: var(--font-text);
+  font-size: 0.86rem;
+}
+
+.capability-evidence {
+  margin-top: 1.35rem;
+}
+
+.capability-evidence > h4 {
+  margin-bottom: 0.65rem;
+  color: var(--accent);
+}
+
+.boundary-evidence-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line-strong);
+  list-style: none;
+}
+
+.boundary-evidence-item {
+  display: grid;
+  grid-template-columns: 2.9rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.72rem 0 0.78rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.boundary-evidence-item .evidence-ref {
+  width: max-content;
+  margin-top: 0.1rem;
+}
+
+.boundary-evidence-item p {
+  max-width: 880px;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+}
+
+.boundary-evidence-item small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--ink-3);
+  font-size: 0.6rem;
+}
+
+.observed-failures {
+  margin-top: 1.35rem;
+}
+
+.observed-failures > h4 {
+  margin-bottom: 0.65rem;
+  color: var(--negative);
+}
+
+.observed-failure-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line-strong);
+  list-style: none;
+}
+
+.observed-failure-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem 1rem;
+  align-items: start;
+  padding: 0.68rem 0 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.observed-failure-item p {
+  margin: 0;
+  font-family: var(--font-text);
+  font-size: 0.86rem;
+}
+
+.observed-failure-item .ref-set {
+  justify-content: flex-end;
+}
+
+.anticipated-risks h4 {
+  color: var(--caution);
+}
+
+.readiness-gap-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line-strong);
+}
+
+.readiness-gap {
+  min-width: 0;
+  padding: 1rem 1.15rem 1.1rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.readiness-gap:nth-child(even) {
+  padding-left: 1.15rem;
+  border-right: 0;
+}
+
+.readiness-gap h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.readiness-gap dl {
+  margin: 0.8rem 0;
+}
+
+.readiness-gap dl > div {
+  padding-block: 0.45rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.readiness-gap dt {
+  color: var(--ink-3);
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.readiness-gap dd {
+  margin: 0.18rem 0 0;
+  font-family: var(--font-text);
+  font-size: 0.82rem;
+}
+
+.transition > header time {
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  white-space: nowrap;
+}
+
+.transition-shift {
+  grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.transition-shift > div:last-child {
+  padding-left: 1.2rem;
+}
+
+.transition-shift > i {
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  border-inline: 1px solid var(--line);
+  font-family: var(--font-ui);
+  font-style: normal;
+}
+
+.signal-transition .transition-shift {
+  border-block-style: dashed;
+}
+
+.signal-transition .transition-shift > i {
+  color: var(--caution);
+  border-inline-style: dashed;
+}
+
+.transition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.transition-grid > div {
+  padding: 0.8rem 1rem 0.9rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.transition-grid > div:not(:first-child) {
+  padding-left: 1rem;
+}
+
+.transition-grid > div:last-child {
+  border-right: 0;
+}
+
+.maturity-dimension > p {
+  max-width: var(--reading-width);
+  margin: 0.8rem 0 0;
+}
+
+.decision > header > span {
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+}
+
+.decision-action {
+  max-width: 880px;
+  margin: 1rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent);
+  font-size: 1.03rem;
+}
+
+.agenda-list .decision {
+  padding-block: 1.4rem;
+}
+
+.indicator-observation {
+  max-width: var(--reading-width);
+  margin: 0.7rem 0 0;
+}
+
+.indicator-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.indicator-meta > div {
+  padding: 0.65rem 0.8rem 0.7rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.indicator-meta > div:not(:first-child) {
+  padding-left: 0.8rem;
+}
+
+.indicator-meta > div:last-child {
+  border-right: 0;
+}
+
+.indicator-meta dd {
+  font-family: var(--font-text);
+  font-size: 0.82rem;
+}
+
+.threshold-rule {
+  max-width: 900px;
+  margin-top: 1rem;
+  padding: 0.75rem 0 0.8rem 1rem;
+  border-left: 2px solid var(--caution);
+}
+
+.threshold-rule header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  color: var(--caution);
+  font-size: 0.61rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.threshold-rule p {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-text);
+  font-size: 0.91rem;
+}
+
+.threshold-rule small {
+  display: block;
+  margin-top: 0.28rem;
+  color: var(--ink-3);
+  font-size: 0.64rem;
+}
+
+.scope-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr);
+  gap: clamp(30px, 6vw, 72px);
+}
+
+.lead-rule {
+  padding-left: 1.15rem;
+  border-left: 2px solid var(--accent);
+}
+
+.lead-rule h3 {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+}
+
+.lead-rule p {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.scope-summary dl {
+  margin: 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.scope-summary dl > div {
+  padding-block: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.scope-summary dd {
+  font-size: 0.76rem;
+}
+
+.method-counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 48px);
+  margin-top: 2rem;
+}
+
+.screening-counts,
+.coverage-counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(78px, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.screening-counts > div,
+.coverage-counts > div {
+  min-width: 0;
+  padding: 0.65rem 0.55rem 0.7rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.screening-counts > div:not(:first-child),
+.coverage-counts > div:not(:first-child) {
+  padding-left: 0.55rem;
+}
+
+.screening-counts > div:last-child,
+.coverage-counts > div:last-child {
+  border-right: 0;
+}
+
+.screening-counts dd,
+.coverage-counts dd {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 650;
+}
+
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 48px);
+  margin-top: 2rem;
+}
+
+.criteria-grid h3 {
+  margin: 0 0 0.7rem;
+  font-size: 0.92rem;
+}
+
+.query-table {
+  min-width: 820px;
+}
+
+.terminology-table {
+  min-width: 680px;
+}
+
+.terminology-table th:first-child {
+  width: 20%;
+}
+
+.layer-table-wrap {
+  margin-top: 1.4rem;
+}
+
+.layer-table {
+  min-width: 900px;
+}
+
+.proposition-index {
+  margin-top: clamp(46px, 7vw, 84px);
+}
+
+.proposition-index-table {
+  min-width: 720px;
+}
+
+.proposition-index-table th:first-child {
+  width: 5rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.proposition-index-table td:nth-child(2) {
+  width: 16rem;
+}
+
+.layer-table tbody th small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--ink-3);
+  font-size: 0.58rem;
+  font-weight: 500;
+}
+
+.paper-dossiers,
+.evidence-ledger {
+  scroll-margin-top: 1rem;
+}
+
+.paper-record {
+  padding: 1.8rem 0 2rem;
+  border-top: 1px solid var(--line-strong);
+  scroll-margin-top: 1rem;
+}
+
+.paper-header h4 {
+  max-width: 940px;
+  margin: 0.55rem 0 0;
+  font-family: var(--font-text);
+  font-size: clamp(1.12rem, 1.8vw, 1.42rem);
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.paper-kicker {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+}
+
+.paper-title-zh {
+  margin: 0.5rem 0 0;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
+.authors {
+  margin: 0.6rem 0 0;
+  color: var(--ink-3);
+  font-size: 0.69rem;
+}
+
+.paper-tags,
+.paper-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  margin-top: 0.75rem;
+  color: var(--ink-3);
+  font-size: 0.63rem;
+}
+
+.paper-synopsis {
+  max-width: var(--reading-width);
+  margin: 1rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--line-strong);
+}
+
+.model-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 1.1rem;
+  border-top: 1px solid var(--line);
+}
+
+.model-links > div {
+  min-width: 0;
+  padding: 0.6rem 0.7rem 0.65rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.model-links > div:not(:first-child) {
+  padding-left: 0.7rem;
+}
+
+.model-links > div:last-child {
+  border-right: 0;
+}
+
+.model-links b {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--ink-3);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.paper-analysis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.paper-analysis > div {
+  padding: 0.7rem 0.9rem 0.75rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.paper-analysis > div:not(:first-child) {
+  padding-left: 0.9rem;
+}
+
+.paper-analysis > div:last-child {
+  border-right: 0;
+}
+
+.paper-analysis dd {
+  font-family: var(--font-text);
+  font-size: 0.82rem;
+}
+
+.paper-subsection {
+  margin-top: 1.35rem;
+}
+
+.finding-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.finding-list li {
+  padding: 0.7rem 0 0.8rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.finding-list p {
+  margin: 0 0 0.4rem;
+  font-size: 0.86rem;
+}
+
+.metric-table {
+  min-width: 760px;
+}
+
+.metric-value {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.abstract-source {
+  margin-top: 1.4rem;
+  padding-block: 0.7rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.abstract-source summary {
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.abstract-source p {
+  max-width: 920px;
+  margin: 0.9rem 0 0;
+  color: var(--ink-2);
+  font-size: 0.84rem;
+}
+
+.paper-links {
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.evidence-record {
+  padding: 0.9rem 0 1rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 1rem;
+}
+
+.evidence-record:first-of-type {
+  border-top-color: var(--line-strong);
+}
+
+.evidence-record > header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+
+.evidence-id {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.evidence-record header div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  color: var(--ink-3);
+  font-size: 0.61rem;
+}
+
+.evidence-record > p {
+  margin: 0.5rem 0 0;
+}
+
+.evidence-record blockquote {
+  max-width: 860px;
+  margin: 0.7rem 0 0;
+  padding-left: 0.9rem;
+  color: var(--ink-2);
+  border-left: 1px solid var(--line-strong);
+  font-family: var(--font-text);
+  font-size: 0.81rem;
+  font-style: italic;
+}
+
+.evidence-record footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  align-items: center;
+  margin-top: 0.6rem;
+  color: var(--ink-3);
+  font-size: 0.61rem;
+}
+
+.report-limitations {
+  max-width: var(--reading-width);
+  padding: 1rem 0 1rem 1.1rem;
+  border-left: 2px solid var(--accent);
+}
+
+.source-list {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.source-list li {
+  padding: 0.6rem 0 0.7rem 0.3rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.source-list a {
+  display: block;
+  max-width: 920px;
+  overflow-wrap: anywhere;
+}
+
+.source-list span {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.59rem;
+}
+
+.site-footer {
+  padding: 1.4rem 0 3rem;
+  color: var(--ink-3);
+  font-size: 0.61rem;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .toc ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toc li:nth-last-child(-n + 5) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .toc li:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .mechanism-pipeline,
+  .mechanism-pipeline[class*="stage-count-"] {
+    grid-template-columns: none;
+    grid-auto-columns: minmax(210px, 1fr);
+    grid-auto-flow: column;
+  }
+
+  .edge-list,
+  .approach-grid,
+  .option-grid,
+  .capability-grid,
+  .mechanism-bottlenecks,
+  .readiness-gap-list,
+  .maturity-detail,
+  .decision-grid,
+  .indicator-grid,
+  .paper-limitations,
+  .scope-summary,
+  .method-counts,
+  .criteria-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mechanism-edge,
+  .mechanism-edge:nth-child(even),
+  .approach-grid > div,
+  .approach-grid > div:nth-child(even),
+  .option-grid > div,
+  .option-grid > div:nth-child(even),
+  .capability-grid > div,
+  .capability-grid > div:nth-child(even),
+  .maturity-detail > div,
+  .maturity-detail > div:nth-child(even),
+  .decision-grid > div,
+  .decision-grid > div:nth-child(even),
+  .indicator-grid > div,
+  .indicator-grid > div:nth-child(even),
+  .paper-limitations > div,
+  .paper-limitations > div:nth-child(even),
+  .mechanism-bottleneck,
+  .mechanism-bottleneck:nth-child(even),
+  .readiness-gap,
+  .readiness-gap:nth-child(even) {
+    padding-left: 0;
+    border-right: 0;
+  }
+
+  .model-links,
+  .indicator-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .model-links > div:nth-child(even),
+  .indicator-meta > div:nth-child(even) {
+    border-right: 0;
+  }
+
+  .model-links > div:nth-child(n + 3),
+  .indicator-meta > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .paper-analysis {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-analysis > div,
+  .paper-analysis > div:not(:first-child) {
+    padding-left: 0;
+    border-right: 0;
+  }
+
+  .observed-failure-item {
+    grid-template-columns: 1fr;
+  }
+
+  .observed-failure-item .ref-set {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 620px) {
+  .report-header,
+  .toc,
+  .report,
+  .site-footer {
+    width: min(calc(100% - 28px), var(--max-width));
+  }
+
+  .report-header {
+    padding-top: 40px;
+  }
+
+  h1 {
+    font-size: 2.08rem;
+  }
+
+  .section-heading {
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+
+  .section-note,
+  .model-provenance,
+  .mechanism-statement,
+  .frontier-statement {
+    margin-left: 2.15rem;
+  }
+
+  .decision-context-header,
+  .epistemic-ceilings,
+  .model-provenance {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-context-header > div,
+  .decision-context-header > div:not(:first-child),
+  .epistemic-ceiling-item,
+  .epistemic-ceiling-item:not(:first-child) {
+    padding-left: 0;
+    border-right: 0;
+  }
+
+  .decision-context-header > div:not(:last-child),
+  .epistemic-ceiling-item:not(:last-child) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .belief-update,
+  .boundary-shift,
+  .capability-context,
+  .validity-grid,
+  .support-counter {
+    grid-template-columns: 1fr;
+  }
+
+  .belief-update > div,
+  .belief-update > div:nth-child(2),
+  .boundary-shift > div,
+  .boundary-shift > div:last-child,
+  .capability-context > div,
+  .capability-context > div:last-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .belief-update > div:nth-child(2),
+  .boundary-shift > div:last-child,
+  .capability-context > div:last-child {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .mechanism-pipeline,
+  .mechanism-pipeline[class*="stage-count-"] {
+    grid-template-columns: 1fr;
+    grid-auto-columns: auto;
+    grid-auto-flow: row;
+    overflow: visible;
+  }
+
+  .mechanism-stage,
+  .mechanism-stage:first-child {
+    padding: 1rem 0 1.2rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mechanism-stage:last-child {
+    border-bottom: 0;
+  }
+
+  .mechanism-stage:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -5px;
+    left: 1rem;
+    rotate: 135deg;
+  }
+
+  .transition > header,
+  .approach > header,
+  .technical-option > header,
+  .capability > header,
+  .maturity-dimension > header,
+  .decision > header,
+  .indicator > header {
+    display: block;
+  }
+
+  .transition > header time,
+  .approach > header .ref-set,
+  .technical-option > header .ref-set {
+    display: inline-block;
+    margin-top: 0.6rem;
+  }
+
+  .transition-shift {
+    grid-template-columns: 1fr;
+  }
+
+  .transition-shift > i {
+    min-height: 2rem;
+    border: 0;
+    border-block: 1px solid var(--line);
+    rotate: 90deg;
+  }
+
+  .transition-shift > div:last-child {
+    padding-left: 0;
+  }
+
+  .transition-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transition-grid > div,
+  .transition-grid > div:not(:first-child) {
+    padding-left: 0;
+    border-right: 0;
+  }
+
+  .frontier-rail,
+  .maturity-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .categorical-rail li:nth-child(n + 4) {
+    margin-top: 0.8rem;
+  }
+
+  .model-links,
+  .indicator-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .model-links > div,
+  .model-links > div:not(:first-child),
+  .indicator-meta > div,
+  .indicator-meta > div:not(:first-child) {
+    padding-left: 0;
+    border-right: 0;
+  }
+}
+
+@media (max-width: 410px) {
+  body {
+    font-size: 15px;
+  }
+
+  .report-header,
+  .toc,
+  .report,
+  .site-footer {
+    width: calc(100% - 32px);
+  }
+
+  .toc ol {
+    grid-template-columns: 1fr;
+  }
+
+  .toc li:nth-last-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .toc li:last-child {
+    border-bottom: 0;
+  }
+
+  .direct-answer {
+    font-size: 1.2rem;
+  }
+
+  .frontier-rail,
+  .maturity-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .categorical-rail li:nth-child(n + 3) {
+    margin-top: 0.8rem;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm 14mm 18mm;
+  }
+
+  :root {
+    --paper: #ffffff;
+    --surface: #f1f2ef;
+    --surface-strong: #e5e8e6;
+    --ink: #111415;
+    --ink-2: #3f4548;
+    --ink-3: #626a6d;
+    --line: #d4d8d6;
+    --line-strong: #9fa8a7;
+    --accent: #3f6270;
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: #fff;
+    max-width: none;
+    overflow: visible;
+  }
+
+  body {
+    font-size: 9.3pt;
+    line-height: 1.56;
+  }
+
+  .report-header,
+  .report,
+  .site-footer {
+    width: auto;
+    max-width: none;
+  }
+
+  .report-header {
+    padding-top: 0;
+  }
+
+  .toc {
+    display: none;
+  }
+
+  .section {
+    padding-block: 11mm;
+  }
+
+  .belief-update,
+  .mechanism-stage,
+  .approach,
+  .technical-option,
+  .mechanism-bottleneck,
+  .capability,
+  .boundary-evidence-item,
+  .observed-failure-item,
+  .readiness-gap,
+  .transition,
+  .maturity-dimension,
+  .decision,
+  .indicator,
+  .paper-header,
+  .evidence-record,
+  tr {
+    break-inside: avoid-page;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  thead {
+    break-after: avoid-page;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  .table-wrap,
+  .mechanism-pipeline {
+    contain: none;
+    overflow: visible;
+  }
+
+  .mechanism-pipeline,
+  .mechanism-pipeline[class*="stage-count-"] {
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+  }
+
+  .mechanism-stage,
+  .mechanism-stage:first-child {
+    padding: 4mm 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mechanism-stage:last-child {
+    border-bottom: 0;
+  }
+
+  .mechanism-stage:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -5px;
+    left: 4mm;
+    rotate: 135deg;
+  }
+
+  .proposition-matrix,
+  .query-table,
+  .terminology-table,
+  .layer-table,
+  .metric-table,
+  .proposition-index-table {
+    min-width: 0;
+    font-size: 6.8pt;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+  </style>
+</head>
+<body>
+
+<header class="report-header">
+  <div class="eyebrow">ARXIV DECISION INTELLIGENCE · 2026-08-08</div>
+  <h1>主动式 AI Agent：从论文信号到能力边界与技术决策</h1>
+  <p class="title-en" lang="en">Proactive AI Agents: From Paper Signals to Capability Boundaries and Technical Decisions</p>
+  <p class="research-question">未来 12–18 个月，研究与架构负责人应如何判断主动式 AI Agent 已证明到哪里、哪些机制值得继续验证，以及哪些部署假设目前不应成立？</p>
+  <dl class="decision-context-header">
+    <div><dt>主要决策人 <span lang="en">Decision maker</span></dt><dd>主动式 Agent 的研究负责人和架构负责人</dd></div>
+    <div><dt>待决选择 <span lang="en">Choice at stake</span></dt><dd>未来 12–18 个月是否只投入主动服务的验证基础设施，以及介入控制、持续状态和请求前准备的验证优先级</dd></div>
+    <div><dt>时间窗口 <span lang="en">Time horizon</span></dt><dd>未来 12–18 个月</dd></div>
+  </dl>
+</header><nav class="toc" aria-label="报告目录 / Report contents"><ol><li><a href="#direct-answer"><span>直接回答</span><small lang="en">Direct Answer</small></a></li><li><a href="#knowledge-state"><span>知识状态</span><small lang="en">Knowledge State</small></a></li><li><a href="#capability-frontier"><span>能力边界</span><small lang="en">Capability Frontier</small></a></li><li><a href="#mechanism-model"><span>机制模型</span><small lang="en">Mechanism Model</small></a></li><li><a href="#technical-options"><span>技术选项</span><small lang="en">Technical Options</small></a></li><li><a href="#submission-signals"><span>提交信号</span><small lang="en">Submission Signals</small></a></li><li><a href="#maturity-assessment"><span>五维成熟度</span><small lang="en">Maturity</small></a></li><li><a href="#decision-consequences"><span>决策后果</span><small lang="en">Decisions</small></a></li><li><a href="#monitoring"><span>监测触发</span><small lang="en">Monitoring</small></a></li><li><a href="#evidence-base"><span>证据基础</span><small lang="en">Evidence Base</small></a></li></ol></nav><main class="report">
+<section class="section" id="direct-answer">
+  <div class="section-heading"><span>01</span><div><h2>直接回答与证据上限</h2><p lang="en">Direct Answer &amp; Epistemic Ceiling</p></div></div>
+  <article class="thesis-block reasoning-bound">
+    <span class="thesis-stage">形成中 · Emerging</span>
+    <p class="direct-answer">本次摘要级语料不足以建立权威领域观点，也不足以形成趋势判断。能够确认的只有：多篇论文已把介入时机、沉默、用户工作量与事件状态变成可测量的 benchmark 问题；作者各自在不同基准上报告改进，同时 ProEvent 仍显示过度行动、取消失败与 26.7% 正确反应率。因而当前前沿是 benchmark frontier，不是 deployment frontier；显式介入控制是值得比较的设计假设，但尚未被证明为必要条件或跨任务最优架构。</p>
+    <p class="stage-rationale">六个作者组在不同任务上提出门控、持续记忆、预判计算、故障触发、事件评测和在线适配。作者名单不重叠只说明来源分散，不代表独立复现；本次没有全文、历史锚点、可比实验、外部核验或纵向部署证据。</p>
+    <dl class="epistemic-ceilings">
+      <div class="epistemic-ceiling-item"><dt>权威结论上限 <span lang="en">Authority ceiling</span></dt><dd>无 · None</dd></div>
+      <div class="epistemic-ceiling-item"><dt>趋势判断上限 <span lang="en">Trend ceiling</span></dt><dd>仅提交信号 · Signals only</dd></div>
+      <div class="epistemic-ceiling-item"><dt>能力证据上限 <span lang="en">Capability ceiling</span></dt><dd>基准 · Benchmark</dd></div>
+    </dl>
+    <p class="ceiling-rationale">全部 6 篇论文仅做摘要级分析，历史锚点未检索，全文、外部核验和纵向部署均为 0；因此只能报告 benchmark-level demonstrations 与 submission signals。</p>
+    <div class="thesis-relevance"><h3>决策意义 <span lang="en">Decision relevance</span></h3><p>结论是现在只投入可逆的验证基础设施，不把任何架构产品化为高影响自治。第一优先建立共享净效用与错误成本评测；第二优先验证事件取消和状态生命周期；第三优先在低风险准备任务做原型，并用统一接口比较规则、端到端 LLM 与显式 gate。</p></div>
+    <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+  </article>
+  <div class="subsection"><h3 class="subsection-title">本次调研改变了什么判断 <span lang="en">Belief Updates</span></h3><div class="belief-updates"><article class="belief-update reasoning-bound"><div><span>此前判断 / Prior</span><p>主动式 Agent 的主要难题是提前猜出用户要什么。</p></div><div><span>更新后 / Updated</span><p>本次论文把更具体的难题暴露为：如何测量时机、沉默、误报、取消与用户工作量；候选需求生成只是其中一个环节。</p></div><footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer></article><article class="belief-update reasoning-bound"><div><span>此前判断 / Prior</span><p>基准上的任务效率提升意味着主动服务接近产品可用。</p></div><div><span>更新后 / Updated</span><p>本次所有可见实证仍停留在不同 benchmark 或构造场景，不能外推为长期用户净收益。</p></div><footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></footer></article><article class="belief-update reasoning-bound"><div><span>此前判断 / Prior</span><p>论文正在证明 gate-first 优于端到端 LLM。</p></div><div><span>更新后 / Updated</span><p>多篇方法分别显式化时机门控或偏好更新，但没有共享任务上的架构对照；gate-first 目前只是应被可逆比较的设计假设。</p></div><footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a></span></footer></article></div></div>
+</section>
+<section class="section" id="knowledge-state">
+  <div class="section-heading"><span>02</span><div><h2>当前知识状态</h2><p lang="en">Current Knowledge State</p></div></div>
+  <p class="section-note">状态表示证据支持程度，而不是论文热度；共同假设、直接测量、冲突结果与未知项被明确区分。</p>
+  <div class="table-wrap"><table class="proposition-matrix"><thead><tr><th>Proposition & decision relevance</th><th>State</th><th>Evidence & profile</th><th>Boundary & falsification</th></tr></thead><tbody>
+<tr class="proposition-row reasoning-bound" id="proposition-prop-intervention-policy">
+  <th scope="row"><span class="proposition-id">P1</span><p>本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。</p><small>机制 · Mechanism</small><p class="decision-relevance">把显式 gate 作为可替换实验分支，不把它预先固化为唯一架构。</p></th>
+  <td><span class="status status-credible-emerging">可信新兴 · Credible emerging</span><span class="confidence">中等置信度 · Medium</span><small>摘要 · Abstract</small></td>
+  <td><div class="evidence-pair"><div><b>支持证据 · Support</b><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-gate" title="PRISM 使用校准后的接受概率和成本推导阈值决定介入或沉默。">E1</a><a class="evidence-ref" href="#evidence-ev-collab-gate" title="ProACT 检测协作故障后决定保持沉默或发言。">E12</a><a class="evidence-ref" href="#evidence-ev-eopa-carriers" title="EOPA 用时间偏好锚点和活动原型承载交互时机证据。">E24</a><a class="evidence-ref" href="#evidence-ev-eopa-no-llm-update" title="EOPA 在不进行 LLM 在线推理或重训练的情况下更新介入策略。">E25</a></span></div><div><b>反向证据 · Counter</b><span class="semantic-empty">本次语料未纳入反向证据 / No counter-evidence in this corpus</span></div></div><dl class="profile-list"><div><dt>Directness</dt><dd>作者主张 · Author claim</dd></div><div><dt>Consistency</dt><dd>多源一致 · Multi-source aligned</dd></div><div><dt>Validity</dt><dd>仅基准 · Benchmark only</dd></div><div><dt>Reproducibility</dt><dd>未知 · Unknown</dd></div></dl><p class="profile-rationale">三个作者组的摘要呈现相似控制分离，但各自结果来自不可比任务，不能视为同一机制的复现。</p></td>
+  <td><dl class="qualification-list"><div><dt>Scope</dt><dd>结论仅描述本次 PRISM、ProACT 与 EOPA 摘要中的架构选择。；不同论文的任务、基线和指标不可直接横向比较。</dd></div><div><dt>Uncertainty</dt><dd>尚无共享任务比较独立 gate、规则策略与端到端 LLM，也没有长期用户净效用证据。</dd></div><div><dt>Alternatives</dt><dd>多个作者组可能共享同一设计叙事，而非独立验证同一因果机制。；静态规则、用户设置或端到端 LLM 可能在窄域任务中同样有效。</dd></div><div><dt>Would change</dt><dd>至少两个独立作者组在共享任务上复现显式 gate 相对规则和端到端策略的净收益。；真实用户研究同时显示打扰下降且漏失帮助不恶化。</dd></div></dl></td>
+</tr>
+<tr class="proposition-row reasoning-bound" id="proposition-prop-anticipatory-preparation">
+  <th scope="row"><span class="proposition-id">P2</span><p>在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。</p><small>能力 · Capability</small><p class="decision-relevance">优先在低风险、可撤回的准备任务中试验预判计算，并将准备结果与实际行动分级。</p></th>
+  <td><span class="status status-credible-emerging">可信新兴 · Credible emerging</span><span class="confidence">中等置信度 · Medium</span><small>摘要 · Abstract</small></td>
+  <td><div class="evidence-pair"><div><b>支持证据 · Support</b><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-pask-loop" title="PASK 把需求检测、记忆建模和主动服务基础设施连接为 DD-MM-PAS 闭环。">E5</a><a class="evidence-ref" href="#evidence-ev-pask-memory" title="PASK 使用 workspace、user 和 global 三层混合记忆。">E6</a><a class="evidence-ref" href="#evidence-ev-pask-latency-match" title="作者称 IntentFlow 在延迟约束下匹配 Gemini3-Flash，但摘要未给出数值。">E7</a><a class="evidence-ref" href="#evidence-ev-proact-preparation" title="ProAct 在用户提问前预测需求并准备证据。">E8</a><a class="evidence-ref" href="#evidence-ev-proact-user-effort" title="作者在 ProActEval 上报告用户工作量下降 11.7%。">E10</a></span></div><div><b>反向证据 · Counter</b><span class="semantic-empty">本次语料未纳入反向证据 / No counter-evidence in this corpus</span></div></div><dl class="profile-list"><div><dt>Directness</dt><dd>测量结果 · Measured</dd></div><div><dt>Consistency</dt><dd>多源一致 · Multi-source aligned</dd></div><div><dt>Validity</dt><dd>仅基准 · Benchmark only</dd></div><div><dt>Reproducibility</dt><dd>未知 · Unknown</dd></div></dl><p class="profile-rationale">两个作者组提出持续记忆与预判准备，其中只有 ProAct 摘要给出用户工作量数值。</p></td>
+  <td><dl class="qualification-list"><div><dt>Scope</dt><dd>未来需求链在对话或记忆中具有可预测信号。；空闲计算和外部信息获取的成本、权限与过期风险受到控制。</dd></div><div><dt>Uncertainty</dt><dd>本次没有测量无用准备、权限越界、信息过期或长期关闭率。</dd></div><div><dt>Alternatives</dt><dd>ProActEval 的需求链可能比开放环境更可预测。；观察到的收益可能依赖额外计算预算或场景设计。</dd></div><div><dt>Would change</dt><dd>开放环境评测计入错误预判、额外计算、信息过期与权限成本。；独立作者组在不同用户分布上复现净用户工作量下降。</dd></div></dl></td>
+</tr>
+<tr class="proposition-row reasoning-bound" id="proposition-prop-state-failure">
+  <th scope="row"><span class="proposition-id">P3</span><p>本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。</p><small>评测 · Evaluation</small><p class="decision-relevance">内部评测至少同时记录不必要介入、漏失帮助、取消和多步状态，而不是只看任务成功。</p></th>
+  <td><span class="status status-credible-emerging">可信新兴 · Credible emerging</span><span class="confidence">中等置信度 · Medium</span><small>摘要 · Abstract</small></td>
+  <td><div class="evidence-pair"><div><b>支持证据 · Support</b><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-false-alarms" title="作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。">E3</a><a class="evidence-ref" href="#evidence-ev-collab-gate" title="ProACT 检测协作故障后决定保持沉默或发言。">E12</a><a class="evidence-ref" href="#evidence-ev-collab-noninterruptiveness" title="作者报告 ProACT 相对直接聊天持续改善非打扰性。">E16</a><a class="evidence-ref" href="#evidence-ev-proevent-overact" title="作者报告当前 Agent 经常过度行动。">E21</a><a class="evidence-ref" href="#evidence-ev-proevent-cancellation" title="作者报告当前 Agent 难以处理事件取消。">E22</a><a class="evidence-ref" href="#evidence-ev-proevent-correct-rate" title="作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。">E23</a></span></div><div><b>反向证据 · Counter</b><span class="semantic-empty">本次语料未纳入反向证据 / No counter-evidence in this corpus</span></div></div><dl class="profile-list"><div><dt>Directness</dt><dd>测量结果 · Measured</dd></div><div><dt>Consistency</dt><dd>混合 · Mixed</dd></div><div><dt>Validity</dt><dd>仅基准 · Benchmark only</dd></div><div><dt>Reproducibility</dt><dd>未知 · Unknown</dd></div></dl><p class="profile-rationale">多个作者组测量相关但不相同的非行动与状态错误；只有 ProEvent 直接报告取消失败。</p></td>
+  <td><dl class="qualification-list"><div><dt>Scope</dt><dd>结论只说明错误类型正在被显式测量，不声称不同 benchmark 可直接比较。；取消与事件生命周期的直接负向结果来自单个合成对话基准。</dd></div><div><dt>Uncertainty</dt><dd>没有共享数据、成本函数或复现将误报、沉默、取消与漏失帮助放在同一评测中。</dd></div><div><dt>Alternatives</dt><dd>ProEvent 的失败比例可能受合成任务构造影响。；外部状态机或工具集成可能缓解 LLM 本身的事件生命周期缺陷。</dd></div><div><dt>Would change</dt><dd>共享 benchmark 在真实消息流上同时测量 silence、missed help、overaction 与 cancellation。；独立系统复现取消失败并报告按成本分层的错误率。</dd></div></dl></td>
+</tr>
+<tr class="proposition-row reasoning-bound" id="proposition-prop-personalization-unknown">
+  <th scope="row"><span class="proposition-id">P4</span><p>稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。</p><small>能力 · Capability</small><p class="decision-relevance">可将在线偏好适配视为实验性模块，但不应据此承诺稳定个性化。</p></th>
+  <td><span class="status status-unknown">未知 · Unknown</span><span class="confidence">低置信度 · Low</span><small>摘要 · Abstract</small></td>
+  <td><div class="evidence-pair"><div><b>支持证据 · Support</b><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-eopa-carriers" title="EOPA 用时间偏好锚点和活动原型承载交互时机证据。">E24</a><a class="evidence-ref" href="#evidence-ev-eopa-no-llm-update" title="EOPA 在不进行 LLM 在线推理或重训练的情况下更新介入策略。">E25</a><a class="evidence-ref" href="#evidence-ev-eopa-timing-f1" title="作者在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点。">E26</a><a class="evidence-ref" href="#evidence-ev-eopa-adaptation-time" title="作者报告每日平均适配时间从 11.41 秒降至 0.39 秒。">E27</a></span></div><div><b>反向证据 · Counter</b><span class="semantic-empty">本次语料未纳入反向证据 / No counter-evidence in this corpus</span></div></div><dl class="profile-list"><div><dt>Directness</dt><dd>测量结果 · Measured</dd></div><div><dt>Consistency</dt><dd>单一来源 · Single source</dd></div><div><dt>Validity</dt><dd>仅基准 · Benchmark only</dd></div><div><dt>Reproducibility</dt><dd>未知 · Unknown</dd></div></dl><p class="profile-rationale">单篇摘要报告时机 F1 与适配时间，不能建立跨用户或长期结论。</p></td>
+  <td><dl class="qualification-list"><div><dt>Scope</dt><dd>用户偏好随时间和任务变化，反馈存在稀疏、噪声或策略性缺失。；系统需要处理冷启动与偏好撤回。</dd></div><div><dt>Uncertainty</dt><dd>没有第二个作者组、真实反馈轨迹、冷启动或偏好漂移结果。</dd></div><div><dt>Alternatives</dt><dd>轻量证据载体可能在稳定日常情境中已经足够，无需跨场景泛化。；用户先验与群体模型可能缓解冷启动，但也可能引入不适当迁移。</dd></div><div><dt>Would change</dt><dd>报告跨用户冷启动、反馈噪声、偏好漂移和退出机制的长期评测。；第二个作者组在不同场景复现个性化时机收益，并额外核验其数据与方法独立性。</dd></div></dl></td>
+</tr>
+<tr class="proposition-row reasoning-bound" id="proposition-prop-constrained-anticipation">
+  <th scope="row"><span class="proposition-id">P5</span><p>请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。</p><small>评测 · Evaluation</small><p class="decision-relevance">研究和产品评测应把收益与介入成本放在同一净效用框架，而不是只优化提前完成率。</p></th>
+  <td><span class="status status-credible-emerging">可信新兴 · Credible emerging</span><span class="confidence">中等置信度 · Medium</span><small>摘要 · Abstract</small></td>
+  <td><div class="evidence-pair"><div><b>支持证据 · Support</b><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proact-preparation" title="ProAct 在用户提问前预测需求并准备证据。">E8</a><a class="evidence-ref" href="#evidence-ev-proact-user-effort" title="作者在 ProActEval 上报告用户工作量下降 11.7%。">E10</a><a class="evidence-ref" href="#evidence-ev-prism-false-alarms" title="作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。">E3</a><a class="evidence-ref" href="#evidence-ev-collab-noninterruptiveness" title="作者报告 ProACT 相对直接聊天持续改善非打扰性。">E16</a><a class="evidence-ref" href="#evidence-ev-proevent-overact" title="作者报告当前 Agent 经常过度行动。">E21</a><a class="evidence-ref" href="#evidence-ev-proevent-cancellation" title="作者报告当前 Agent 难以处理事件取消。">E22</a></span></div><div><b>反向证据 · Counter</b><span class="semantic-empty">本次语料未纳入反向证据 / No counter-evidence in this corpus</span></div></div><dl class="profile-list"><div><dt>Directness</dt><dd>间接 · Indirect</dd></div><div><dt>Consistency</dt><dd>混合 · Mixed</dd></div><div><dt>Validity</dt><dd>仅基准 · Benchmark only</dd></div><div><dt>Reproducibility</dt><dd>未知 · Unknown</dd></div></dl><p class="profile-rationale">这是跨不可比 benchmark 的分析者综合，用于提出评测假设，不是已验证的控制机制。</p></td>
+  <td><dl class="qualification-list"><div><dt>Scope</dt><dd>综合只比较证据方向，不进行跨 benchmark 定量合并。；负向结果来自不同任务，不能直接抵消 ProAct 的正向结果。</dd></div><div><dt>Uncertainty</dt><dd>缺少在同一任务中正交操纵预判强度与介入控制的因子实验。</dd></div><div><dt>Alternatives</dt><dd>不同任务的正负结果可能无法迁移到同一产品情境。；低风险且明确授权的窄任务可能允许更激进的提前准备。</dd></div><div><dt>Would change</dt><dd>共享实验同时报告用户收益、误报、漏失帮助、取消与额外计算。；真实用户研究证明更早自主行动在计入负面事件后仍有稳定正净效用。</dd></div></dl></td>
+</tr></tbody></table></div>
+</section>
+<section class="section" id="capability-frontier">
+  <div class="section-heading"><span>03</span><div><h2>当前能力边界与就绪缺口</h2><p lang="en">Capability Frontier &amp; Readiness Gaps</p></div></div>
+  <p class="frontier-statement">本次最强可展示结果全部位于 benchmark 层：介入时机和请求前准备可在作者任务上改善，但持续事件状态仍暴露过度行动、取消失败和 26.7% 正确反应率。没有证据把这些结果升级为真实长期部署能力。</p>
+  <div class="capability-list">
+<article class="capability reasoning-bound" id="capability-timing-control">
+  <header><h3>介入时机控制 <span lang="en">Intervention timing control</span></h3></header>
+  <ol class="categorical-rail frontier-rail" aria-label="能力边界：基准 · Benchmark"><li class=""><span></span><b>概念</b><small>Conceptual</small></li><li class=""><span></span><b>原型</b><small>Prototype</small></li><li class="is-current"><span></span><b>基准</b><small>Benchmark</small></li><li class=""><span></span><b>受控用户研究</b><small>Controlled User Study</small></li><li class=""><span></span><b>长期部署</b><small>Longitudinal Deployment</small></li></ol>
+  <div class="boundary-shift"><div><span>Current boundary</span><p>PRISM 在 ProactiveBench 上报告误报下降 22.78%、F1 提升 20.14%；EOPA 在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点；ProACT 摘要只称非打扰性改善而未给出数值。三者任务与指标不可比较。</p></div><div><span>Next boundary</span><p>在同一任务中比较不同控制架构，并在真实使用中同时减少打扰与漏失帮助。</p></div></div>
+  <dl class="capability-context"><div><dt>Demonstration context</dt><dd>PRISM/ProactiveBench、ProACT 多用户协作样例与 EOPA 的 ProPerSim-based benchmark。</dd></div><div><dt>Generalization ceiling</dt><dd>benchmark-only；没有共享对照、全文核验、独立复现或纵向用户结果。</dd></div></dl>
+  <div class="capability-evidence"><h4>构成当前边界的最强证据 <span lang="en">Strongest boundary evidence</span></h4><ol class="boundary-evidence-list"><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-prism-false-alarms"><a class="evidence-ref" href="#evidence-ev-prism-false-alarms">E3</a><div><p>作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-prism-f1"><a class="evidence-ref" href="#evidence-ev-prism-f1">E4</a><div><p>作者在 ProactiveBench 上报告 F1 相对强基线提升 20.14%。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-collab-noninterruptiveness"><a class="evidence-ref" href="#evidence-ev-collab-noninterruptiveness">E16</a><div><p>作者报告 ProACT 相对直接聊天持续改善非打扰性。</p><small>摘要 · Abstract · 中等置信度 · Medium</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-eopa-timing-f1"><a class="evidence-ref" href="#evidence-ev-eopa-timing-f1">E26</a><div><p>作者在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li></ol></div>
+  <div class="observed-failures"><h4>来源已观察失败 <span lang="en">Source-observed failures</span></h4><ul class="observed-failure-list"><li class="observed-failure-item reasoning-bound" data-evidence-ids="ev-proevent-overact"><p>ProEvent 摘要报告当前 Agent 经常过度行动。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-overact" title="作者报告当前 Agent 经常过度行动。">E21</a></span></li></ul></div>
+  <div class="capability-grid"><div class="anticipated-risks"><h4>分析者预期风险 <span lang="en">Analyst-anticipated risks</span></h4><ul class="plain-list"><li>成本校准可能依赖任务，尚未跨场景验证。</li><li>冷启动与反馈噪声尚未量化。</li><li>跨用户与跨组织迁移仍未知。</li></ul></div><div><h4>未满足要求 <span lang="en">Unresolved requirements</span></h4><ul class="plain-list"><li>共享净效用指标</li><li>规则与端到端基线</li><li>用户退出与撤回</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="capability reasoning-bound" id="capability-anticipatory-preparation">
+  <header><h3>请求前准备 <span lang="en">Pre-request preparation</span></h3></header>
+  <ol class="categorical-rail frontier-rail" aria-label="能力边界：基准 · Benchmark"><li class=""><span></span><b>概念</b><small>Conceptual</small></li><li class=""><span></span><b>原型</b><small>Prototype</small></li><li class="is-current"><span></span><b>基准</b><small>Benchmark</small></li><li class=""><span></span><b>受控用户研究</b><small>Controlled User Study</small></li><li class=""><span></span><b>长期部署</b><small>Longitudinal Deployment</small></li></ol>
+  <div class="boundary-shift"><div><span>Current boundary</span><p>在可预测需求链的作者基准中，请求前准备可减少所需轮数 14.8%、用户工作量 11.7% 和幻觉率 28.1%；错误准备成本未报告。</p></div><div><span>Next boundary</span><p>计入错误准备、计算和过期后，在开放任务中仍证明正净效用。</p></div></div>
+  <dl class="capability-context"><div><dt>Demonstration context</dt><dd>ProActEval 的 200 个场景、40 个领域及 PASK 的 LatentNeeds-Bench 摘要主张。</dd></div><div><dt>Generalization ceiling</dt><dd>作者 benchmark 结果；不能外推到开放环境或高影响自主行动。</dd></div></dl>
+  <div class="capability-evidence"><h4>构成当前边界的最强证据 <span lang="en">Strongest boundary evidence</span></h4><ol class="boundary-evidence-list"><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-pask-latency-match"><a class="evidence-ref" href="#evidence-ev-pask-latency-match">E7</a><div><p>作者称 IntentFlow 在延迟约束下匹配 Gemini3-Flash，但摘要未给出数值。</p><small>摘要 · Abstract · 中等置信度 · Medium</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proact-turns"><a class="evidence-ref" href="#evidence-ev-proact-turns">E9</a><div><p>作者在 ProActEval 上报告所需轮数下降 14.8%。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proact-user-effort"><a class="evidence-ref" href="#evidence-ev-proact-user-effort">E10</a><div><p>作者在 ProActEval 上报告用户工作量下降 11.7%。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proact-hallucination"><a class="evidence-ref" href="#evidence-ev-proact-hallucination">E11</a><div><p>作者在 ProActEval 上报告幻觉率下降 28.1%。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li></ol></div>
+  <div class="observed-failures"><h4>来源已观察失败 <span lang="en">Source-observed failures</span></h4><p class="empty"><span>本次语料未提取已观察失败</span><span lang="en">No observed failure extracted</span></p></div>
+  <div class="capability-grid"><div class="anticipated-risks"><h4>分析者预期风险 <span lang="en">Analyst-anticipated risks</span></h4><ul class="plain-list"><li>错误预测产生的无用准备成本尚未量化。</li><li>额外计算与存储成本可能抵消用户收益。</li><li>准备证据可能在实际使用前过期。</li></ul></div><div><h4>未满足要求 <span lang="en">Unresolved requirements</span></h4><ul class="plain-list"><li>无用准备总成本</li><li>权限和信息来源</li><li>真实用户长期净工作量</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="capability reasoning-bound" id="capability-state-lifecycle">
+  <header><h3>持续状态与事件生命周期 <span lang="en">Persistent state and event lifecycle</span></h3></header>
+  <ol class="categorical-rail frontier-rail" aria-label="能力边界：基准 · Benchmark"><li class=""><span></span><b>概念</b><small>Conceptual</small></li><li class=""><span></span><b>原型</b><small>Prototype</small></li><li class="is-current"><span></span><b>基准</b><small>Benchmark</small></li><li class=""><span></span><b>受控用户研究</b><small>Controlled User Study</small></li><li class=""><span></span><b>长期部署</b><small>Longitudinal Deployment</small></li></ol>
+  <div class="boundary-shift"><div><span>Current boundary</span><p>ProEvent 已把多线程事件时机、单步和多步正确性变成 benchmark 对象，但作者报告当前 Agent 频繁过度行动、难以处理取消，GPT-5.1 正确反应率为 26.7%。</p></div><div><span>Next boundary</span><p>在真实应用状态中复现并降低取消、过期和错误视角问题。</p></div></div>
+  <dl class="capability-context"><div><dt>Demonstration context</dt><dd>带并发线程和噪声的合成即时通讯场景；PASK 与 ProACT 仅提供相关状态或故障机制主张。</dd></div><div><dt>Generalization ceiling</dt><dd>取消失败的直接结果来自单个合成 benchmark；没有真实跨应用状态审计。</dd></div></dl>
+  <div class="capability-evidence"><h4>构成当前边界的最强证据 <span lang="en">Strongest boundary evidence</span></h4><ol class="boundary-evidence-list"><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proevent-benchmark"><a class="evidence-ref" href="#evidence-ev-proevent-benchmark">E19</a><div><p>ProEvent 评估响应时机、单步正确性和多步正确性。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proevent-overact"><a class="evidence-ref" href="#evidence-ev-proevent-overact">E21</a><div><p>作者报告当前 Agent 经常过度行动。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proevent-cancellation"><a class="evidence-ref" href="#evidence-ev-proevent-cancellation">E22</a><div><p>作者报告当前 Agent 难以处理事件取消。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li><li class="boundary-evidence-item reasoning-bound" data-evidence-id="ev-proevent-correct-rate"><a class="evidence-ref" href="#evidence-ev-proevent-correct-rate">E23</a><div><p>作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。</p><small>摘要 · Abstract · 高置信度 · High</small></div></li></ol></div>
+  <div class="observed-failures"><h4>来源已观察失败 <span lang="en">Source-observed failures</span></h4><ul class="observed-failure-list"><li class="observed-failure-item reasoning-bound" data-evidence-ids="ev-proevent-overact"><p>ProEvent 摘要报告当前 Agent 经常过度行动。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-overact" title="作者报告当前 Agent 经常过度行动。">E21</a></span></li><li class="observed-failure-item reasoning-bound" data-evidence-ids="ev-proevent-cancellation"><p>ProEvent 摘要报告当前 Agent 难以处理事件取消。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-cancellation" title="作者报告当前 Agent 难以处理事件取消。">E22</a></span></li><li class="observed-failure-item reasoning-bound" data-evidence-ids="ev-proevent-correct-rate"><p>ProEvent 摘要报告 GPT-5.1 仅在 26.7% 场景中正确反应。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-correct-rate" title="作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。">E23</a></span></li></ul></div>
+  <div class="capability-grid"><div class="anticipated-risks"><h4>分析者预期风险 <span lang="en">Analyst-anticipated risks</span></h4><ul class="plain-list"><li>跨线程状态污染尚未量化。</li><li>合成对话中的失败可能无法直接外推到真实应用。</li></ul></div><div><h4>未满足要求 <span lang="en">Unresolved requirements</span></h4><ul class="plain-list"><li>真实事件流复现</li><li>来源与过期</li><li>撤回和回滚</li><li>按成本分层的错误率</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></footer>
+</article></div>
+  <div class="subsection"><h3 class="subsection-title">从展示能力到可部署能力的缺口 <span lang="en">Readiness Gaps</span></h3><div class="readiness-gap-list">
+<article class="readiness-gap reasoning-bound" id="readiness-gap-longitudinal-net-benefit">
+  <header><h3>长期用户净收益 <span lang="en">Longitudinal user net benefit</span></h3></header>
+  <dl><div><dt>当前状态 <span lang="en">Current state</span></dt><dd>本次摘要级语料没有达到内部建议的最小四周真实用户观察窗，也没有打扰、漏失帮助、退出与负面事件的联合报告。</dd></div><div><dt>阻断证据 <span lang="en">Blocking evidence</span></dt><dd>所有可见实证都来自 benchmark、合成场景或受控任务；该结论仅限本次语料覆盖。</dd></div></dl>
+  <div><h4>跨越条件 <span lang="en">What would close the gap</span></h4><ul class="plain-list"><li>按内部政策建议，至少四周真实用户研究报告净效用、打扰、漏失帮助、退出和撤回。</li><li>独立作者组在不同任务中复现，并公开负面事件。</li></ul></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="readiness-gap reasoning-bound" id="readiness-gap-governed-persistent-state">
+  <header><h3>可治理的持久状态 <span lang="en">Governed persistent state</span></h3></header>
+  <dl><div><dt>当前状态 <span lang="en">Current state</span></dt><dd>论文摘要呈现记忆、事件与在线更新，但未验证来源、过期、撤回和回滚接口。</dd></div><div><dt>阻断证据 <span lang="en">Blocking evidence</span></dt><dd>ProEvent 直接暴露取消失败；本次没有治理接口或真实跨应用状态审计。</dd></div></dl>
+  <div><h4>跨越条件 <span lang="en">What would close the gap</span></h4><ul class="plain-list"><li>公开 provenance、expiry、withdrawal 与 rollback API。</li><li>将治理失败纳入 benchmark 与部署报告。</li></ul></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></footer>
+</article></div></div>
+</section>
+<section class="section" id="mechanism-model">
+  <div class="section-heading"><span>04</span><div><h2>来源与分析者机制模型</h2><p lang="en">Source &amp; Analyst Mechanism Model</p></div></div>
+  <div class="model-provenance"><div><span>分析者参考模型 · Analyst reference</span><span>假设 · Hypothesis</span></div><p>这里的“关键路径”只表示参考模型要闭合一次主动服务循环所需的逻辑步骤，不代表这些阶段已被实验证明同等必要，也不表示性能优先级。</p></div>
+  <p class="mechanism-statement">以下七阶段闭环是把六篇摘要投影到同一控制问题后的分析者参考模型，用于暴露接口、失败和待验证关系；它不是任一论文提出或本次语料共同验证的统一架构。</p>
+  <figure class="mechanism-figure"><figcaption>这是解释或决策模型，不自动等同于来源共同验证的因果机制；每条边明确区分来源支持、跨论文推断与分析者设计补全。</figcaption><div class="mechanism-pipeline stage-count-7">
+<article class="mechanism-stage reasoning-bound is-critical " id="stage-context-stream">
+  <header><span class="stage-number">01</span><div><h3>持续上下文</h3><p lang="en">Continuous context</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span></div>
+  <p class="stage-purpose">接收对话、活动、事件和环境变化，并保留来源与时间。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>用户消息；活动上下文；事件与工具状态</dd></div><div><dt>Outputs</dt><dd>带来源和时间的观测流</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>说话人归属的会话历史</li><li>活动原型</li><li>并发聊天线程</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>观测缺失</li><li>跨线程污染</li><li>隐私越界</li><li>过期上下文</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></footer>
+</article>
+<article class="mechanism-stage reasoning-bound is-critical is-bottleneck" id="stage-state-memory">
+  <header><span class="stage-number">02</span><div><h3>状态与记忆</h3><p lang="en">State and memory</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span><span class="mechanism-flag bottleneck">证据瓶颈 · Evidence bottleneck</span></div>
+  <p class="stage-purpose">把瞬时观测组织为可更新、可过期和可撤回的用户与任务状态。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>观测流；历史记忆；用户授权</dd></div><div><dt>Outputs</dt><dd>当前状态；事件生命周期；记忆候选</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>workspace/user/global 混合记忆</li><li>持久对话记忆</li><li>事件时间表</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>错误合并</li><li>取消未传播</li><li>来源不明</li><li>状态无法撤回</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></footer>
+</article>
+<article class="mechanism-stage reasoning-bound is-critical " id="stage-candidate-inference">
+  <header><span class="stage-number">03</span><div><h3>候选需求与事件</h3><p lang="en">Candidate needs and events</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span></div>
+  <p class="stage-purpose">从状态中提出可能值得帮助的潜在需求、事件或协作故障。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>当前状态；长期记忆；任务上下文</dd></div><div><dt>Outputs</dt><dd>候选需求；预测事件；协作故障</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>流式意图检测</li><li>需求链预测</li><li>故障分类</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>把弱信号当需求</li><li>漏掉隐式事件</li><li>从错误视角推断</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></footer>
+</article>
+<article class="mechanism-stage reasoning-bound is-critical is-bottleneck" id="stage-intervention-policy">
+  <header><span class="stage-number">04</span><div><h3>介入策略</h3><p lang="en">Intervention policy</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span><span class="mechanism-flag bottleneck">证据瓶颈 · Evidence bottleneck</span></div>
+  <p class="stage-purpose">估计帮助收益、打扰成本、风险、偏好和不确定性，决定是否以及何时介入。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>候选需求；接受概率；用户偏好；成本与风险</dd></div><div><dt>Outputs</dt><dd>介入决策；自治级别；延迟或取消</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>成本敏感阈值</li><li>说或不说门控</li><li>偏好证据融合</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>成本失配</li><li>概率未校准</li><li>冷启动</li><li>反馈偏置</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="mechanism-stage reasoning-bound is-critical " id="stage-action-mode">
+  <header><span class="stage-number">05</span><div><h3>行动模式</h3><p lang="en">Action mode</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span></div>
+  <p class="stage-purpose">把策略输出映射为沉默、准备、询问或执行，控制可逆性。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>介入决策；权限；风险级别</dd></div><div><dt>Outputs</dt><dd>silence；prepare；ask；act</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>选择性慢推理</li><li>提前证据准备</li><li>技能路由</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>准备结果过期</li><li>询问过多</li><li>高风险动作不可撤回</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="mechanism-stage reasoning-bound is-critical " id="stage-execution">
+  <header><span class="stage-number">06</span><div><h3>执行与交付</h3><p lang="en">Execution and delivery</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span></div>
+  <p class="stage-purpose">生成响应、调用工具或交付准备结果，并保留审计信息。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>行动模式；上下文证据；目标技能</dd></div><div><dt>Outputs</dt><dd>响应；工具结果；可审计执行记录</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>LLM 响应生成</li><li>定向协作技能</li><li>信息获取</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>幻觉</li><li>工具副作用</li><li>证据与响应脱节</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a></span></footer>
+</article>
+<article class="mechanism-stage reasoning-bound is-critical is-bottleneck" id="stage-feedback-update">
+  <header><span class="stage-number">07</span><div><h3>反馈与状态修正</h3><p lang="en">Feedback and state correction</p></div></header>
+  <div class="mechanism-flags"><span class="mechanism-flag">关键路径 · Critical</span><span class="mechanism-flag bottleneck">证据瓶颈 · Evidence bottleneck</span></div>
+  <p class="stage-purpose">从接受、拒绝、取消和结果质量更新偏好、事件状态与介入策略。</p>
+  <dl class="stage-io"><div><dt>Inputs</dt><dd>用户反馈；执行结果；事件变化</dd></div><div><dt>Outputs</dt><dd>策略更新；状态修正；撤回或回滚</dd></div></dl>
+  <div class="stage-detail"><div><h4>当前方法 <span lang="en">Current methods</span></h4><ul class="plain-list"><li>在线参数更新</li><li>证据载体更新</li><li>事件取消检测</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>反馈稀疏</li><li>把沉默误当接受</li><li>撤回不彻底</li><li>偏好漂移</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article></div></figure>
+  <div class="subsection"><h3 class="subsection-title">阶段依赖与反馈 <span lang="en">Edges & Feedback</span></h3><ol class="edge-list"><li class="mechanism-edge reasoning-bound"><a href="#stage-context-stream">持续上下文</a><span aria-hidden="true">→</span><a href="#stage-state-memory">状态与记忆</a><p>观测经来源、时间与授权约束写入状态。</p><span class="edge-support">分析者设计补全 · Analyst design completion</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></li><li class="mechanism-edge reasoning-bound"><a href="#stage-state-memory">状态与记忆</a><span aria-hidden="true">→</span><a href="#stage-candidate-inference">候选需求与事件</a><p>当前状态与长期记忆生成潜在需求或事件。</p><span class="edge-support">跨论文推断 · Cross-paper inference</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a></span></li><li class="mechanism-edge reasoning-bound"><a href="#stage-candidate-inference">候选需求与事件</a><span aria-hidden="true">→</span><a href="#stage-intervention-policy">介入策略</a><p>参考模型在候选与行动之间加入收益、成本、风险与偏好评估。</p><span class="edge-support">跨论文推断 · Cross-paper inference</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></li><li class="mechanism-edge reasoning-bound"><a href="#stage-intervention-policy">介入策略</a><span aria-hidden="true">→</span><a href="#stage-action-mode">行动模式</a><p>策略选择沉默、准备、询问或行动的自治级别。</p><span class="edge-support">分析者设计补全 · Analyst design completion</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></li><li class="mechanism-edge reasoning-bound"><a href="#stage-action-mode">行动模式</a><span aria-hidden="true">→</span><a href="#stage-execution">执行与交付</a><p>所选模式限制生成与工具执行的权限和可逆性。</p><span class="edge-support">分析者设计补全 · Analyst design completion</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></li><li class="mechanism-edge reasoning-bound"><a href="#stage-execution">执行与交付</a><span aria-hidden="true">→</span><a href="#stage-feedback-update">反馈与状态修正</a><p>结果、接受、拒绝与取消形成学习和纠错信号。</p><span class="edge-support">分析者设计补全 · Analyst design completion</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></li><li class="mechanism-edge reasoning-bound"><a href="#stage-feedback-update">反馈与状态修正</a><span aria-hidden="true">→</span><a href="#stage-state-memory">状态与记忆</a><p>反馈修正偏好、事件与记忆，闭合持续服务循环。</p><span class="edge-support">跨论文推断 · Cross-paper inference</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></li></ol></div>
+  <div class="subsection"><h3 class="subsection-title">当前瓶颈判断 <span lang="en">Evidence-bound Bottlenecks</span></h3><div class="mechanism-bottlenecks"><article class="mechanism-bottleneck reasoning-bound" id="bottleneck-1-intervention-policy"><header><a href="#stage-intervention-policy">介入策略</a><span>中等置信度 · Medium</span></header><p>介入时机是本次语料中重复出现最多的决策点，但不同任务没有直接比较，不能称为已证明的主瓶颈。</p><footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer></article><article class="mechanism-bottleneck reasoning-bound" id="bottleneck-2-state-memory"><header><a href="#stage-state-memory">状态与记忆</a><span>低置信度 · Low</span></header><p>事件取消和隐式状态在 ProEvent 中直接失败；跨场景普遍性尚未复现。</p><footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></footer></article><article class="mechanism-bottleneck reasoning-bound" id="bottleneck-3-feedback-update"><header><a href="#stage-feedback-update">反馈与状态修正</a><span>低置信度 · Low</span></header><p>在线偏好更新只有单篇 EOPA 结果，长期纠错、冷启动和偏好漂移仍未知。</p><footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></footer></article></div></div>
+  <div class="model-limitations"><h3>模型边界 <span lang="en">Model limitations</span></h3><ul class="plain-list"><li>该模型是分析者参考架构；support_type 明确区分来源支持、跨论文推断与设计补全。</li><li>四种自治模式、来源、授权、撤回和回滚主要是决策设计补全，不是六篇摘要共同验证的机制。</li><li>关键路径表示逻辑闭环，不是实验证明的必要条件或性能排序。</li><li>本次没有全文证据确认组件接口、训练数据、消融和运行成本。</li></ul></div>
+</section><section class="section" id="technical-options"><div class="section-heading"><span>05</span><div><h2>技术选项与可比性</h2><p lang="en">Technical Options &amp; Comparability</p></div></div><p class="section-note">这些选项作用于不同阶段或使用不同任务、数据和效用函数；本报告不做路线排名。</p><div class="technical-option-list">
+<article class="technical-option reasoning-bound" id="option-static-rule-policy">
+  <header><div><h3>静态规则与用户设置 <span lang="en">Static rules and user settings</span></h3><div class="option-classification"><span>基线 · Baseline</span><span class="comparison-status status-not-comparable">不可直接比较 · Not comparable</span></div></div><span class="ref-set" aria-label="机制阶段 / Mechanism stages"><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-action-mode" title="行动模式">action-mode</a></span></header>
+  <p class="technical-bet">用明确规则、用户设置和固定阈值决定何时提醒、询问或保持沉默。</p>
+  <div class="comparison-note"><span>可比性边界 <span lang="en">Comparison boundary</span></span><p>PRISM 摘要把脆弱启发式作为问题背景，但本次语料没有在共享任务上直接评估该 baseline；纳入它只因为主决策需要一个低复杂度比较对象。</p></div>
+  <div class="hypothesis"><span>Core hypothesis</span><p>在窄域、稳定且用户可配置的任务中，确定性规则可能以较低成本提供足够的介入控制。</p></div>
+  <div class="option-grid"><div><h4>优势 <span lang="en">Advantages</span></h4><ul class="plain-list"><li>行为确定</li><li>延迟低</li><li>用户设置可直接审计</li></ul></div><div><h4>成本 <span lang="en">Costs</span></h4><ul class="plain-list"><li>规则维护</li><li>长尾情境覆盖差</li><li>个性化依赖手工配置</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>环境变化后阈值失配</li><li>规则冲突</li><li>漏掉隐式需求</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>规则在跨用户和跨任务迁移时持续失准</li><li>维护成本超过可接受预算</li></ul></div></div>
+  <div class="validity-grid"><div><h4>成立条件 <span lang="en">Valid when</span></h4><ul class="plain-list"><li>任务边界窄且事件定义稳定</li><li>用户愿意显式配置</li></ul></div><div><h4>失效条件 <span lang="en">Invalid when</span></h4><ul class="plain-list"><li>上下文高度开放</li><li>偏好快速变化且无法手工维护</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a></span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a></span></footer>
+</article>
+<article class="technical-option reasoning-bound" id="option-end-to-end-llm-policy">
+  <header><div><h3>端到端 LLM 介入判断 <span lang="en">End-to-end LLM intervention</span></h3><div class="option-classification"><span>基线 · Baseline</span><span class="comparison-status status-not-comparable">不可直接比较 · Not comparable</span></div></div><span class="ref-set" aria-label="机制阶段 / Mechanism stages"><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-execution" title="执行与交付">execution</a></span></header>
+  <p class="technical-bet">让同一 LLM 在上下文中联合完成需求推断、介入判断和响应生成。</p>
+  <div class="comparison-note"><span>可比性边界 <span lang="en">Comparison boundary</span></span><p>PRISM 与 ProACT 的摘要分别以长推理或 direct chat 作为问题背景/对照，但本次没有统一定义或共享任务上的端到端 baseline 结果。</p></div>
+  <div class="hypothesis"><span>Core hypothesis</span><p>足够强的端到端模型可以减少组件接口，并在单次推理中联合优化判断与响应。</p></div>
+  <div class="option-grid"><div><h4>优势 <span lang="en">Advantages</span></h4><ul class="plain-list"><li>系统集成简单</li><li>上下文与生成共享表示</li><li>原型速度快</li></ul></div><div><h4>成本 <span lang="en">Costs</span></h4><ul class="plain-list"><li>介入理由难校准</li><li>推理成本高</li><li>策略与内容难独立审计</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>过度行动</li><li>沉默策略不稳定</li><li>高风险边界难设定</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>共享任务中无法维持可接受的误报与漏失帮助平衡</li><li>审计与校准成本持续高于组件化策略</li></ul></div></div>
+  <div class="validity-grid"><div><h4>成立条件 <span lang="en">Valid when</span></h4><ul class="plain-list"><li>任务低风险且人工确认充分</li><li>模型调用成本可接受</li></ul></div><div><h4>失效条件 <span lang="en">Invalid when</span></h4><ul class="plain-list"><li>需要可审计成本阈值</li><li>错误行动高影响或不可逆</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article>
+<article class="technical-option reasoning-bound" id="option-cost-sensitive-gate">
+  <header><div><h3>成本敏感门控 <span lang="en">Cost-sensitive gating</span></h3><div class="option-classification"><span>互补关系 · Complementary</span><span class="comparison-status status-not-comparable">不可直接比较 · Not comparable</span></div></div><span class="ref-set" aria-label="机制阶段 / Mechanism stages"><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-action-mode" title="行动模式">action-mode</a></span></header>
+  <p class="technical-bet">把误报与漏失帮助的非对称成本显式写入介入阈值，并只在边界案例增加推理。</p>
+  <div class="comparison-note"><span>可比性边界 <span lang="en">Comparison boundary</span></span><p>PRISM 的成本门控与其他选项使用不同任务和指标；本次没有共享证据建立它与端到端或规则策略的相对排序。</p></div>
+  <div class="hypothesis"><span>Core hypothesis</span><p>可校准的独立 gate 比把是否介入隐含在生成模型中更可控、更高效。</p></div>
+  <div class="option-grid"><div><h4>优势 <span lang="en">Advantages</span></h4><ul class="plain-list"><li>决策阈值可调</li><li>可审计</li><li>计算集中于模糊案例</li></ul></div><div><h4>成本 <span lang="en">Costs</span></h4><ul class="plain-list"><li>需要成本标定</li><li>依赖接受概率校准</li><li>领域迁移需要重新设定阈值</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>错误成本模型</li><li>分布漂移后失准</li><li>高风险但低概率事件被忽略</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>在相同预算下，显式门控不能产生可识别净效用且校准负担持续增加</li><li>门控跨场景校准持续失败</li></ul></div></div>
+  <div class="validity-grid"><div><h4>成立条件 <span lang="en">Valid when</span></h4><ul class="plain-list"><li>误报与漏失帮助可量化</li><li>用户接受信号可校准</li></ul></div><div><h4>失效条件 <span lang="en">Invalid when</span></h4><ul class="plain-list"><li>成本随情境剧烈变化且不可观测</li><li>没有可靠反馈或校准数据</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a></span></footer>
+</article>
+<article class="technical-option reasoning-bound" id="option-online-preference-adaptation">
+  <header><div><h3>在线偏好适配 <span lang="en">Online preference adaptation</span></h3><div class="option-classification"><span>互补关系 · Complementary</span><span class="comparison-status status-not-comparable">不可直接比较 · Not comparable</span></div></div><span class="ref-set" aria-label="机制阶段 / Mechanism stages"><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-feedback-update" title="反馈与状态修正">feedback-update</a></span></header>
+  <p class="technical-bet">用轻量时间与活动证据载体从反馈更新交互时机，把 LLM 留给已批准的响应生成。</p>
+  <div class="comparison-note"><span>可比性边界 <span lang="en">Comparison boundary</span></span><p>EOPA 只有单篇 ProPerSim-based benchmark 结果；与成本门控没有共享数据、成本函数或基线。</p></div>
+  <div class="hypothesis"><span>Core hypothesis</span><p>个性化时机主要是可在线更新的偏好估计问题，不必每次调用 LLM 推理或重训练。</p></div>
+  <div class="option-grid"><div><h4>优势 <span lang="en">Advantages</span></h4><ul class="plain-list"><li>推理延迟较低</li><li>策略可随反馈更新</li><li>交互与生成职责分离</li></ul></div><div><h4>成本 <span lang="en">Costs</span></h4><ul class="plain-list"><li>冷启动</li><li>反馈稀疏与噪声</li><li>偏好漂移</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>将拒绝原因错误归因</li><li>群体先验压制个体差异</li><li>短期点击优化伤害长期信任</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>跨用户与长期场景中的时机收益不再出现</li><li>反馈噪声导致打扰持续上升</li></ul></div></div>
+  <div class="validity-grid"><div><h4>成立条件 <span lang="en">Valid when</span></h4><ul class="plain-list"><li>存在重复情境与可解释反馈</li><li>用户偏好变化相对平稳</li></ul></div><div><h4>失效条件 <span lang="en">Invalid when</span></h4><ul class="plain-list"><li>高影响的一次性决策</li><li>无法获得可靠反馈或撤回</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2608-04416" title="Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants">2608.04416</a></span></footer>
+</article>
+<article class="technical-option reasoning-bound" id="option-anticipatory-memory">
+  <header><div><h3>长期记忆与预判计算 <span lang="en">Long-memory anticipation</span></h3><div class="option-classification"><span>互补关系 · Complementary</span><span class="comparison-status status-not-comparable">不可直接比较 · Not comparable</span></div></div><span class="ref-set" aria-label="机制阶段 / Mechanism stages"><a class="entity-ref" href="#stage-context-stream" title="持续上下文">context-stream</a><a class="entity-ref" href="#stage-state-memory" title="状态与记忆">state-memory</a><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-execution" title="执行与交付">execution</a></span></header>
+  <p class="technical-bet">持续维护用户与任务状态，并在空闲期预测需求、检索信息和准备证据。</p>
+  <div class="comparison-note"><span>可比性边界 <span lang="en">Comparison boundary</span></span><p>长期记忆与预判计算位于门控上游，可与其他选项组合，不是同层替代路线。</p></div>
+  <div class="hypothesis"><span>Core hypothesis</span><p>用户未来需求在历史与持续上下文中可预测，额外空闲计算能减少后续用户工作量。</p></div>
+  <div class="option-grid"><div><h4>优势 <span lang="en">Advantages</span></h4><ul class="plain-list"><li>可提前补齐信息</li><li>减少后续轮数</li><li>将计算从关键交互路径移出</li></ul></div><div><h4>成本 <span lang="en">Costs</span></h4><ul class="plain-list"><li>持续计算与存储</li><li>隐私与授权</li><li>状态过期和错误预判</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>准备无用内容</li><li>记忆污染</li><li>把相关性误当需求</li><li>证据到使用时已过期</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>计入额外计算和错误准备后净用户工作量不降</li><li>真实用户长期关闭或绕过该功能</li></ul></div></div>
+  <div class="validity-grid"><div><h4>成立条件 <span lang="en">Valid when</span></h4><ul class="plain-list"><li>需求链相对可预测</li><li>准备任务低风险且可撤回</li></ul></div><div><h4>失效条件 <span lang="en">Invalid when</span></h4><ul class="plain-list"><li>开放环境变化快</li><li>预测错误成本高于等待用户请求</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2604-08000" title="PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory">2604.08000</a><a class="paper-ref" href="#paper-2605-25971" title="Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents">2605.25971</a></span></footer>
+</article>
+<article class="technical-option reasoning-bound" id="option-scoped-trigger">
+  <header><div><h3>事件或故障触发 <span lang="en">Event- or breakdown-scoped triggers</span></h3><div class="option-classification"><span>互补关系 · Complementary</span><span class="comparison-status status-not-comparable">不可直接比较 · Not comparable</span></div></div><span class="ref-set" aria-label="机制阶段 / Mechanism stages"><a class="entity-ref" href="#stage-state-memory" title="状态与记忆">state-memory</a><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a></span></header>
+  <p class="technical-bet">把主动性限制在可定义的事件生命周期或协作故障上，以获得更清晰的触发与评测边界。</p>
+  <div class="comparison-note"><span>可比性边界 <span lang="en">Comparison boundary</span></span><p>事件或故障触发定义任务作用域，可与门控、记忆和在线适配组合，不构成同层竞争。</p></div>
+  <div class="hypothesis"><span>Core hypothesis</span><p>比起开放式‘猜需求’，事件与故障状态提供更可评估的主动服务单元。</p></div>
+  <div class="option-grid"><div><h4>优势 <span lang="en">Advantages</span></h4><ul class="plain-list"><li>触发对象明确</li><li>可测沉默与取消</li><li>技能路由更可解释</li></ul></div><div><h4>成本 <span lang="en">Costs</span></h4><ul class="plain-list"><li>需要状态标签或规则</li><li>任务覆盖面有限</li><li>跨组织定义不一致</li></ul></div><div><h4>失败模式 <span lang="en">Failure modes</span></h4><ul class="plain-list"><li>隐式事件漏检</li><li>取消未传播</li><li>协作故障跨文化失配</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>在共享错误成本下，作用域触发没有可识别净收益</li><li>作用域定义导致大量真正需求被漏掉</li></ul></div></div>
+  <div class="validity-grid"><div><h4>成立条件 <span lang="en">Valid when</span></h4><ul class="plain-list"><li>事件或协作结构可观测</li><li>状态更新有明确来源</li></ul></div><div><h4>失效条件 <span lang="en">Invalid when</span></h4><ul class="plain-list"><li>需求高度开放且无法形成稳定事件单元</li><li>没有可靠取消与过期信号</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article></div></section><section class="section" id="submission-signals"><div class="section-heading"><span>06</span><div><h2>提交信号与可证伪方向</h2><p lang="en">Submission Signals &amp; Falsifiable Directions</p></div></div><p class="section-note">当前趋势判断上限为 仅提交信号 · Signals only。标为 signal 的内容只表示本批提交中的聚类与方向假设，不构成历史趋势证明。</p><div class="transition-list">
+<article class="transition reasoning-bound signal-transition" id="transition-transition-generation-to-policy">
+  <header><div><span class="status status-signal">信号假设 · Signal hypothesis</span><h3>本次 2026 年 submission cluster 中，多篇摘要使用显式交互或沉默策略来描述主动性；这只是 framing signal，不证明领域已从内容生成转向策略控制。</h3></div><time>2026-02-02 — 2026-08-05</time></header>
+  <div class="transition-shift"><div><span>本批提交的起点叙事 · Observed framing</span><p>论文背景中常见的反应式或内容生成 framing。</p></div><i aria-hidden="true">⇢</i><div><span>待验证方向 · Hypothesized direction</span><p>本次样例中的显式介入决策 framing。</p></div></div>
+  <div class="old-constraint"><span>旧范式瓶颈 / Old constraint</span><p>端到端生成难解释为何行动或沉默。</p></div>
+  <div class="transition-grid"><div><h4>推动因素 <span lang="en">Drivers</span></h4><ul class="plain-list"><li>误报与漏失帮助成本不对称</li><li>在线偏好差异</li><li>多用户非打扰性</li><li>事件取消失败</li></ul></div><div><h4>替代解释 <span lang="en">Alternative explanations</span></h4><ul class="plain-list"><li>这是近期共同命名或选题聚类，而不是已验证的历史迁移。</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>历史锚点检索显示同样机制早已成熟</li><li>共享实验中端到端策略稳定优于独立门控且同样可审计</li></ul></div></div>
+  <div class="support-counter"><div><h4>支持命题 <span lang="en">Support</span></h4><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></div><div><h4>反向命题 <span lang="en">Counter</span></h4><span class="semantic-empty">当前没有反向命题 / No counter-proposition in the current model</span></div></div>
+  <footer><span>低置信度 · Low</span><span class="ref-set" aria-label="领先指标 / Leading indicators"><a class="entity-ref" href="#indicator-indicator-shared-net-benefit" title="共享基准上的净效用收敛">indicator-shared-net-benefit</a><a class="entity-ref" href="#indicator-indicator-silence-cancellation" title="沉默与取消进入统一评测">indicator-silence-cancellation</a></span></footer>
+</article>
+<article class="transition reasoning-bound signal-transition" id="transition-transition-task-to-lifecycle">
+  <header><div><span class="status status-signal">信号假设 · Signal hypothesis</span><h3>本次 2026 年 submission cluster 出现了把误报、非打扰性、事件取消和多步状态纳入评测的信号；没有历史锚点证明评测范式已经迁移。</h3></div><time>2026-02-02 — 2026-07-20</time></header>
+  <div class="transition-shift"><div><span>本批提交的起点叙事 · Observed framing</span><p>单轮或单任务响应质量。</p></div><i aria-hidden="true">⇢</i><div><span>待验证方向 · Hypothesized direction</span><p>时机、沉默、取消和多步状态等附加评测轴。</p></div></div>
+  <div class="old-constraint"><span>旧范式瓶颈 / Old constraint</span><p>单次正确答案不能揭示不必要介入或持续状态错误。</p></div>
+  <div class="transition-grid"><div><h4>推动因素 <span lang="en">Drivers</span></h4><ul class="plain-list"><li>ProactiveBench 的误报指标</li><li>协作非打扰性</li><li>ProEvent 的取消与多步状态</li></ul></div><div><h4>替代解释 <span lang="en">Alternative explanations</span></h4><ul class="plain-list"><li>多个新 benchmark 可能只是并列扩张，尚未形成共享协议。</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>后续工作重新只报告任务成功而不测沉默与状态</li><li>多步指标与真实用户净效用无相关性</li></ul></div></div>
+  <div class="support-counter"><div><h4>支持命题 <span lang="en">Support</span></h4><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></div><div><h4>反向命题 <span lang="en">Counter</span></h4><span class="semantic-empty">当前没有反向命题 / No counter-proposition in the current model</span></div></div>
+  <footer><span>低置信度 · Low</span><span class="ref-set" aria-label="领先指标 / Leading indicators"><a class="entity-ref" href="#indicator-indicator-silence-cancellation" title="沉默与取消进入统一评测">indicator-silence-cancellation</a><a class="entity-ref" href="#indicator-indicator-longitudinal-study" title="真实用户纵向净收益">indicator-longitudinal-study</a></span></footer>
+</article>
+<article class="transition reasoning-bound signal-transition" id="transition-transition-static-to-adaptive">
+  <header><div><span class="status status-signal">信号假设 · Signal hypothesis</span><h3>EOPA 单篇摘要提出用轻量在线偏好证据更新交互时机；目前只能视为方法候选，不能解释为领域从静态策略转向在线适配。</h3></div><time>2026-08-05 — 2026-08-05</time></header>
+  <div class="transition-shift"><div><span>本批提交的起点叙事 · Observed framing</span><p>该论文设置中的静态或高成本介入判断。</p></div><i aria-hidden="true">⇢</i><div><span>待验证方向 · Hypothesized direction</span><p>EOPA 提出的在线偏好证据更新。</p></div></div>
+  <div class="old-constraint"><span>旧范式瓶颈 / Old constraint</span><p>介入时机因人而异，反馈稀疏且 LLM 在线推理成本较高。</p></div>
+  <div class="transition-grid"><div><h4>推动因素 <span lang="en">Drivers</span></h4><ul class="plain-list"><li>稀疏在线反馈</li><li>活动上下文</li><li>低延迟要求</li></ul></div><div><h4>替代解释 <span lang="en">Alternative explanations</span></h4><ul class="plain-list"><li>该结果可能是单一模拟 benchmark 的任务特定优化。</li></ul></div><div><h4>可证伪条件 <span lang="en">Falsifiers</span></h4><ul class="plain-list"><li>第二个团队无法复现</li><li>长期反馈噪声导致介入质量退化</li></ul></div></div>
+  <div class="support-counter"><div><h4>支持命题 <span lang="en">Support</span></h4><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></div><div><h4>反向命题 <span lang="en">Counter</span></h4><span class="semantic-empty">当前没有反向命题 / No counter-proposition in the current model</span></div></div>
+  <footer><span>低置信度 · Low</span><span class="ref-set" aria-label="领先指标 / Leading indicators"><a class="entity-ref" href="#indicator-indicator-personalization-replication" title="在线个性化的独立复现">indicator-personalization-replication</a></span></footer>
+</article></div></section><section class="section" id="maturity-assessment"><div class="section-heading"><span>07</span><div><h2>五维成熟度</h2><p lang="en">Five-dimensional Maturity</p></div></div><p class="section-note">成熟度是五个相互独立的类别判断，不合成为虚假的总分。</p><div class="maturity-list">
+<article class="maturity-dimension reasoning-bound" id="maturity-scientific-mechanism">
+  <header><h3>科学机制 · Scientific mechanism</h3><span class="status status-early">早期 · Early</span></header>
+  <p>摘要提出了门控、记忆、预判和在线适配机制，但没有全文级因果消融、共享任务对照或独立复现。</p>
+  <ol class="categorical-rail maturity-rail" aria-label="成熟度：早期 · Early"><li class=""><span></span><b>缺失</b><small>Absent</small></li><li class="is-current"><span></span><b>早期</b><small>Early</small></li><li class=""><span></span><b>形成中</b><small>Emerging</small></li><li class=""><span></span><b>已验证</b><small>Validated</small></li><li class=""><span></span><b>成熟</b><small>Mature</small></li></ol>
+  <div class="maturity-detail"><div><h4>阻碍项 <span lang="en">Blockers</span></h4><ul class="plain-list"><li>全部为摘要级证据</li><li>任务与机制不可比</li><li>无因果消融和复现</li></ul></div><div><h4>升级条件 <span lang="en">Upgrade conditions</span></h4><ul class="plain-list"><li>共享任务比较规则、端到端与显式控制</li><li>全文级实验区分门控、记忆和计算预算贡献</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="maturity-dimension reasoning-bound" id="maturity-benchmark">
+  <header><h3>基准 · Benchmark</h3><span class="status status-emerging">形成中 · Emerging</span></header>
+  <p>多个新 benchmark 已测量时机、误报、用户工作量、非打扰性和事件取消，但指标与数据仍不可比较。</p>
+  <ol class="categorical-rail maturity-rail" aria-label="成熟度：形成中 · Emerging"><li class=""><span></span><b>缺失</b><small>Absent</small></li><li class=""><span></span><b>早期</b><small>Early</small></li><li class="is-current"><span></span><b>形成中</b><small>Emerging</small></li><li class=""><span></span><b>已验证</b><small>Validated</small></li><li class=""><span></span><b>成熟</b><small>Mature</small></li></ol>
+  <div class="maturity-detail"><div><h4>阻碍项 <span lang="en">Blockers</span></h4><ul class="plain-list"><li>指标定义不统一</li><li>合成或构造场景占比高</li><li>缺少共同净效用函数</li></ul></div><div><h4>升级条件 <span lang="en">Upgrade conditions</span></h4><ul class="plain-list"><li>共享 benchmark 同时覆盖 silence、missed help、cancellation 与 user effort</li><li>不同团队报告可比基线和错误成本</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="maturity-dimension reasoning-bound" id="maturity-engineering">
+  <header><h3>工程 · Engineering</h3><span class="status status-early">早期 · Early</span></header>
+  <p>摘要描述流式检测、混合记忆、选择性慢推理和轻量在线更新原型；跨应用状态、成本和可靠性未核验。</p>
+  <ol class="categorical-rail maturity-rail" aria-label="成熟度：早期 · Early"><li class=""><span></span><b>缺失</b><small>Absent</small></li><li class="is-current"><span></span><b>早期</b><small>Early</small></li><li class=""><span></span><b>形成中</b><small>Emerging</small></li><li class=""><span></span><b>已验证</b><small>Validated</small></li><li class=""><span></span><b>成熟</b><small>Mature</small></li></ol>
+  <div class="maturity-detail"><div><h4>阻碍项 <span lang="en">Blockers</span></h4><ul class="plain-list"><li>长期状态一致性</li><li>权限与隐私</li><li>错误准备成本</li><li>冷启动和漂移</li></ul></div><div><h4>升级条件 <span lang="en">Upgrade conditions</span></h4><ul class="plain-list"><li>公开端到端延迟与成本预算</li><li>支持来源、过期、撤回和回滚</li><li>在多个开放任务中稳定运行</li></ul></div></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></footer>
+</article>
+<article class="maturity-dimension evidence-absence-declared" id="maturity-deployment">
+  <header><h3>部署 · Deployment</h3><span class="status status-absent">缺失 · Absent</span></header>
+  <p>在本次审阅到的摘要证据中，没有可核验的纵向真实用户部署结果。</p>
+  <ol class="categorical-rail maturity-rail" aria-label="成熟度：缺失 · Absent"><li class="is-current"><span></span><b>缺失</b><small>Absent</small></li><li class=""><span></span><b>早期</b><small>Early</small></li><li class=""><span></span><b>形成中</b><small>Emerging</small></li><li class=""><span></span><b>已验证</b><small>Validated</small></li><li class=""><span></span><b>成熟</b><small>Mature</small></li></ol>
+  <div class="maturity-detail"><div><h4>阻碍项 <span lang="en">Blockers</span></h4><ul class="plain-list"><li>未达到内部建议的最小四周纵向观察窗</li><li>缺少退出率与负面事件</li><li>无外部核验</li></ul></div><div><h4>升级条件 <span lang="en">Upgrade conditions</span></h4><ul class="plain-list"><li>真实用户长期维持正净效用</li><li>公开打扰、漏失帮助、撤回与退出</li><li>独立部署复现</li></ul></div></div>
+  <footer><span class="semantic-empty">本次语料没有足够命题支持该维度 / No proposition support in this corpus</span></footer>
+</article>
+<article class="maturity-dimension evidence-absence-declared" id="maturity-governance">
+  <header><h3>治理 · Governance</h3><span class="status status-absent">缺失 · Absent</span></header>
+  <p>在本次审阅到的摘要证据中，没有验证完整的授权、来源、过期、撤回、回滚和审计系统。</p>
+  <ol class="categorical-rail maturity-rail" aria-label="成熟度：缺失 · Absent"><li class="is-current"><span></span><b>缺失</b><small>Absent</small></li><li class=""><span></span><b>早期</b><small>Early</small></li><li class=""><span></span><b>形成中</b><small>Emerging</small></li><li class=""><span></span><b>已验证</b><small>Validated</small></li><li class=""><span></span><b>成熟</b><small>Mature</small></li></ol>
+  <div class="maturity-detail"><div><h4>阻碍项 <span lang="en">Blockers</span></h4><ul class="plain-list"><li>授权边界未验证</li><li>状态生命周期不可审计</li><li>高影响动作缺少可核验回滚</li></ul></div><div><h4>升级条件 <span lang="en">Upgrade conditions</span></h4><ul class="plain-list"><li>公开 provenance、expiry、withdrawal 与 rollback 接口</li><li>治理失败纳入评测</li><li>高风险动作保留人类确认</li></ul></div></div>
+  <footer><span class="semantic-empty">本次语料没有足够命题支持该维度 / No proposition support in this corpus</span></footer>
+</article></div></section>
+<section class="section" id="decision-consequences">
+  <div class="section-heading"><span>08</span><div><h2>决策后果与研究议程</h2><p lang="en">Decision Consequences &amp; Research Agenda</p></div></div>
+  <div class="decision-list">
+<article class="decision reasoning-bound" id="decision-decision-validation-only">
+  <header><div><span class="status">架构 · Architecture</span><h3>未来 12–18 个月只投入可逆验证基础设施，暂不把任何主动架构产品化为高影响自治。</h3></div><span>主动式 Agent 的研究负责人和架构负责人</span></header>
+  <p class="decision-action">第一优先建立共享净效用与错误成本评测；第二优先验证事件取消和状态生命周期；第三优先在低风险准备任务做原型。用统一接口比较静态规则、端到端 LLM 与显式 gate，比较完成前不锁定生产架构。</p>
+  <div class="decision-grid"><div><h4>成立条件 <span lang="en">Conditions</span></h4><ul class="plain-list"><li>组织能够记录误报、漏失帮助、取消、用户工作量和额外计算。</li><li>所有原型可停用、可回滚且不执行高影响不可逆动作。</li></ul></div><div><h4>主要风险 <span lang="en">Risks</span></h4><ul class="plain-list"><li>验证基础设施投入可能延后短期功能发布。</li><li>共享接口可能掩盖任务差异，仍需按场景分层。</li></ul></div></div>
+  <footer><span>可逆 · Reversible</span><span>中等置信度 · Medium</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="decision reasoning-bound" id="decision-decision-prepare-before-act">
+  <header><div><span class="status">产品 · Product</span><h3>先进入低风险、可逆的准备型任务，再逐步开放询问与行动。</h3></div><span>主动助手产品团队</span></header>
+  <p class="decision-action">把产品自治划分为 prepare、ask、act 三个明确授权级别；优先试验资料整理、候选方案和提醒草稿，不自动执行高影响动作。</p>
+  <div class="decision-grid"><div><h4>成立条件 <span lang="en">Conditions</span></h4><ul class="plain-list"><li>准备结果有来源、过期时间和用户确认</li><li>用户可关闭、删除或撤回</li></ul></div><div><h4>主要风险 <span lang="en">Risks</span></h4><ul class="plain-list"><li>准备内容仍可能泄露敏感状态</li><li>过多草稿会转化为新的认知负担</li></ul></div></div>
+  <footer><span>可逆 · Reversible</span><span>中等置信度 · Medium</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="decision reasoning-bound" id="decision-decision-benchmark-discount">
+  <header><div><span class="status">尽调 · Due diligence</span><h3>将摘要中的 benchmark improvement 视为机制线索，而不是部署成熟度证明。</h3></div><span>技术战略、采购与投资尽调团队</span></header>
+  <p class="decision-action">要求全文级实验、代码与数据核验、独立复现、真实用户时长、负面事件、退出和治理接口，再升级技术判断。</p>
+  <div class="decision-grid"><div><h4>成立条件 <span lang="en">Conditions</span></h4><ul class="plain-list"><li>结论将影响采购、资源配置或对外承诺</li></ul></div><div><h4>主要风险 <span lang="en">Risks</span></h4><ul class="plain-list"><li>过度折扣可能错过早期技术窗口</li><li>不同团队披露标准不一致</li></ul></div></div>
+  <footer><span>可逆 · Reversible</span><span>高置信度 · High</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></footer>
+</article></div>
+  <div class="subsection"><h3 class="subsection-title">最能改变判断的下一步研究 <span lang="en">Research Agenda</span></h3><div class="decision-list agenda-list">
+<article class="decision reasoning-bound" id="decision-decision-longitudinal-first">
+  <header><div><span class="status">研究议程 · Research agenda</span><h3>把下一项关键研究从新增局部分数改为共享对照与纵向净效用。</h3></div><span>研究负责人和评测团队</span></header>
+  <p class="decision-action">先在同一任务比较控制架构，再按内部政策建议设计至少四周真实用户观察；联合记录沉默、误报、漏失帮助、取消、撤回、工作量、退出和额外计算。</p>
+  <div class="decision-grid"><div><h4>成立条件 <span lang="en">Conditions</span></h4><ul class="plain-list"><li>已有可控原型和用户授权</li><li>能够在失败时停用或回滚</li></ul></div><div><h4>主要风险 <span lang="en">Risks</span></h4><ul class="plain-list"><li>纵向研究成本高</li><li>观察行为会改变用户反馈</li></ul></div></div>
+  <footer><span>可逆 · Reversible</span><span>高置信度 · High</span><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article></div></div>
+</section><section class="section" id="monitoring"><div class="section-heading"><span>09</span><div><h2>领先指标与监测触发</h2><p lang="en">Leading Indicators &amp; Monitoring Triggers</p></div></div><div class="indicator-list">
+<article class="indicator reasoning-bound" id="indicator-indicator-shared-net-benefit">
+  <header><h3>共享基准上的净效用收敛</h3></header>
+  <p class="indicator-observation">经独立性核验的作者组能否在同一任务中同时降低用户工作量、误报与漏失帮助。</p>
+  <dl class="indicator-meta"><div><dt>Current baseline</dt><dd>本次论文使用不同 benchmark 和指标，不能形成同表比较。</dd></div><div><dt>Data source</dt><dd>公开 benchmark 排行、复现论文、代码与评测日志。</dd></div><div><dt>Window</dt><dd>未来 12 个月滚动观察。</dd></div></dl>
+  <div class="threshold-rule"><header><span>阈值与来源 <span lang="en">Threshold & basis</span></span><b>分析者决策规则 · Analyst policy</b></header><p>至少两个经数据、代码和作者关系核验的作者组在共享基准上复现正净效用，且误报改善不以漏失帮助恶化为代价。</p><small>两个作者组是内部升级门槛，用来降低单团队与任务特定结果被误当共识的风险；不是论文推导出的科学常数。</small></div>
+  <div class="indicator-grid"><div><h4>达到阈值 <span lang="en">If met</span></h4><p>将介入策略从 credible_emerging 向更强机制判断升级。</p></div><div><h4>未达到阈值 <span lang="en">If missed</span></h4><p>可能说明当前收益来自任务特定调参或指标选择。</p></div></div>
+  <div class="decision-trigger"><span>Decision trigger</span><p>满足后扩大在共享对照中取得正净效用的策略；只有显式 gate 在同一任务中取得可重复净收益时，才增加 gate-specific 投入。</p></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="indicator reasoning-bound" id="indicator-indicator-silence-cancellation">
+  <header><h3>沉默与取消进入统一评测</h3></header>
+  <p class="indicator-observation">新基准是否同时报告 silence、missed help、overaction、cancellation 与 multi-step state。</p>
+  <dl class="indicator-meta"><div><dt>Current baseline</dt><dd>这些指标分散在不同论文，尚无统一协议。</dd></div><div><dt>Data source</dt><dd>arXiv 论文、公开 benchmark 文档、评测代码与数据卡。</dd></div><div><dt>Window</dt><dd>未来 12–18 个月。</dd></div></dl>
+  <div class="threshold-rule"><header><span>阈值与来源 <span lang="en">Threshold & basis</span></span><b>分析者决策规则 · Analyst policy</b></header><p>出现公开、可复现且被至少三个经独立性核验的作者组采用的统一评测协议。</p><small>三个采用者是内部生态门槛，用来区分一次性 benchmark 与可比较协议；不是来源结论。</small></div>
+  <div class="indicator-grid"><div><h4>达到阈值 <span lang="en">If met</span></h4><p>benchmark maturity 可由 emerging 向 validated 靠近。</p></div><div><h4>未达到阈值 <span lang="en">If missed</span></h4><p>领域可能继续优化不可比较的局部指标。</p></div></div>
+  <div class="decision-trigger"><span>Decision trigger</span><p>满足后用该协议作为内部发布门槛；否则自建错误成本矩阵。</p></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a></span></footer>
+</article>
+<article class="indicator reasoning-bound" id="indicator-indicator-longitudinal-study">
+  <header><h3>真实用户纵向净收益</h3></header>
+  <p class="indicator-observation">主动服务在持续使用中是否仍有正净效用，并维持可接受的打扰、退出与撤回水平。</p>
+  <dl class="indicator-meta"><div><dt>Current baseline</dt><dd>本次摘要级证据没有达到内部建议的最小四周真实用户观察窗。</dd></div><div><dt>Data source</dt><dd>同行评审论文、完整技术报告、部署后研究与公开研究协议。</dd></div><div><dt>Window</dt><dd>未来 18–24 个月。</dd></div></dl>
+  <div class="threshold-rule"><header><span>阈值与来源 <span lang="en">Threshold & basis</span></span><b>分析者决策规则 · Analyst policy</b></header><p>内部政策阈值：至少四周、跨多个任务的真实用户研究报告正净效用、打扰、漏失帮助、负面事件、退出与撤回。</p><small>四周是内部最小观察窗，用于覆盖重复使用、偏好漂移和退出行为；不是文献共识。</small></div>
+  <div class="indicator-grid"><div><h4>达到阈值 <span lang="en">If met</span></h4><p>deployment maturity 可从 absent 重新评估至 early；只有结果可复现且治理有效时再考虑 emerging。</p></div><div><h4>未达到阈值 <span lang="en">If missed</span></h4><p>继续把主动服务视为实验性 benchmark capability。</p></div></div>
+  <div class="decision-trigger"><span>Decision trigger</span><p>仅在满足且治理接口通过审查后扩大到更高影响任务。</p></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></footer>
+</article>
+<article class="indicator reasoning-bound" id="indicator-indicator-state-governance">
+  <header><h3>状态治理接口公开化</h3></header>
+  <p class="indicator-observation">系统是否公开记忆与事件的来源、过期、撤回和回滚机制。</p>
+  <dl class="indicator-meta"><div><dt>Current baseline</dt><dd>本次摘要只呈现记忆、事件与在线更新概念，没有验证完整治理接口。</dd></div><div><dt>Data source</dt><dd>系统论文、API 文档、代码仓库与安全评测。</dd></div><div><dt>Window</dt><dd>未来 12–18 个月。</dd></div></dl>
+  <div class="threshold-rule"><header><span>阈值与来源 <span lang="en">Threshold & basis</span></span><b>分析者决策规则 · Analyst policy</b></header><p>至少两个独立系统公开 provenance、expiry、withdrawal、rollback API，并报告治理失败测试。</p><small>两个独立系统是内部尽调门槛，用来避免把单一实现误当可迁移治理能力。</small></div>
+  <div class="indicator-grid"><div><h4>达到阈值 <span lang="en">If met</span></h4><p>工程和治理成熟度可上调，状态型产品试验风险降低。</p></div><div><h4>未达到阈值 <span lang="en">If missed</span></h4><p>长期记忆与持续事件能力仍应限制在低风险、可删除场景。</p></div></div>
+  <div class="decision-trigger"><span>Decision trigger</span><p>满足后才允许跨应用持久状态；否则保持单任务隔离与短期存储。</p></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a></span></footer>
+</article>
+<article class="indicator reasoning-bound" id="indicator-indicator-personalization-replication">
+  <header><h3>在线个性化的独立复现</h3></header>
+  <p class="indicator-observation">EOPA 类轻量在线适配能否跨用户分布、反馈噪声与偏好漂移保持时机收益。</p>
+  <dl class="indicator-meta"><div><dt>Current baseline</dt><dd>单个作者组在 ProPerSim-based benchmark 上报告结果；本次未核验外部独立性。</dd></div><div><dt>Data source</dt><dd>复现论文、开放代码、数据卡与长期模拟或用户研究。</dd></div><div><dt>Window</dt><dd>未来 12 个月。</dd></div></dl>
+  <div class="threshold-rule"><header><span>阈值与来源 <span lang="en">Threshold & basis</span></span><b>分析者决策规则 · Analyst policy</b></header><p>第二个作者组在不同数据与用户分布上复现，并核验数据、代码和作者关系独立性，同时报告冷启动、噪声与漂移。</p><small>第二个作者组是把单源结果升级为多源信号的最低内部条件。</small></div>
+  <div class="indicator-grid"><div><h4>达到阈值 <span lang="en">If met</span></h4><p>个性化命题可由 unknown 升级为 credible_emerging。</p></div><div><h4>未达到阈值 <span lang="en">If missed</span></h4><p>将其视为基准特定优化，不进入核心产品控制面。</p></div></div>
+  <div class="decision-trigger"><span>Decision trigger</span><p>满足后启动受控个性化试验；未满足则使用明确用户设置和保守默认值。</p></div>
+  <footer><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a></span></footer>
+</article></div></section>
+<section class="section" id="evidence-base">
+  <div class="section-heading"><span>10</span><div><h2>证据基础与审计附录</h2><p lang="en">Evidence Base &amp; Audit Appendix</p></div></div>
+  <div class="scope-summary"><div class="lead-rule"><h3>操作性定义 <span lang="en">Operational definition</span></h3><p>本报告把主动式 AI Agent 定义为：在没有当前显式指令时，基于持续上下文、用户状态或未来事件，自主决定沉默、准备、询问或行动的智能系统。分析对象不是“是否能生成帮助内容”，而是部分可观测与帮助—打扰成本不对称条件下的介入策略。</p></div><dl><div><dt>Date range</dt><dd>2026-01-01 — 2026-08-08</dd></div><div><dt>Categories</dt><dd>cs.AI · cs.CL · cs.HC</dd></div></dl></div>
+  <div class="method-counts"><dl class="screening-counts"><div><dt>Retrieved</dt><dd>31</dd></div><div><dt>Deduplicated</dt><dd>31</dd></div><div><dt>Screened</dt><dd>31</dd></div><div><dt>Included</dt><dd>6</dd></div></dl><dl class="coverage-counts"><div><dt>Papers</dt><dd>6</dd></div><div><dt>Metadata</dt><dd>0</dd></div><div><dt>Abstract</dt><dd>6</dd></div><div><dt>Full text</dt><dd>0</dd></div><div><dt>Verified</dt><dd>0</dd></div></dl></div>
+  <div class="criteria-grid"><div><h3>纳入标准 <span lang="en">Inclusion</span></h3><ul class="plain-list"><li>研究对象直接涉及无当前显式指令条件下的主动发起、提前准备、持续上下文理解或主动性评测。</li><li>摘要能够定位研究对象、技术机制或可核验的评测主张。</li><li>论文能作为机制证据、能力边界、失败证据或尚待验证的研究信号。</li></ul></div><div><h3>排除标准 <span lang="en">Exclusion</span></h3><ul class="plain-list"><li>仅在背景中出现 proactive，但核心研究对象不是主动服务。</li><li>只讨论通用规划、工具调用或机器人动作，未涉及介入时机或无显式指令条件。</li><li>缺少稳定 arXiv 身份或无法核验摘要。</li></ul></div><div><h3>证据缺口 <span lang="en">Evidence gaps</span></h3><ul class="plain-list"><li>未检索 2025 年及更早的历史基础文献，无法建立独立的长期演化基线。</li><li>未阅读全文、附录、代码或数据卡，方法细节与实验设计只能按摘要证据上限判断。</li><li>未对正式发表状态、引用、独立复现或外部部署进行核验。</li><li>查询以英文术语为主，可能漏掉使用 ambient、context-aware 或其他邻近术语的工作。</li><li>反向证据层仅部分覆盖，不能把未发现反证理解为不存在反证。</li></ul></div></div>
+  <div class="subsection"><h3 class="subsection-title">术语与语料层 <span lang="en">Terminology & Corpus Layers</span></h3><div class="table-wrap"><table class="terminology-table"><thead><tr><th>Term</th><th>Operational meaning</th><th>Included variants</th></tr></thead><tbody><tr><th scope="row">Proactive agent / 主动式 Agent</th><td>能够在无当前显式请求时识别潜在需求，并选择沉默、准备、询问或行动的 Agent。</td><td>proactive assistant · anticipatory agent · mixed-initiative agent · initiative-taking agent</td></tr><tr><th scope="row">Intervention policy / 介入策略</th><td>在不确定状态下决定何时介入、以何种自治级别介入，以及何时保持沉默的控制策略。</td><td>interaction initiation · selective intervention · speak-or-silence gating</td></tr><tr><th scope="row">Capability frontier / 能力边界</th><td>在明确任务与证据条件下已经展示的最高能力层级，不等同于通用能力或生产可用性。</td><td>benchmark frontier · deployment frontier</td></tr><tr><th scope="row">Transition thesis / 转变论点</th><td>描述领域从一种技术状态转向另一种状态的可证伪判断；需区分近期信号、正在形成的变化与结构性趋势。</td><td>research signal · emerging shift · structural trend</td></tr></tbody></table></div><div class="table-wrap layer-table-wrap"><table class="layer-table"><thead><tr><th>Layer</th><th>Status</th><th>Date range</th><th>Purpose</th><th>Coverage note</th></tr></thead><tbody><tr><th scope="row">historical-anchor<small>历史锚点 · Anchor</small></th><td><span class="status status-not-searched">未检索 · Not searched</span></td><td>open — open</td><td>建立可独立核验的历史范式与长期变化基线。</td><td>本次回归样例没有检索历史基础文献，因此不产生结构性长期趋势判断。</td></tr><tr><th scope="row">current-frontier<small>前沿 · Frontier</small></th><td><span class="status status-searched">已检索 · Searched</span></td><td>2026-01-01 — 2026-08-08</td><td>发现本年度与主动发起、预判服务和介入策略直接相关的方法、系统与评测。</td><td>四组布尔查询共检索 31 条去重记录，全部完成标题与摘要筛选。</td></tr><tr><th scope="row">recent-signal<small>信号假设 · Signal hypothesis</small></th><td><span class="status status-searched">已检索 · Searched</span></td><td>2026-01-01 — 2026-08-08</td><td>标记只有单个团队或短时间聚类支持、尚不足以称为趋势的研究信号。</td><td>个性化在线介入目前仅由本样例中的单篇论文直接支持。</td></tr><tr><th scope="row">negative-evidence<small>反向证据 · Counterevidence</small></th><td><span class="status status-partial">部分验证 · Partial</span></td><td>2026-01-01 — 2026-08-08</td><td>识别过度行动、漏失帮助、状态失效、取消与长期净效用方面的反向证据。</td><td>筛选中纳入了失败导向基准，但未运行专门面向负结果或复现失败的查询。</td></tr></tbody></table></div></div>
+  <div class="subsection"><h3 class="subsection-title">检索方法 <span lang="en">Exact Search Method</span></h3><div class="table-wrap"><table class="query-table"><thead><tr><th>Query</th><th>Exact expression</th><th>Layer</th><th>Sort</th><th>Limit</th></tr></thead><tbody><tr><th scope="row">Literal proactive agent</th><td><code>all:&quot;proactive agent&quot; AND submittedDate:[202601010000 TO 202608082359]</code></td><td>current-frontier</td><td>submittedDate</td><td>10</td></tr><tr><th scope="row">Proactive AI or assistant</th><td><code>(all:&quot;proactive AI&quot; OR all:&quot;proactive assistant&quot;) AND submittedDate:[202601010000 TO 202608082359]</code></td><td>recent-signal</td><td>submittedDate</td><td>10</td></tr><tr><th scope="row">Anticipatory or initiative-taking</th><td><code>(all:&quot;anticipatory agent&quot; OR all:&quot;anticipatory assistant&quot; OR all:&quot;initiative-taking agent&quot;) AND submittedDate:[202601010000 TO 202608082359]</code></td><td>current-frontier</td><td>submittedDate</td><td>10</td></tr><tr><th scope="row">Mixed initiative or agent initiative</th><td><code>(all:&quot;mixed-initiative agent&quot; OR all:&quot;proactive interaction&quot; OR all:&quot;agent initiative&quot;) AND submittedDate:[202601010000 TO 202608082359]</code></td><td>current-frontier</td><td>submittedDate</td><td>10</td></tr></tbody></table></div></div>
+  <div class="paper-dossiers" id="papers"><h3 class="subsection-title">代表论文档案 <span lang="en">Paper Dossiers</span></h3>
+<article class="paper-record" id="paper-2602-01532">
+  <header class="paper-header"><div class="paper-kicker">2602.01532v1 · 2026-02-02 · cs.AI</div><h4 lang="en"><a href="https://arxiv.org/abs/2602.01532">PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents</a></h4><p class="paper-title-zh">PRISM：面向主动式 Agent 的风险敏感与不确定性感知审议</p><p class="authors" lang="en">Yuxuan Fu; Xiaoyu Tan; Teqi Hao; Chen Zhan; Xihe Qiu</p><div class="paper-tags"><span>前沿 · Frontier</span><span>摘要 · Abstract</span><span>prism-fu-tan-2026</span></div></header>
+  <p class="paper-synopsis">PRISM 把主动介入建模为成本敏感的选择性决策：只有校准后的用户接受概率超过由漏失帮助与误报成本推导的阈值时才行动，并只在边界案例调用慢推理。</p>
+  <div class="model-links"><div><b>Stages</b><span class="ref-set" aria-label="机制阶段"><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-action-mode" title="行动模式">action-mode</a></span></div><div><b>Options</b><span class="ref-set" aria-label="技术选项"><a class="entity-ref" href="#option-cost-sensitive-gate" title="成本敏感门控">cost-sensitive-gate</a></span></div><div><b>Capabilities</b><span class="ref-set" aria-label="能力"><a class="entity-ref" href="#capability-timing-control" title="介入时机控制">timing-control</a></span></div><div><b>Propositions</b><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></div></div>
+  <dl class="paper-analysis"><div><dt>Research object</dt><dd>不对称帮助收益与打扰成本下，主动式 Agent 应如何决定是否以及何时介入。</dd></div><div><dt>Mechanism</dt><dd>以接受概率和不对称成本推导介入阈值，将介入门控与响应策略解耦，只在决策边界调用慢推理。</dd></div><div><dt>Evaluation</dt><dd>ProactiveBench；摘要报告相对作者所称强基线的误报与 F1 变化，未提供长期用户研究。</dd></div></dl>
+  <div class="paper-subsection"><h5>关键发现 <span lang="en">Key findings</span></h5><ul class="finding-list"><li class="reasoning-bound"><p>PRISM 用成本阈值控制介入或沉默。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-gate" title="PRISM 使用校准后的接受概率和成本推导阈值决定介入或沉默。">E1</a></span></li><li class="reasoning-bound"><p>慢推理仅用于决策边界附近。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-slow" title="PRISM 只在决策边界附近调用带反事实检查的慢推理。">E2</a></span></li><li class="reasoning-bound"><p>摘要分别报告误报下降 22.78% 和 F1 提升 20.14%。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-false-alarms" title="作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。">E3</a><a class="evidence-ref" href="#evidence-ev-prism-f1" title="作者在 ProactiveBench 上报告 F1 相对强基线提升 20.14%。">E4</a></span></li></ul></div>
+  <div class="paper-subsection"><h5>定量证据 <span lang="en">Metrics</span></h5><div class="table-wrap"><table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Context</th><th>Depth</th><th>Evidence</th></tr></thead><tbody><tr class="reasoning-bound"><th scope="row">False alarms</th><td class="metric-value">-22.78%</td><td>作者在 ProactiveBench 上相对强基线报告。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-false-alarms" title="作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。">E3</a></span></td></tr><tr class="reasoning-bound"><th scope="row">F1</th><td class="metric-value">+20.14%</td><td>作者在 ProactiveBench 上相对强基线报告。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-prism-f1" title="作者在 ProactiveBench 上报告 F1 相对强基线提升 20.14%。">E4</a></span></td></tr></tbody></table></div></div>
+  <div class="paper-limitations"><div><h5>作者声明局限 <span lang="en">Author-stated</span></h5><p class="empty"><span>未报告</span><span lang="en">Not reported</span></p></div><div><h5>分析推断局限 <span lang="en">Analyst-inferred</span></h5><ul class="plain-list"><li>摘要只提供单一公开基准结果，不能判断长期真实服务中的校准稳定性。</li><li>不同产品如何设定漏失帮助与误报成本仍需领域化验证。</li></ul></div></div>
+  <details class="abstract-source"><summary>原始摘要 <span lang="en">Original abstract</span></summary><p lang="en">Proactive agents must decide not only what to say but also whether and when to intervene. Many current systems rely on brittle heuristics or indiscriminate long reasoning, which offers little control over the benefit-burden tradeoff. We formulate the problem as cost-sensitive selective intervention and present PRISM, a novel framework that couples a decision-theoretic gate with a dual-process reasoning architecture. At inference time, the agent intervenes only when a calibrated probability of user acceptance exceeds a threshold derived from asymmetric costs of missed help and false alarms. Inspired by festina lente (Latin: &quot;make haste slowly&quot;), we gate by an acceptance-calibrated, cost-derived threshold and invoke a resource-intensive Slow mode with counterfactual checks only near the decision boundary, concentrating computation on ambiguous and high-stakes cases. Training uses gate-aligned, schema-locked distillation: a teacher running the full PRISM pipeline provides dense, executable supervision on unlabeled interaction traces, while the student learns a response policy that is explicitly decoupled from the intervention gate to enable tunable and auditable control. On ProactiveBench, PRISM reduces false alarms by 22.78% and improves F1 by 20.14% over strong baselines. These results show that principled decision-theoretic gating, paired with selective slow reasoning and aligned distillation, yields proactive agents that are precise, computationally efficient, and controllable. To facilitate reproducibility, we release our code, models, and resources at https://prism-festinalente.github.io/; all experiments use the open-source ProactiveBench benchmark.</p></details>
+  <footer class="paper-links"><a href="https://arxiv.org/abs/2602.01532">arXiv abstract</a><a href="https://arxiv.org/pdf/2602.01532">PDF</a></footer>
+</article>
+<article class="paper-record" id="paper-2604-08000">
+  <header class="paper-header"><div class="paper-kicker">2604.08000v1 · 2026-04-09 · cs.AI</div><h4 lang="en"><a href="https://arxiv.org/abs/2604.08000">PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory</a></h4><p class="paper-title-zh">PASK：面向具备长期记忆的意图感知主动式 Agent</p><p class="authors" lang="en">Zhifei Xie; Zongzheng Hu; Fangda Ye; Xin Zhang; Haobo Chai; Zihang Liu; Pengcheng Wu; Guibin Zhang; Yue Liao; Xiaobin Hu; Deheng Ye; Chunyan Miao; Shuicheng Yan</p><div class="paper-tags"><span>前沿 · Frontier</span><span>摘要 · Abstract</span><span>pask-xie-2026</span></div></header>
+  <p class="paper-synopsis">PASK 把需求检测、分层长期记忆与主动服务基础设施组织为 DD-MM-PAS 闭环，并以流式 IntentFlow、混合记忆和 LatentNeeds-Bench 实例化。</p>
+  <div class="model-links"><div><b>Stages</b><span class="ref-set" aria-label="机制阶段"><a class="entity-ref" href="#stage-context-stream" title="持续上下文">context-stream</a><a class="entity-ref" href="#stage-state-memory" title="状态与记忆">state-memory</a><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-execution" title="执行与交付">execution</a></span></div><div><b>Options</b><span class="ref-set" aria-label="技术选项"><a class="entity-ref" href="#option-anticipatory-memory" title="长期记忆与预判计算">anticipatory-memory</a></span></div><div><b>Capabilities</b><span class="ref-set" aria-label="能力"><a class="entity-ref" href="#capability-anticipatory-preparation" title="请求前准备">anticipatory-preparation</a><a class="entity-ref" href="#capability-state-lifecycle" title="持续状态与事件生命周期">state-lifecycle</a></span></div><div><b>Propositions</b><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a></span></div></div>
+  <dl class="paper-analysis"><div><dt>Research object</dt><dd>连续上下文中，系统如何从长期记忆推断未显式表达的需求并形成服务闭环。</dd></div><div><dt>Mechanism</dt><dd>把流式需求检测、workspace/user/global 混合记忆和主动服务基础设施连接为 DD-MM-PAS 闭环。</dd></div><div><dt>Evaluation</dt><dd>LatentNeeds-Bench；摘要称在延迟约束下匹配 Gemini3-Flash，但未给出具体数值、样本规模或真实纵向结果。</dd></div></dl>
+  <div class="paper-subsection"><h5>关键发现 <span lang="en">Key findings</span></h5><ul class="finding-list"><li class="reasoning-bound"><p>DD-MM-PAS 将需求检测、记忆和服务基础设施组织为闭环。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-pask-loop" title="PASK 把需求检测、记忆建模和主动服务基础设施连接为 DD-MM-PAS 闭环。">E5</a></span></li><li class="reasoning-bound"><p>系统使用三层混合记忆。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-pask-memory" title="PASK 使用 workspace、user 和 global 三层混合记忆。">E6</a></span></li><li class="reasoning-bound"><p>摘要称延迟约束下匹配 Gemini3-Flash，但未给出数值。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-pask-latency-match" title="作者称 IntentFlow 在延迟约束下匹配 Gemini3-Flash，但摘要未给出数值。">E7</a></span></li></ul></div>
+  <div class="paper-subsection"><h5>定量证据 <span lang="en">Metrics</span></h5><div class="table-wrap"><table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Context</th><th>Depth</th><th>Evidence</th></tr></thead><tbody><tr><td colspan="5"><p class="empty"><span>未提取可比较指标</span><span lang="en">No comparable metric extracted</span></p></td></tr></tbody></table></div></div>
+  <div class="paper-limitations"><div><h5>作者声明局限 <span lang="en">Author-stated</span></h5><p class="empty"><span>未报告</span><span lang="en">Not reported</span></p></div><div><h5>分析推断局限 <span lang="en">Analyst-inferred</span></h5><ul class="plain-list"><li>摘要未给出对比数值、样本规模和误报成本。</li><li>真实长期运行、记忆纠错与授权边界仍无法从摘要判断。</li></ul></div></div>
+  <details class="abstract-source"><summary>原始摘要 <span lang="en">Original abstract</span></summary><p lang="en">Proactivity is a core expectation for AGI. Prior work remains largely confined to laboratory settings, leaving a clear gap in real-world proactive agent: depth, complexity, ambiguity, precision and real-time constraints. We study this setting, where useful intervention requires inferring latent needs from ongoing context and grounding actions in evolving user memory under latency and long-horizon constraints. We first propose DD-MM-PAS (Demand Detection, Memory Modeling, Proactive Agent System) as a general paradigm for streaming proactive AI agent. We instantiate this paradigm in Pask, with streaming IntentFlow model for DD, a hybrid memory (workspace, user, global) for long-term MM, PAS infra framework and introduce how these components form a closed loop. We also introduce LatentNeeds-Bench, a real-world benchmark built from user-consented data and refined through thousands of rounds of human editing. Experiments show that IntentFlow matches leading Gemini3-Flash models under latency constraints, while identifying deeper user intent.</p></details>
+  <footer class="paper-links"><a href="https://arxiv.org/abs/2604.08000">arXiv abstract</a><a href="https://arxiv.org/pdf/2604.08000">PDF</a></footer>
+</article>
+<article class="paper-record" id="paper-2605-25971">
+  <header class="paper-header"><div class="paper-kicker">2605.25971v2 · 2026-05-25 · cs.CL</div><h4 lang="en"><a href="https://arxiv.org/abs/2605.25971">Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents</a></h4><p class="paper-title-zh">预判与学习：释放主动式 Agent 的空闲期计算</p><p class="authors" lang="en">Haoyi Hu; Qirong Lyu; Xianghan Kong; Weiwen Liu; Jianghao Lin; Zixuan Guo; Yan Xu; Yasheng Wang; Weinan Zhang; Yong Yu</p><div class="paper-tags"><span>前沿 · Frontier</span><span>摘要 · Abstract</span><span>proact-hu-2026</span></div></header>
+  <p class="paper-synopsis">ProAct 使用空闲期计算预测即将到来的需求、迭代获取信息并提前准备证据，同时用 ProActEval 评估任务轮数、用户工作量与幻觉变化。</p>
+  <div class="model-links"><div><b>Stages</b><span class="ref-set" aria-label="机制阶段"><a class="entity-ref" href="#stage-state-memory" title="状态与记忆">state-memory</a><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-action-mode" title="行动模式">action-mode</a><a class="entity-ref" href="#stage-execution" title="执行与交付">execution</a></span></div><div><b>Options</b><span class="ref-set" aria-label="技术选项"><a class="entity-ref" href="#option-anticipatory-memory" title="长期记忆与预判计算">anticipatory-memory</a></span></div><div><b>Capabilities</b><span class="ref-set" aria-label="能力"><a class="entity-ref" href="#capability-anticipatory-preparation" title="请求前准备">anticipatory-preparation</a></span></div><div><b>Propositions</b><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-anticipatory-preparation" title="在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。">P2</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></div></div>
+  <dl class="paper-analysis"><div><dt>Research object</dt><dd>如何利用交互空闲期预测后续需求、补齐信息并提前准备证据。</dd></div><div><dt>Mechanism</dt><dd>结合演化对话与持久记忆预测后续需求，在空闲期迭代检索信息并准备证据。</dd></div><div><dt>Evaluation</dt><dd>ProActEval 的 200 个场景、40 个领域及 MemBench；摘要报告任务轮数、用户工作量和幻觉率变化。</dd></div></dl>
+  <div class="paper-subsection"><h5>关键发现 <span lang="en">Key findings</span></h5><ul class="finding-list"><li class="reasoning-bound"><p>系统在请求前预测需求并准备证据。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proact-preparation" title="ProAct 在用户提问前预测需求并准备证据。">E8</a></span></li><li class="reasoning-bound"><p>摘要分别报告轮数、用户工作量和幻觉率下降。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proact-turns" title="作者在 ProActEval 上报告所需轮数下降 14.8%。">E9</a><a class="evidence-ref" href="#evidence-ev-proact-user-effort" title="作者在 ProActEval 上报告用户工作量下降 11.7%。">E10</a><a class="evidence-ref" href="#evidence-ev-proact-hallucination" title="作者在 ProActEval 上报告幻觉率下降 28.1%。">E11</a></span></li></ul></div>
+  <div class="paper-subsection"><h5>定量证据 <span lang="en">Metrics</span></h5><div class="table-wrap"><table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Context</th><th>Depth</th><th>Evidence</th></tr></thead><tbody><tr class="reasoning-bound"><th scope="row">Required turns</th><td class="metric-value">-14.8%</td><td>作者在 ProActEval 上相对反应式基线报告。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proact-turns" title="作者在 ProActEval 上报告所需轮数下降 14.8%。">E9</a></span></td></tr><tr class="reasoning-bound"><th scope="row">User effort</th><td class="metric-value">-11.7%</td><td>作者在 ProActEval 上相对反应式基线报告。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proact-user-effort" title="作者在 ProActEval 上报告用户工作量下降 11.7%。">E10</a></span></td></tr><tr class="reasoning-bound"><th scope="row">Hallucination rate</th><td class="metric-value">-28.1%</td><td>作者在 ProActEval 上相对反应式基线报告。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proact-hallucination" title="作者在 ProActEval 上报告幻觉率下降 28.1%。">E11</a></span></td></tr></tbody></table></div></div>
+  <div class="paper-limitations"><div><h5>作者声明局限 <span lang="en">Author-stated</span></h5><p class="empty"><span>未报告</span><span lang="en">Not reported</span></p></div><div><h5>分析推断局限 <span lang="en">Analyst-inferred</span></h5><ul class="plain-list"><li>摘要未说明需求预测错误时产生的浪费或误导成本。</li><li>基准中的可预测需求链与真实开放环境之间存在外部效度问题。</li></ul></div></div>
+  <details class="abstract-source"><summary>原始摘要 <span lang="en">Original abstract</span></summary><p lang="en">While AI agents demonstrate remarkable capabilities in reasoning and tool use, they remain fundamentally reactive: they compute responses only after explicit user prompts. This paradigm ignores a critical opportunity: the idle time between interactions is largely wasted, leaving agents unable to prepare for future user needs. To bridge this gap, we introduce ProAct, a proactive agent architecture that leverages idle-time compute to anticipate and fulfill likely upcoming user needs. By analyzing evolving dialogue history together with persistent memory, ProAct predicts upcoming needs and iteratively acquires information, allowing the agent to resolve knowledge gaps and prepare evidence before the user initiates a query. To rigorously evaluate proactive capabilities, we also introduce ProActEval, a comprehensive benchmark comprising 200 scenarios across 40 domains, featuring predictable need chains and diverse user cognitive profiles. Empirical results demonstrate significant advantages over reactive baselines. ProAct accelerates task completion by reducing required turns by 14.8%, decreases user effort by 11.7%, and cuts hallucination rates by 28.1% on ProActEval. Furthermore, MemBench evaluations confirm that ProAct achieves state-of-the-art reflective accuracy, underscoring its sustained and robust performance.</p></details>
+  <footer class="paper-links"><a href="https://arxiv.org/abs/2605.25971">arXiv abstract</a><a href="https://arxiv.org/pdf/2605.25971">PDF</a></footer>
+</article>
+<article class="paper-record" id="paper-2607-03730">
+  <header class="paper-header"><div class="paper-kicker">2607.03730v1 · 2026-07-04 · cs.CL</div><h4 lang="en"><a href="https://arxiv.org/abs/2607.03730">ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration</a></h4><p class="paper-title-zh">ProACT：面向多用户协作故障感知的主动式 Agent</p><p class="authors" lang="en">Shu Yang; Difei Xu; Jiaxin Pei; Di Wang</p><div class="paper-tags"><span>前沿 · Frontier</span><span>摘要 · Abstract</span><span>proact-yang-2026</span></div></header>
+  <p class="paper-synopsis">ProACT 将主动协作建模为故障识别、说或不说的门控以及针对性技能路由，并在多类协作任务上评估非打扰性与介入质量。</p>
+  <div class="model-links"><div><b>Stages</b><span class="ref-set" aria-label="机制阶段"><a class="entity-ref" href="#stage-context-stream" title="持续上下文">context-stream</a><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-action-mode" title="行动模式">action-mode</a></span></div><div><b>Options</b><span class="ref-set" aria-label="技术选项"><a class="entity-ref" href="#option-scoped-trigger" title="事件或故障触发">scoped-trigger</a></span></div><div><b>Capabilities</b><span class="ref-set" aria-label="能力"><a class="entity-ref" href="#capability-timing-control" title="介入时机控制">timing-control</a></span></div><div><b>Propositions</b><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></div></div>
+  <dl class="paper-analysis"><div><dt>Research object</dt><dd>多用户协作中，何时出现值得 Agent 主动介入的协作故障。</dd></div><div><dt>Mechanism</dt><dd>检测带说话人归属的协作故障，先决定沉默或发言，再把需要介入的案例路由到专用技能。</dd></div><div><dt>Evaluation</dt><dd>3,244 个回合级样例、五种 LLM 主干及多类协作任务；摘要未给出真实团队纵向结果。</dd></div></dl>
+  <div class="paper-subsection"><h5>关键发现 <span lang="en">Key findings</span></h5><ul class="finding-list"><li class="reasoning-bound"><p>系统先检测协作故障，再决定沉默或发言。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-collab-gate" title="ProACT 检测协作故障后决定保持沉默或发言。">E12</a></span></li><li class="reasoning-bound"><p>摘要报告样例规模和模型主干数量。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-collab-sample-count" title="作者报告多用户协作基准包含 3,244 个回合级样例。">E13</a><a class="evidence-ref" href="#evidence-ev-collab-backbone-count" title="作者报告实验覆盖五种 LLM 主干。">E14</a></span></li><li class="reasoning-bound"><p>摘要分别报告四项协作介入质量改善。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-collab-appropriateness" title="作者报告 ProACT 相对直接聊天持续改善协作适切性。">E15</a><a class="evidence-ref" href="#evidence-ev-collab-noninterruptiveness" title="作者报告 ProACT 相对直接聊天持续改善非打扰性。">E16</a><a class="evidence-ref" href="#evidence-ev-collab-conciseness" title="作者报告 ProACT 相对直接聊天持续改善简洁性。">E17</a><a class="evidence-ref" href="#evidence-ev-collab-intervention-quality" title="作者报告 ProACT 相对直接聊天持续改善评审介入质量。">E18</a></span></li></ul></div>
+  <div class="paper-subsection"><h5>定量证据 <span lang="en">Metrics</span></h5><div class="table-wrap"><table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Context</th><th>Depth</th><th>Evidence</th></tr></thead><tbody><tr class="reasoning-bound"><th scope="row">Benchmark size</th><td class="metric-value">3,244 turn-level examples</td><td>摘要报告的多用户协作基准规模。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-collab-sample-count" title="作者报告多用户协作基准包含 3,244 个回合级样例。">E13</a></span></td></tr><tr class="reasoning-bound"><th scope="row">LLM backbones</th><td class="metric-value">5</td><td>摘要报告的模型主干数量。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-collab-backbone-count" title="作者报告实验覆盖五种 LLM 主干。">E14</a></span></td></tr></tbody></table></div></div>
+  <div class="paper-limitations"><div><h5>作者声明局限 <span lang="en">Author-stated</span></h5><p class="empty"><span>未报告</span><span lang="en">Not reported</span></p></div><div><h5>分析推断局限 <span lang="en">Analyst-inferred</span></h5><ul class="plain-list"><li>摘要未给出各指标的数值差异或真实团队纵向结果。</li><li>协作故障标签能否跨文化、组织和任务稳定迁移仍未知。</li></ul></div></div>
+  <details class="abstract-source"><summary>原始摘要 <span lang="en">Original abstract</span></summary><p lang="en">Conversational agents are increasingly embedded in human collaborative work, yet they remain fundamentally passive and reactive: they respond to explicit user requests rather than proactively recognizing moments when a team would benefit from timely intervention as human collaborators often do. This reactive design substantially limits the use of agents as active participants in multi-user collaboration, where disagreements, ambiguous goals, forgotten constraints, underspecified plans, discussion loops, and imbalanced participation can gradually undermine group progress. To move agents from passive assistants toward active participants in multi-user collaboration, we introduce ProACT, a breakdown-aware agent framework grounded in theories of common ground, collaborative planning, and coordination work. ProACT observes the speaker-attributed conversation history, determines whether the current turn contains a collaboration breakdown requiring intervention, decides whether the agent should stay silent or speak, and, when speaking is needed, routes the case to a targeted collaboration skill. We further introduce the first multi-user collaboration benchmark for evaluating proactive agents across project planning, product design, research collaboration, logistics, education, and resource-constrained decision making. Across 3,244 turn-level examples and five LLM backbones, ProACT consistently improves collaborative appropriateness, non-interruptiveness, conciseness, and judged intervention quality over direct chat.</p></details>
+  <footer class="paper-links"><a href="https://arxiv.org/abs/2607.03730">arXiv abstract</a><a href="https://arxiv.org/pdf/2607.03730">PDF</a></footer>
+</article>
+<article class="paper-record" id="paper-2607-17701">
+  <header class="paper-header"><div class="paper-kicker">2607.17701v1 · 2026-07-20 · cs.AI</div><h4 lang="en"><a href="https://arxiv.org/abs/2607.17701">ProEvent: An Event-centric Benchmark for Proactive Agents</a></h4><p class="paper-title-zh">ProEvent：面向主动式 Agent 的事件中心基准</p><p class="authors" lang="en">Guanzhen Li; Liangming Pan; Leye Wang</p><div class="paper-tags"><span>反向证据 · Counterevidence</span><span>摘要 · Abstract</span><span>proevent-li-2026</span></div></header>
+  <p class="paper-synopsis">ProEvent 用带并发线程和噪声的合成即时通讯场景评估事件识别、时间表维护、响应时机与多步正确性，并暴露过度行动和事件取消处理失败。</p>
+  <div class="model-links"><div><b>Stages</b><span class="ref-set" aria-label="机制阶段"><a class="entity-ref" href="#stage-context-stream" title="持续上下文">context-stream</a><a class="entity-ref" href="#stage-state-memory" title="状态与记忆">state-memory</a><a class="entity-ref" href="#stage-candidate-inference" title="候选需求与事件">candidate-inference</a><a class="entity-ref" href="#stage-feedback-update" title="反馈与状态修正">feedback-update</a></span></div><div><b>Options</b><span class="ref-set" aria-label="技术选项"><a class="entity-ref" href="#option-scoped-trigger" title="事件或故障触发">scoped-trigger</a></span></div><div><b>Capabilities</b><span class="ref-set" aria-label="能力"><a class="entity-ref" href="#capability-state-lifecycle" title="持续状态与事件生命周期">state-lifecycle</a></span></div><div><b>Propositions</b><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-state-failure" title="本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。">P3</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></div></div>
+  <dl class="paper-analysis"><div><dt>Research object</dt><dd>主动 Agent 能否在带噪、多线程对话中持续维护事件状态并正确处理时机与取消。</dd></div><div><dt>Mechanism</dt><dd>通过事件中心基准考察从聊天中识别、跟踪、更新和取消事件，以及单步和多步响应正确性。</dd></div><div><dt>Evaluation</dt><dd>含并发线程和噪声的合成即时通讯场景，覆盖八种模型与 pipeline；重点暴露过度行动、取消和隐式事件失败。</dd></div></dl>
+  <div class="paper-subsection"><h5>关键发现 <span lang="en">Key findings</span></h5><ul class="finding-list"><li class="reasoning-bound"><p>ProEvent 显式评估时机、单步和多步正确性。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-benchmark" title="ProEvent 评估响应时机、单步正确性和多步正确性。">E19</a></span></li><li class="reasoning-bound"><p>摘要报告模型覆盖、过度行动、取消失败和正确反应率。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-model-count" title="作者报告 ProEvent 实验覆盖八种 LLM 与 pipeline。">E20</a><a class="evidence-ref" href="#evidence-ev-proevent-overact" title="作者报告当前 Agent 经常过度行动。">E21</a><a class="evidence-ref" href="#evidence-ev-proevent-cancellation" title="作者报告当前 Agent 难以处理事件取消。">E22</a><a class="evidence-ref" href="#evidence-ev-proevent-correct-rate" title="作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。">E23</a></span></li></ul></div>
+  <div class="paper-subsection"><h5>定量证据 <span lang="en">Metrics</span></h5><div class="table-wrap"><table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Context</th><th>Depth</th><th>Evidence</th></tr></thead><tbody><tr class="reasoning-bound"><th scope="row">Correct reactions</th><td class="metric-value">26.7%</td><td>作者摘要报告 GPT-5.1 在 ProEvent 场景中的正确反应比例。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-correct-rate" title="作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。">E23</a></span></td></tr><tr class="reasoning-bound"><th scope="row">Evaluated models and pipelines</th><td class="metric-value">8</td><td>摘要报告的实验覆盖数量。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-proevent-model-count" title="作者报告 ProEvent 实验覆盖八种 LLM 与 pipeline。">E20</a></span></td></tr></tbody></table></div></div>
+  <div class="paper-limitations"><div><h5>作者声明局限 <span lang="en">Author-stated</span></h5><p class="empty"><span>未报告</span><span lang="en">Not reported</span></p></div><div><h5>分析推断局限 <span lang="en">Analyst-inferred</span></h5><ul class="plain-list"><li>对话是合成但力求真实，结果不能直接代表真实用户部署。</li><li>摘要未说明不同错误类型的成本权重。</li></ul></div></div>
+  <details class="abstract-source"><summary>原始摘要 <span lang="en">Original abstract</span></summary><p lang="en">Proactive agents are expected to anticipate user needs and provide autonomous assistance by perceiving environmental context without explicit instructions. A fundamental capability of such agents is to identify and track users&#x27; upcoming events, enabling continuous and event-specific assistance. For example, by recording the time and location of a planned hike, an agent can deliver weather reminders in advance or provide navigation support before departure. However, existing works on proactive agents largely overlook event-centric assistance, and the open-ended nature of proactive assistance poses challenges for reliable evaluation. To bridge these gaps, we introduce ProEvent, the first event-centric benchmark designed to assess an agent&#x27;s ability to proactively maintain a user&#x27;s timetable based on ongoing instant messaging chats. ProEvent provides synthesized yet realistic chats that consider the dynamic interaction among users, concurrent chat threads, and noise in the real world, and evaluates proactive agents on response timing, single-step response correctness, and multi-step response correctness. Experiments on eight LLMs and pipelines reveal that current agents frequently overact and struggle with event cancellation. Notably, even GPT-5.1 only reacts correctly in 26.7% of scenarios. Further qualitative analysis reveals fundamental limitations of current LLMs as proactive agents, particularly in detecting implicit events and reasoning from the user&#x27;s first-person perspective.</p></details>
+  <footer class="paper-links"><a href="https://arxiv.org/abs/2607.17701">arXiv abstract</a><a href="https://arxiv.org/pdf/2607.17701">PDF</a></footer>
+</article>
+<article class="paper-record" id="paper-2608-04416">
+  <header class="paper-header"><div class="paper-kicker">2608.04416v1 · 2026-08-05 · cs.HC</div><h4 lang="en"><a href="https://arxiv.org/abs/2608.04416">Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants</a></h4><p class="paper-title-zh">面向主动式 AI 助手个性化交互发起的偏好驱动在线适配</p><p class="authors" lang="en">Yufeng Wang; Wei Zhang; Zhiquan Wen; Jinwu Hu; Linhui Xiao; Tianlu Pan; Qingfang Zheng; Mingkui Tan</p><div class="paper-tags"><span>信号假设 · Signal hypothesis</span><span>摘要 · Abstract</span><span>eopa-wang-2026</span></div></header>
+  <p class="paper-synopsis">EOPA 用时间偏好锚点和带证据的活动原型，从稀疏在线反馈中更新个性化介入时机；LLM 只在已选择交互后生成响应。</p>
+  <div class="model-links"><div><b>Stages</b><span class="ref-set" aria-label="机制阶段"><a class="entity-ref" href="#stage-context-stream" title="持续上下文">context-stream</a><a class="entity-ref" href="#stage-intervention-policy" title="介入策略">intervention-policy</a><a class="entity-ref" href="#stage-feedback-update" title="反馈与状态修正">feedback-update</a></span></div><div><b>Options</b><span class="ref-set" aria-label="技术选项"><a class="entity-ref" href="#option-online-preference-adaptation" title="在线偏好适配">online-preference-adaptation</a></span></div><div><b>Capabilities</b><span class="ref-set" aria-label="能力"><a class="entity-ref" href="#capability-timing-control" title="介入时机控制">timing-control</a></span></div><div><b>Propositions</b><span class="ref-set" aria-label="命题引用 / Proposition references"><a class="proposition-ref" href="#proposition-prop-intervention-policy" title="本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。">P1</a><a class="proposition-ref" href="#proposition-prop-personalization-unknown" title="稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。">P4</a><a class="proposition-ref" href="#proposition-prop-constrained-anticipation" title="请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。">P5</a></span></div></div>
+  <dl class="paper-analysis"><div><dt>Research object</dt><dd>如何从稀疏在线反馈中学习因人而异的交互发起时机。</dd></div><div><dt>Mechanism</dt><dd>用时间偏好锚点与活动原型承载上下文证据，经先验平滑和不确定性缩放形成交互或沉默策略，并用反馈在线更新。</dd></div><div><dt>Evaluation</dt><dd>ProPerSim-based benchmark；摘要报告交互时机 F1、推理延迟和每日适配时间，未提供长期真实部署结果。</dd></div></dl>
+  <div class="paper-subsection"><h5>关键发现 <span lang="en">Key findings</span></h5><ul class="finding-list"><li class="reasoning-bound"><p>EOPA 用时间和活动证据承载偏好。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-eopa-carriers" title="EOPA 用时间偏好锚点和活动原型承载交互时机证据。">E24</a></span></li><li class="reasoning-bound"><p>策略更新不依赖 LLM 在线推理或重训练。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-eopa-no-llm-update" title="EOPA 在不进行 LLM 在线推理或重训练的情况下更新介入策略。">E25</a></span></li><li class="reasoning-bound"><p>摘要分别报告时机 F1 和每日适配时间。</p><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-eopa-timing-f1" title="作者在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点。">E26</a><a class="evidence-ref" href="#evidence-ev-eopa-adaptation-time" title="作者报告每日平均适配时间从 11.41 秒降至 0.39 秒。">E27</a></span></li></ul></div>
+  <div class="paper-subsection"><h5>定量证据 <span lang="en">Metrics</span></h5><div class="table-wrap"><table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Context</th><th>Depth</th><th>Evidence</th></tr></thead><tbody><tr class="reasoning-bound"><th scope="row">Interaction-timing F1</th><td class="metric-value">+19.80 points</td><td>相对作者实验中的最强基线。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-eopa-timing-f1" title="作者在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点。">E26</a></span></td></tr><tr class="reasoning-bound"><th scope="row">Average daily adaptation time</th><td class="metric-value">11.41 s → 0.39 s</td><td>摘要报告的每日平均适配时间变化。</td><td>摘要 · Abstract</td><td><span class="ref-set" aria-label="证据引用 / Evidence references"><a class="evidence-ref" href="#evidence-ev-eopa-adaptation-time" title="作者报告每日平均适配时间从 11.41 秒降至 0.39 秒。">E27</a></span></td></tr></tbody></table></div></div>
+  <div class="paper-limitations"><div><h5>作者声明局限 <span lang="en">Author-stated</span></h5><p class="empty"><span>未报告</span><span lang="en">Not reported</span></p></div><div><h5>分析推断局限 <span lang="en">Analyst-inferred</span></h5><ul class="plain-list"><li>摘要证据来自 ProPerSim-based benchmark，未提供长期真实部署结果。</li><li>跨人群泛化、反馈噪声和冷启动表现未在摘要中说明。</li></ul></div></div>
+  <details class="abstract-source"><summary>原始摘要 <span lang="en">Original abstract</span></summary><p lang="en">AI assistants are typically reactive, relying on users to initiate interactions. Proactive assistants go beyond this paradigm by autonomously initiating interactions based on users&#x27; activity contexts. However, appropriate interaction timing is user-specific and difficult to determine in advance, while online feedback offers valuable signals for personalization. Direct feedback-driven adaptation is therefore appealing, but remains challenging due to sparse interaction-worthy moments scattered across fine-grained user states. To address the issues, we propose Evidence-driven Online Preference Adaptation (EOPA), which grounds a user&#x27;s interaction-timing preferences in measurable contextual evidence through two evidence carriers: temporal preference anchors and evidence-bearing activity prototypes. At each polling step, EOPA derives temporal and activity evidence from the carriers through user-prior-smoothed evidence estimation and uncertainty-guided evidence scaling, and adaptively fuses the evidence for interaction-or-silence decisions. When interaction is selected, an LLM uses high-quality historical responses as demonstrations to generate a context-aware response that better reflects user preferences. EOPA updates its evidence carriers and decision parameters from received online feedback without LLM-based reasoning or retraining. Extensive experiments on a ProPerSim-based benchmark show that EOPA improves the interaction-timing F1 score by 19.80 points over the strongest baseline in our experiments, substantially reduces inference latency for both silence and interaction steps, and lowers the average daily adaptation time from 11.41 to 0.39 seconds.</p></details>
+  <footer class="paper-links"><a href="https://arxiv.org/abs/2608.04416">arXiv abstract</a><a href="https://arxiv.org/pdf/2608.04416">PDF</a></footer>
+</article></div>
+  <div class="proposition-index" id="proposition-index"><h3 class="subsection-title">命题编号索引 <span lang="en">Proposition ID Index</span></h3><div class="table-wrap"><table class="proposition-index-table"><thead><tr><th>Short ref</th><th>Raw ID</th><th>Statement</th></tr></thead><tbody><tr class="proposition-index-row"><th scope="row">P1</th><td><code>prop-intervention-policy</code></td><td>本次样例中的三个作者组分别把交互或沉默决策显式化，并与响应生成至少在控制面上分开；这构成多源一致的设计假设，但没有共同实验证明其必要性或相对最优性。</td></tr><tr class="proposition-index-row"><th scope="row">P2</th><td><code>prop-anticipatory-preparation</code></td><td>在可预测需求链的作者基准中，持续上下文与记忆被用于请求前的信息获取和证据准备；ProAct 摘要报告用户工作量下降 11.7%，但开放环境中的错误准备成本未知。</td></tr><tr class="proposition-index-row"><th scope="row">P3</th><td><code>prop-state-failure</code></td><td>本次语料把误报、沉默、过度行动和事件取消呈现为不同的评测对象；其中取消失败与 26.7% 正确反应率只由 ProEvent 直接测量，尚不能外推为整个领域的统一失败率。</td></tr><tr class="proposition-index-row"><th scope="row">P4</th><td><code>prop-personalization-unknown</code></td><td>稀疏在线反馈能否形成跨用户、跨情境且长期稳定的个性化介入策略仍属未知；本次只有 EOPA 单篇 benchmark 结果。</td></tr><tr class="proposition-index-row"><th scope="row">P5</th><td><code>prop-constrained-anticipation</code></td><td>请求前准备的正向 benchmark 结果与过度行动、误报和取消失败并存，使“联合衡量预判收益与介入成本”成为比“越早行动越好”更符合本次证据的评测假设；本次证据未证明哪种控制架构更优。</td></tr></tbody></table></div></div>
+  <div class="evidence-ledger" id="evidence-ledger"><h3 class="subsection-title">原子证据账本 <span lang="en">Atomic Evidence Ledger</span></h3>
+<article class="evidence-record" id="evidence-ev-prism-gate">
+  <header><span class="evidence-id">E1 · ev-prism-gate</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>PRISM 使用校准后的接受概率和成本推导阈值决定介入或沉默。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-prism-slow">
+  <header><span class="evidence-id">E2 · ev-prism-slow</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>PRISM 只在决策边界附近调用带反事实检查的慢推理。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-prism-false-alarms">
+  <header><span class="evidence-id">E3 · ev-prism-false-alarms</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者在 ProactiveBench 上报告误报相对强基线下降 22.78%。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-prism-f1">
+  <header><span class="evidence-id">E4 · ev-prism-f1</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者在 ProactiveBench 上报告 F1 相对强基线提升 20.14%。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2602-01532" title="PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents">2602.01532</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-pask-loop">
+  <header><span class="evidence-id">E5 · ev-pask-loop</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>PASK 把需求检测、记忆建模和主动服务基础设施连接为 DD-MM-PAS 闭环。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2604-08000" title="PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory">2604.08000</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-pask-memory">
+  <header><span class="evidence-id">E6 · ev-pask-memory</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>PASK 使用 workspace、user 和 global 三层混合记忆。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2604-08000" title="PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory">2604.08000</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-pask-latency-match">
+  <header><span class="evidence-id">E7 · ev-pask-latency-match</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>中等置信度 · Medium</span></div></header>
+  <p>作者称 IntentFlow 在延迟约束下匹配 Gemini3-Flash，但摘要未给出数值。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2604-08000" title="PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory">2604.08000</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proact-preparation">
+  <header><span class="evidence-id">E8 · ev-proact-preparation</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>ProAct 在用户提问前预测需求并准备证据。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2605-25971" title="Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents">2605.25971</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proact-turns">
+  <header><span class="evidence-id">E9 · ev-proact-turns</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者在 ProActEval 上报告所需轮数下降 14.8%。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2605-25971" title="Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents">2605.25971</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proact-user-effort">
+  <header><span class="evidence-id">E10 · ev-proact-user-effort</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者在 ProActEval 上报告用户工作量下降 11.7%。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2605-25971" title="Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents">2605.25971</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proact-hallucination">
+  <header><span class="evidence-id">E11 · ev-proact-hallucination</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者在 ProActEval 上报告幻觉率下降 28.1%。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2605-25971" title="Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents">2605.25971</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-gate">
+  <header><span class="evidence-id">E12 · ev-collab-gate</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>ProACT 检测协作故障后决定保持沉默或发言。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-sample-count">
+  <header><span class="evidence-id">E13 · ev-collab-sample-count</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告多用户协作基准包含 3,244 个回合级样例。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-backbone-count">
+  <header><span class="evidence-id">E14 · ev-collab-backbone-count</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告实验覆盖五种 LLM 主干。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-appropriateness">
+  <header><span class="evidence-id">E15 · ev-collab-appropriateness</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>中等置信度 · Medium</span></div></header>
+  <p>作者报告 ProACT 相对直接聊天持续改善协作适切性。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-noninterruptiveness">
+  <header><span class="evidence-id">E16 · ev-collab-noninterruptiveness</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>中等置信度 · Medium</span></div></header>
+  <p>作者报告 ProACT 相对直接聊天持续改善非打扰性。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-conciseness">
+  <header><span class="evidence-id">E17 · ev-collab-conciseness</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>中等置信度 · Medium</span></div></header>
+  <p>作者报告 ProACT 相对直接聊天持续改善简洁性。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-collab-intervention-quality">
+  <header><span class="evidence-id">E18 · ev-collab-intervention-quality</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>中等置信度 · Medium</span></div></header>
+  <p>作者报告 ProACT 相对直接聊天持续改善评审介入质量。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-03730" title="ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration">2607.03730</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proevent-benchmark">
+  <header><span class="evidence-id">E19 · ev-proevent-benchmark</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>ProEvent 评估响应时机、单步正确性和多步正确性。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proevent-model-count">
+  <header><span class="evidence-id">E20 · ev-proevent-model-count</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告 ProEvent 实验覆盖八种 LLM 与 pipeline。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proevent-overact">
+  <header><span class="evidence-id">E21 · ev-proevent-overact</span><div><span>摘要 · Abstract</span><span>负向结果 · Negative result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告当前 Agent 经常过度行动。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proevent-cancellation">
+  <header><span class="evidence-id">E22 · ev-proevent-cancellation</span><div><span>摘要 · Abstract</span><span>负向结果 · Negative result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告当前 Agent 难以处理事件取消。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-proevent-correct-rate">
+  <header><span class="evidence-id">E23 · ev-proevent-correct-rate</span><div><span>摘要 · Abstract</span><span>负向结果 · Negative result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告 GPT-5.1 只在 26.7% 的 ProEvent 场景中正确反应。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2607-17701" title="ProEvent: An Event-centric Benchmark for Proactive Agents">2607.17701</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-eopa-carriers">
+  <header><span class="evidence-id">E24 · ev-eopa-carriers</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>EOPA 用时间偏好锚点和活动原型承载交互时机证据。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2608-04416" title="Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants">2608.04416</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-eopa-no-llm-update">
+  <header><span class="evidence-id">E25 · ev-eopa-no-llm-update</span><div><span>摘要 · Abstract</span><span>作者主张 · Author claim</span><span>高置信度 · High</span></div></header>
+  <p>EOPA 在不进行 LLM 在线推理或重训练的情况下更新介入策略。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2608-04416" title="Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants">2608.04416</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-eopa-timing-f1">
+  <header><span class="evidence-id">E26 · ev-eopa-timing-f1</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者在 ProPerSim-based benchmark 上报告 interaction-timing F1 提升 19.80 个点。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2608-04416" title="Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants">2608.04416</a></span></footer>
+</article>
+<article class="evidence-record" id="evidence-ev-eopa-adaptation-time">
+  <header><span class="evidence-id">E27 · ev-eopa-adaptation-time</span><div><span>摘要 · Abstract</span><span>测量结果 · Measured result</span><span>高置信度 · High</span></div></header>
+  <p>作者报告每日平均适配时间从 11.41 秒降至 0.39 秒。</p>
+  <footer><span>abstract · Abstract</span><span class="ref-set" aria-label="论文引用 / Paper references"><a class="paper-ref" href="#paper-2608-04416" title="Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants">2608.04416</a></span></footer>
+</article></div>
+  <div class="report-limitations"><h3 class="subsection-title">报告边界 <span lang="en">Report Limitations</span></h3><ul class="plain-list"><li>这是 scoped literature scan，不是系统综述；查询与筛选协议不足以支持穷尽性声明。</li><li>六篇论文全部仅分析 arXiv 摘要；没有阅读全文、附录、代码、数据集或研究协议。</li><li>当前没有可成立的 authoritative field view；多作者组相似叙事不等于独立验证。</li><li>没有独立历史锚点，因此只能报告 submission signals，不能产生 emerging 或 structural trend。</li><li>没有外部核验正式发表状态、引用、独立复现或真实部署；arXiv 预印本不等同于同行评审证据。</li><li>技术选项位于不同机制阶段且没有共享任务，本报告不做路线排名。</li><li>机制闭环是分析者参考模型；design completion 不能伪装成来源支持的机制关系。</li><li>所有领先指标阈值均标为 analyst_policy，不是论文推导出的科学门槛。</li><li>independence_cluster_id 仅按作者组做保守区分，未核验机构、数据、代码或共同先验的依赖关系。</li><li>检索截止 2026-08-08；之后出现的论文、版本更新或撤回不在本报告范围内。</li></ul></div>
+  <div class="sources"><h3 class="subsection-title">论文来源 <span lang="en">arXiv Sources</span></h3><ol class="source-list"><li><a href="https://arxiv.org/abs/2602.01532" lang="en">PRISM: Festina Lente Proactivity -- Risk-Sensitive, Uncertainty-Aware Deliberation for Proactive Agents</a><span>2602.01532v1 · 2026-02-02</span></li><li><a href="https://arxiv.org/abs/2604.08000" lang="en">PASK: Toward Intent-Aware Proactive Agents with Long-Term Memory</a><span>2604.08000v1 · 2026-04-09</span></li><li><a href="https://arxiv.org/abs/2605.25971" lang="en">Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents</a><span>2605.25971v2 · 2026-05-25</span></li><li><a href="https://arxiv.org/abs/2607.03730" lang="en">ProACT: Towards Breakdown-Aware Proactive Agent in Multi-User Collaboration</a><span>2607.03730v1 · 2026-07-04</span></li><li><a href="https://arxiv.org/abs/2607.17701" lang="en">ProEvent: An Event-centric Benchmark for Proactive Agents</a><span>2607.17701v1 · 2026-07-20</span></li><li><a href="https://arxiv.org/abs/2608.04416" lang="en">Preference-Driven Online Adaptation for Personalized Interaction Initiation in Proactive AI Assistants</a><span>2608.04416v1 · 2026-08-05</span></li></ol></div>
+</section></main><footer class="site-footer"><p>Schema 3.0 · arxiv-paper-report · As of 2026-08-08</p></footer>
+</body>
+</html>
