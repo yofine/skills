@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ten Defeats"
+  short_description: "Guard judgment, evidence, and completion claims"
+  default_prompt: "Use $ten-defeats to guard this non-trivial software task against action theater and proxy completion."
+policy:
+  allow_implicit_invocation: true

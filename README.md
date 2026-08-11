@@ -14,6 +14,7 @@ skills/
 ├── blueprinter/          # Technical diagram generation skill
 ├── brief/                # Brief site template and report publishing skill
 ├── design-hub/           # Local design-system library and extraction skill
+├── ten-defeats/           # Judgment and completion guardrail skill
 └── README.md
 ```
 
@@ -25,6 +26,7 @@ skills/
 | [blueprinter](./blueprinter/) | Generate technical diagrams in Flat Engineering Blueprint style using HTML/CSS |
 | [brief](./brief/) | Initialize a Brief React/Vite report site, generate analysis reports, and publish them into the site |
 | [design-hub](./design-hub/) | Initialize and manage a local Design System Hub, extract systems from screenshots, and expose Agent-readable exports |
+| [ten-defeats](./ten-defeats/) | Guard non-trivial software work against action theater, tool-substituted design, proxy validation, and premature completion |
 
 ### arXiv Decision Intelligence Report
 
